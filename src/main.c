@@ -1,30 +1,39 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   main.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 11:39:45 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/15 12:05:43 by hho-troc         ###   ########.fr       */
+/*   Created: 2025/04/15 11:40:49 by hho-troc          #+#    #+#             */
+/*   Updated: 2025/04/15 12:09:30 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "../includes/minishell.h"
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdbool.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
-# include <limits.h>
-# include <fcntl.h>
-# include <sys/stat.h>
-# include <readline/readline.h>
-# include <readline/history.h>
+pid_t g_signal_pid = 0;
 
-extern pid_t	g_signal_pid;
+int	main(int ac, char **av, char **env)
+{
+	char	*line;
+	(void)ac;
+	(void)av;
+	(void)env;
 
-#endif
+	while (1)
+	{
+		line = readline("minishell>");
+		if (!line) // Ctrl+D or error
+		{
+			write(1, "exit\n", 5);
+			break ;
+		}
+		add_history(line);
+		free(line);
+		g_signal_pid = 0;
+	}
+	rl_clear_history();
+	//free
+	return (0);
+}

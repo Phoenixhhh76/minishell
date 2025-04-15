@@ -1,30 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   minishell.h                                        :+:      :+:    :+:   */
+/*   signal.c                                           :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 11:39:45 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/15 12:05:43 by hho-troc         ###   ########.fr       */
+/*   Created: 2025/04/15 11:38:52 by hho-troc          #+#    #+#             */
+/*   Updated: 2025/04/15 12:06:49 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef MINISHELL_H
-# define MINISHELL_H
+#include "../includes/minishell.h"
 
-# include <stdio.h>
-# include <stdlib.h>
-# include <stdbool.h>
-# include <sys/types.h>
-# include <sys/wait.h>
-# include <unistd.h>
-# include <limits.h>
-# include <fcntl.h>
-# include <sys/stat.h>
-# include <readline/readline.h>
-# include <readline/history.h>
+/*
+try to make a prompt
+ctrl-C displays a new prompt on a new line
+ */
+void	sigint_handler(int sig)
+{
+	(void)sig;
+	rl_on_new_line();
+	rl_replace_line("", 0);
+	rl_redisplay();
+}
 
-extern pid_t	g_signal_pid;
-
-#endif
