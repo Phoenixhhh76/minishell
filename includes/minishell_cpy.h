@@ -44,28 +44,21 @@ typedef struct	s_token
 	t_token		*next;
 }	t_token;
 
-
-typedef struct	s_cmd
-{
-	char	**cmd_args;
-	char	**cmd_opts;
-	char	*cmd_path;
-	int		fd_in;
-	int		fd_out;
-	char	*infile;
-	char	*outfile;
-	int		*pipe;
-	int		*pids;
-	//int		child;
-}	t_cmd;
-
 typedef struct	s_ast
 {
 	t_token	type;
 
+	char	**cmd_args;
+	char	**cmd_opts;
+	char	*cmd_path;
+	char	*infile;
+	char	*outfile;
+	int		fd_in;
+	int		fd_out;
+	int		*pipe;
+	int		*pids;
+	//int		child;
 	int			fd[2];
-	t_cmd		*left;
-	t_cmd		*right;
 	t_ast		*next;
 }	t_ast;
 

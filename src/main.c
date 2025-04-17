@@ -16,11 +16,13 @@ pid_t g_signal_pid = 0;
 
 int	main(int ac, char **av, char **env)
 {
+	t_mini	mini;
 	char	*line;
 	(void)ac;
-	(void)av;
-	(void)env;
+	//(void)av;
+	//(void)env;
 
+	init_mini(&mini, token, av, env);
 	while (1)
 	{
 		line = readline("minishell>");
