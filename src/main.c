@@ -14,6 +14,24 @@
 
 pid_t g_signal_pid = 0;
 
+
+void	init_mini(t_mini mini, char **av, char **env)
+{
+	t_ast	*ast;
+	t_token	*token;
+
+	init_token(&token);
+	if (!token)
+		//ERROR;
+	mini.token = token;
+	init_ast(&mini, ast);
+	if (!ast)
+		//ERROR;
+	mini.env = env;
+	mini.av = av;
+	mini.ast = ast;
+}
+
 int	main(int ac, char **av, char **env)
 {
 	t_mini	mini;
@@ -22,7 +40,7 @@ int	main(int ac, char **av, char **env)
 	//(void)av;
 	//(void)env;
 
-	init_mini(&mini, token, av, env);
+	init_mini(&mini, av, env);
 	while (1)
 	{
 		line = readline("minishell>");

@@ -39,7 +39,7 @@ typedef enum e_node_type
 
 typedef struct	s_token
 {
-	t_node_type	type;
+	t_node_type	token;
 	char		*str;
 	t_token		*next;
 }	t_token;
@@ -61,7 +61,7 @@ typedef struct	s_cmd
 
 typedef struct	s_ast
 {
-	t_token	type;
+	t_token	token;
 
 	int			fd[2];
 	t_cmd		*left;
@@ -72,6 +72,7 @@ typedef struct	s_ast
 typedef struct s_mini
 {
 	t_ast	*ast;
+	t_token	*token;
 	char	**env;
 	char	**av;
 	//int		ac;

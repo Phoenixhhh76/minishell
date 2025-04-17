@@ -12,17 +12,7 @@
 
 #include "../includes/minishell.h"
 
-void	ini_mini(t_mini	mini, char **tokens, char **av, char **env)
+void	init_ast(t_mini *mini, t_ast *ast)
 {
-	t_ast	*nodes;
 
-	nodes = (t_ast *)ft_calloc
-	mini.env = env;
-	mini.av = av;
-	mini.ast = 
-}
-
-void    init_ast()
-{
-	type = found_token();
 }
