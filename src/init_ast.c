@@ -15,11 +15,12 @@
 void	init_ast(t_mini *mini, t_ast *ast)
 {
 	int	i;
+	t_ast	
 
 	i = 0;
 	while (i < size_token(mini->token))
 	{
-		
+
 	}
 }
 

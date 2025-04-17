@@ -40,7 +40,7 @@ int	main(int ac, char **av, char **env)
 	//(void)av;
 	//(void)env;
 
-	init_mini(&mini, av, env);
+	init_mini(mini, av, env);
 	while (1)
 	{
 		line = readline("minishell>");
