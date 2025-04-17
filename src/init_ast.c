@@ -14,5 +14,14 @@
 
 void	init_ast(t_mini *mini, t_ast *ast)
 {
+	int	i;
 
+	i = 0;
+	while (i < size_token(mini->token))
+	{
+		
+	}
 }
+
+//if pipe = at least 1 ast_node and 2 cmd 
+//if no pipe = 1 ast_node, create 

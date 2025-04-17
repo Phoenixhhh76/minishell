@@ -37,3 +37,6 @@ cd .. hi
 
 # Empty `cd` moves to home
 cd
+
+< Makefile cat > out > out2 cat > test2
+< Makefile cat > out > ou"t2 ca"t > test2
