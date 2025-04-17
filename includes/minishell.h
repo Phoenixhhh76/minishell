@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:39:45 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/17 10:54:11 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/17 15:22:36 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,6 +24,7 @@
 # include <sys/stat.h>
 # include <readline/readline.h>
 # include <readline/history.h>
+# include "../libft/libft.h"
 
 extern pid_t	g_signal_pid;
 
