@@ -102,3 +102,25 @@ When you're not sure who's doing what, write it down in a shared `CONTRIBUTORS.m
 
 ### Nina:
 - Work on `lexer.c` and `tokenizer`
+
+
+
+int main()
+{
+    blablabla
+    init_mini();
+}
+
+void    ini_mini()
+{
+    env = babla;
+    av;
+    ac;
+    heredoc;
+    ast = init_ast();
+}
+
+void    init_ast()
+(
+    type = found_token()
+)

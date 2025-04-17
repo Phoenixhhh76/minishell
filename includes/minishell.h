@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:39:45 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/15 15:34:13 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/17 10:54:11 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@
 
 extern pid_t	g_signal_pid;
 
-typedef enum e_node_type 
+typedef enum e_node_type
 {
     NODE_COMMAND,
     NODE_PIPE,
@@ -56,7 +56,7 @@ typedef struct	s_ast
 	int			fd[2];
 	t_cmd		*left;
 	t_cmd		*right;
-	t_ast		*next;
+	//t_ast		*next;
 }	t_ast;
 
 typedef struct s_mini
