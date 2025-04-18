@@ -1,3 +1,4 @@
+
 NAME = minishell
 
 CC = cc
@@ -6,32 +7,35 @@ CFLAGS = -Wall -Wextra -Werror -g3
 LIBFT = libft/libft.a
 INCLUDES = -Iincludes
 LIBS = -lreadline
-
 RM = rm -f
 
 SRC_DIR = src
 OBJ_DIR = obj
-BUILT_DIR = builtins
-PARSING_DIR = parsing
-EXEC_DIR = exec
-TOKENIZING_DIR = tokenizing
 
-#SRCS files
-#BUILTINS    := $(BUILT_DIR)/builtin1.c $(BUILT_DIR)/builtin2.c
-#PARSING     := $(PARSING_DIR)/parser1.c $(PARSING_DIR)/parser2.c
-#EXEC        := $(EXEC_DIR)/exec1.c $(EXEC_DIR)/exec2.c
-TOKENIZING  := $(TOKENIZING_DIR)/token.c
-SRCS        := $(BUILTINS) $(PARSING) $(EXEC) $(TOKENIZING) $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
+BUILT_DIR = $(SRC_DIR)/builtins
+PARSING_DIR = $(SRC_DIR)/parsing
+EXEC_DIR = $(SRC_DIR)/exec
+TOKEN_DIR = $(SRC_DIR)/tokenizing
 
-OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.c=.o)))
+BUILTINS    :=
+PARSING     :=
+EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c
+TOKENIZING  := $(TOKEN_DIR)/token.c
+COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
+
+SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(TOKENIZING) $(COMMON)
+
+# Replace src/ → obj/ and .c → .o
+OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBFT) $(LIBS) -o $(NAME)
 
+# Create obj/... directory structure and compile
 $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
-	@mkdir -p $(OBJ_DIR)
+	@mkdir -p $(dir $@)
 	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
 
 $(LIBFT):

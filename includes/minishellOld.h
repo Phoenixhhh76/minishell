@@ -1,5 +1,17 @@
-#ifndef TEST_H
-# define TEST_H
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishellOld.h                                     :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025/04/15 11:39:45 by hho-troc          #+#    #+#             */
+/*   Updated: 2025/04/18 19:45:42 by hho-troc         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
+#ifndef MINISHELLOLD_H
+# define MINISHELLOLD_H
 
 # include <stdio.h>
 # include <stdlib.h>
@@ -68,16 +80,15 @@ typedef struct s_ast
 {
 	t_token			ast_token;
 	int				fd[2];
-	t_cmd			*cmd;
-	struct s_ast	*left;
-	struct s_ast	*right;
+	t_cmd			*left;
+	t_cmd			*right;
 	struct s_ast	*next;
 }	t_ast;
 
 typedef struct s_mini
 {
-	t_ast	*ast;
 	t_token	*token;
+	t_ast	*ast;
 	char	**env;
 	char	**av;
 	//int		ac;
@@ -85,5 +96,12 @@ typedef struct s_mini
 	//???		histoire(readlin add history);
 	//struct t_mini *next;
 }	t_mini;
+
+
+//tokenizing
+void	init_token(t_mini *mini);
+
+//init_ast
+void	init_ast(t_mini *mini);
 
 #endif

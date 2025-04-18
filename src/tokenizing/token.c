@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:17:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/18 11:55:38 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/18 20:54:11 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -211,7 +211,7 @@ void	print_token_list(t_token *token)
 		token = token->next;
 	}
 }
-int	main(void)
+/* int	main(void)
 {
 	//t_token *tokens = tokenize_input("echo \"hello | world\" > output.txt | cat -e");
 	//t_token *tokens = tokenize_input("echo hello | world >>>> output.txt | cat -e");
@@ -220,3 +220,5 @@ int	main(void)
 	free_token_list(tokens);
 	return(0);
 }
+
+ */

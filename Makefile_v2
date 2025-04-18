@@ -1,0 +1,55 @@
+NAME = minishell
+
+CC = cc
+CFLAGS = -Wall -Wextra -Werror -g3
+
+LIBFT = libft/libft.a
+INCLUDES = -Iincludes
+LIBS = -lreadline
+
+RM = rm -f
+
+SRC_DIR = src
+OBJ_DIR = obj
+BUILT_DIR = $(SRC_DIR)/builtins
+PARSING_DIR = $(SRC_DIR)/parsing
+EXEC_DIR = $(SRC_DIR)/exec
+TOKENIZING_DIR = $(SRC_DIR)/tokenizing
+
+#SRCS files
+#BUILTINS    := $(BUILT_DIR)/builtin1.c $(BUILT_DIR)/builtin2.c
+#PARSING     := $(PARSING_DIR)/parser1.c $(PARSING_DIR)/parser2.c
+EXEC        := $(EXEC_DIR)/exec_builtins.c $(EXEC_DIR)/exec_ast.c
+TOKENIZING  := $(TOKENIZING_DIR)/token.c
+SRCS        := $(BUILTINS) $(PARSING) $(EXEC) $(TOKENIZING) $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
+
+OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.c=.o)))
+
+all: $(NAME)
+
+$(NAME): $(LIBFT) $(OBJS)
+	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBFT) $(LIBS) -o $(NAME)
+
+
+#ici $(OBJ_DIR)/%.o: $(SRC_DIR)/%.c can just do "src/file.c → obj/file.o", but the rule can't handle if the file is not directely in /src
+#(for example : the compiler can't find the path of exec/exec_builtins.c)
+#$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+
+$(OBJ_DIR)/%.o: $(SRC_DIR)/**/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
+$(LIBFT):
+	@$(MAKE) -C libft
+
+clean:
+	$(RM) $(OBJS)
+	@$(MAKE) -C libft clean
+
+fclean: clean
+	$(RM) $(NAME)
+	@$(MAKE) -C libft fclean
+
+re: fclean all
+
+.PHONY: all clean fclean re
