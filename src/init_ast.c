@@ -136,7 +136,7 @@ void	init_ast(t_mini *mini)
 	{
 		if (token_last_pipe->type == PIPE)
 			pipe_pos = token_last_pipe;
-			token_last_pipe = token_last_pipe->next;
+		token_last_pipe = token_last_pipe->next;
 	}
 	if (pipe_pos)
 	{
