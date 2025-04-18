@@ -50,7 +50,7 @@ static char	**collect_args(t_token *start, t_token *end)
 	return (args);
 }
 
-void	build_command(t_ast *ast, t_token *start, t_token *end)
+t_cmd	*build_command(t_ast *ast, t_token *start, t_token *end)
 {
 	t_ast	*node;
 	t_cmd	*cmd;
@@ -88,7 +88,7 @@ void	build_command(t_ast *ast, t_token *start, t_token *end)
 		tmp = tmp->next;
 	}
 	cmd->cmd_args = collect_args(start, end);
-	ast->left = cmd;
+	return (cmd);
 }
 
 void	ft_ast_addback(t_ast **type, t_ast *new)
@@ -117,8 +117,8 @@ t_ast	*create_ast(t_token *pipe_pos, t_token *mini_token)
 	ast->ast_token.str = ft_strdup("|");
 	ast->fd[0] = -1;
 	ast->fd[1] = -1;
-	ast->left = build_command(mini_token, pipe_pos);
-	ast->right = build_command(pipe_pos->next, NULL);
+	ast->left = build_command(ast, mini_token, pipe_pos);
+	ast->right = build_command(ast, pipe_pos->next, NULL);
 	ast->next = NULL;
 	return (ast);
 }
@@ -142,12 +142,15 @@ void	init_ast(t_mini *mini)
 	{
 		new = create_ast(pipe_pos, mini->token);
 		ft_ast_addback(&mini->ast, new);
-		//printf("Token_ast: %-10s Type: %d\n", mini->ast->ast_token.str, mini->ast->ast_token.type);
+		printf("Token_ast: %-10s Type: %d\n", mini->ast->ast_token.str, mini->ast->ast_token.type);
 		pipe_pos->type = -1;
 		init_ast(mini);
 	}
 	if (pipe_pos == NULL)
-		build_command(mini->token, NULL);
+	{
+		new = create_ast(pipe_pos, mini->token);
+		build_command(new, mini->token, NULL);
+	}
 }
 
 /* 
