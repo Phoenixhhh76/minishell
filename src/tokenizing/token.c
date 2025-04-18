@@ -6,12 +6,12 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:17:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/17 17:29:58 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/18 11:55:38 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-// 放在 token.c 前面
+
 static int	process_token(const char *input, int i, t_token **tokens);
 static int	process_quoted_token(const char *input, int i, t_token **tokens);
 static int	process_redirection(const char *input, int i, t_token **tokens);

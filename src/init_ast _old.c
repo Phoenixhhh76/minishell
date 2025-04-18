@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 14:48:52 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/04/18 13:03:10 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/18 12:20:57 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,7 +34,7 @@ static char	**collect_args(t_token *start, t_token *end)
 
 	i = 0;
 	size = count_args(start, end);
-	args = (char **)ft_calloc(size + 1, sizeof(char *));
+	args = (char **)ft_calloc(sizeof(t_ast *), size + 1);
 	if (!args)
 		return (NULL);
 	while (start && start != end)
@@ -50,13 +50,15 @@ static char	**collect_args(t_token *start, t_token *end)
 	return (args);
 }
 
-t_cmd	*build_command(t_token *start, t_token *end)
+t_cmd	*build_command(t_ast *ast, t_token *start, t_token *end)
 {
+	t_ast	*node;
 	t_cmd	*cmd;
 	t_token	*tmp;
 
 	tmp = start;
-	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
+	node = (t_ast *)ft_calloc(sizeof(t_ast), 1);
+	cmd = (t_cmd *)ft_calloc(sizeof(t_cmd), 1);
 	//if (!node || !cmd)
 		//ERROR, return (NULL);
 	cmd->fd_in = -1; //to be determined;
@@ -77,7 +79,7 @@ t_cmd	*build_command(t_token *start, t_token *end)
 		else if (tmp->type == REDIR_APPEND && tmp->next)
 		{
 			cmd->outfile = ft_strdup(tmp->next->str);
-			cmd->fd_out = STDOUT_FILENO;
+			cmd->fd_out = STDPIT_FILENO;
 			tmp = tmp->next;
 		}
 		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard
@@ -88,8 +90,6 @@ t_cmd	*build_command(t_token *start, t_token *end)
 		tmp = tmp->next;
 	}
 	cmd->cmd_args = collect_args(start, end);
-	if (cmd->cmd_args && cmd->cmd_args[0])
-		cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
 	return (cmd);
 }
 
@@ -108,8 +108,6 @@ void	ft_ast_addback(t_ast **type, t_ast *new)
 	tmp->next = new;
 }
 
-/* replace by parse_pipeline() + create_pipe_node()
-
 t_ast	*create_ast(t_token *pipe_pos, t_token *mini_token)
 {
 	t_ast	*ast;
@@ -121,75 +119,13 @@ t_ast	*create_ast(t_token *pipe_pos, t_token *mini_token)
 	ast->ast_token.str = ft_strdup("|");
 	ast->fd[0] = -1;
 	ast->fd[1] = -1;
-	ast->left = build_command(mini_token, pipe_pos);
-	ast->right = build_command(pipe_pos->next, NULL);
+	ast->left = build_command(ast, mini_token, pipe_pos);
+	ast->right = build_command(ast, pipe_pos->next, NULL);
 	ast->next = NULL;
 	return (ast);
-} */
-
-t_token	*find_next_pipe(t_token *start, t_token *end)
-{
-	while (start && start != end)
-	{
-		if (start->type == PIPE)
-			return (start);
-		start = start->next;
-	}
-	return (NULL);
 }
-
-t_ast	*parse_pipeline(t_token *start, t_token *end)
-{
-	t_token	*pipe_pos;
-	t_ast	*ast;
-
-	pipe_pos = find_next_pipe(start, end);
-	if (pipe_pos)
-		return (create_pipe_node(start, pipe_pos, end));
-
-	// case of no PIPE, just one CMD
-	ast = ft_calloc(1, sizeof(t_ast));
-	if (!ast)
-		return (NULL);
-	ast->ast_token.type = CMD;
-	ast->ast_token.str = ft_strdup("CMD");
-	ast->fd[0] = -1;
-	ast->fd[1] = -1;
-	ast->left = build_command(start, end);
-	return (ast);
-}
-
-
-t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end)
-{
-	t_ast	*ast;
-	t_ast	*right_ast;
-
-	ast = ft_calloc(1, sizeof(t_ast));
-	if (!ast)
-		return (NULL);
-	ast->ast_token.type = PIPE;
-	ast->ast_token.str = ft_strdup("|");
-	ast->fd[0] = -1;
-	ast->fd[1] = -1;
-	ast->left = build_command(start, pipe_pos);
-
-	// recursion
-	right_ast = parse_pipeline(pipe_pos->next, end);
-	// if (right_ast && right_ast->left)
-	// 	ast->right = right_ast->left;
-	// else if (right_ast)
-	// 	ast->right = build_command(pipe_pos->next, end);
-	return (ast);
-}
-
 
 void	init_ast(t_mini *mini)
-{
-	mini->ast = parse_pipeline(mini->token, NULL);
-}
-
-/* void	init_ast(t_mini *mini)
 {
 	t_ast	*new;
 	t_token	*token_last_pipe;
@@ -200,7 +136,7 @@ void	init_ast(t_mini *mini)
 	pipe_pos = NULL;
 	while (token_last_pipe)
 	{
-		if (token_last_pipe->type == PIPE)//replace by the function find_next_pipe
+		if (token_last_pipe->type == PIPE)
 			pipe_pos = token_last_pipe;
 		token_last_pipe = token_last_pipe->next;
 	}
@@ -217,7 +153,7 @@ void	init_ast(t_mini *mini)
 		//new = create_ast(pipe_pos, mini->token); segment faut wile pipe_pos = NULL
 		build_command(new, mini->token, NULL);
 	}
-} */
+}
 
 /*
 
