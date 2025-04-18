@@ -27,6 +27,8 @@ void	init_mini(t_mini mini, char **av, char **env)
 	// if (!ast)
 	// 	//ERROR;
 	mini.env = env;
+	// if (!env)
+	// 	//ERROR;
 	mini.av = av;
 	mini.ast = ast;
 }

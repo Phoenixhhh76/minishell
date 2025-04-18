@@ -1,6 +1,8 @@
 */*.o
+/libft/*.o
 /objects/
 .vscode
 .vscode/
 /libft/libft.a
 minishell
+a.out

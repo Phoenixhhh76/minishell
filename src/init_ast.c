@@ -142,7 +142,7 @@ void	init_ast(t_mini *mini)
 	{
 		new = create_ast(pipe_pos, mini->token);
 		ft_ast_addback(&mini->ast, new);
-		printf("Token_ast: %-10s Type: %d\n", mini->ast->ast_token.str, mini->ast->ast_token.type);
+	//	printf("Token_ast: %-10s Type: %d\n", mini->ast->ast_token.str, mini->ast->ast_token.type);
 		pipe_pos->type = -1;
 		init_ast(mini);
 	}
