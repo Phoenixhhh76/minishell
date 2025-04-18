@@ -87,8 +87,8 @@ typedef struct s_ast
 
 typedef struct s_mini
 {
-	t_ast	*ast;
 	t_token	*token;
+	t_ast	*ast;
 	char	**env;
 	char	**av;
 	//int		ac;
@@ -96,5 +96,12 @@ typedef struct s_mini
 	//???		histoire(readlin add history);
 	//struct t_mini *next;
 }	t_mini;
+
+
+//tokenizing
+void	init_token(t_mini *mini);
+
+//init_ast
+void	init_ast(t_mini *mini);
 
 #endif

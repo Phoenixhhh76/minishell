@@ -1,70 +1,48 @@
 NAME = minishell
 
-LIBFT = libft/libft.a
-
 CC = cc
-CFLAGS = -Wall -Wextra -Werror
+CFLAGS = -Wall -Wextra -Werror -g3
 
+LIBFT = libft/libft.a
 INCLUDES = -Iincludes
 LIBS = -lreadline
 
-REMOVE = rm -f
+RM = rm -f
 
+SRC_DIR = src
+OBJ_DIR = obj
+BUILT_DIR = builtins
+PARSING_DIR = parsing
+EXEC_DIR = exec
+TOKENIZING_DIR = tokenizing
 
-BUILTINS	:=	builtins/cd.c \
-				builtins/echo.c \
-				builtins/env_utils.c \
-				builtins/env.c \
-				builtins/exit.c \
-				builtins/export.c \
-				builtins/pwd.c \
-				builtins/unset.c
+#SRCS files
+#BUILTINS    := $(BUILT_DIR)/builtin1.c $(BUILT_DIR)/builtin2.c
+#PARSING     := $(PARSING_DIR)/parser1.c $(PARSING_DIR)/parser2.c
+#EXEC        := $(EXEC_DIR)/exec1.c $(EXEC_DIR)/exec2.c
+TOKENIZING  := $(TOKENIZING_DIR)/token.c
+SRCS        := $(BUILTINS) $(PARSING) $(EXEC) $(TOKENIZING) $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
 
-TOKENIZING	:=	tokenizing/token_appenders.c \
-				tokenizing/token_handlers.c \
-				tokenizing/token_utils.c \
-				tokenizing/token.c
-
-EXEC		:=	exec/error_msg.c \
-				exec/exec_builtin.c \
-				exec/exec_redirect.c \
-				exec/exec_utils.c \
-				exec/exec.c \
-				exec/exist_check.c \
-				exec/ft_exec_simple_cmd.c \
-				exec/ft_get_path.c \
-				exec/init_tree.c
-
-PARSING		:=	parsing/parser_clear.c \
-				parsing/parser_err.c \
-				parsing/parser_helpers.c \
-				parsing/parser_nodes.c \
-				parsing/parser_utils.c \
-				parsing/parser.c
-
-SRCS		:=	$(BUILTINS)\
-				$(EXEC)\
-				$(PARSING)\
-				$(TOKENIZING)\
-				main.c signal.c token.c init_ast.c
-
-OBJS = $(SRCS:.c=.o)
-
+OBJS = $(addprefix $(OBJ_DIR)/, $(notdir $(SRCS:.c=.o)))
 
 all: $(NAME)
 
 $(NAME): $(LIBFT) $(OBJS)
 	$(CC) $(CFLAGS) $(INCLUDES) $(OBJS) $(LIBFT) $(LIBS) -o $(NAME)
 
+$(OBJ_DIR)/%.o: $(SRC_DIR)/%.c
+	@mkdir -p $(OBJ_DIR)
+	$(CC) $(CFLAGS) $(INCLUDES) -c $< -o $@
+
 $(LIBFT):
 	@$(MAKE) -C libft
 
 clean:
-	$(REMOVE) $(OBJS)
+	$(RM) $(OBJS)
 	@$(MAKE) -C libft clean
 
 fclean: clean
-	$(REMOVE) $(NAME)
+	$(RM) $(NAME)
 	@$(MAKE) -C libft fclean
 
 re: fclean all
