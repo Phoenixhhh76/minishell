@@ -14,19 +14,18 @@
 
 pid_t g_signal_pid = 0;
 
-
 void	init_mini(t_mini mini, char **av, char **env)
 {
 	t_ast	*ast;
-	t_token	*token;
+	t_token	*type;
 
-	init_token(&token);
-	if (!token)
-		//ERROR;
-	mini.token = token;
+	init_token(&type);
+	// if (!token)
+	// 	//ERROR;
+	mini.token = type;
 	init_ast(&mini, ast);
-	if (!ast)
-		//ERROR;
+	// if (!ast)
+	// 	//ERROR;
 	mini.env = env;
 	mini.av = av;
 	mini.ast = ast;

@@ -12,51 +12,11 @@
 
 #include "../includes/minishell.h"
 
-t_ast	*create_node(char *splited)
-{
-	t_ast	*node;
-	int		content;
-
-	content = ft_atol(splited);
-	node = (t_ast *)malloc(sizeof(t_ast));
-	if (!node)
-		return (0);
-	node->content = content;
-	node->next = NULL;
-	return (node);
-}
-
-void	ft_astadd_back(t_ast **stack_a, t_ast *new)
-{
-	t_ast	*tmp;
-
-	if (!(*stack_a))
-	{
-		*stack_a = new;
-		return ;
-	}
-	tmp = *stack_a;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
-
 t_ast	*ft_astlast(t_ast *stack)
 {
 	while (stack != NULL)
 	{
 		if (!(stack->next))
-			return (stack);
-		stack = stack->next;
-	}
-	return (NULL);
-}
-
-t_ast	*ft_penultimate(t_ast *stack)
-{
-	while (stack != NULL)
-	{
-		if (!(stack->next->next))
 			return (stack);
 		stack = stack->next;
 	}
