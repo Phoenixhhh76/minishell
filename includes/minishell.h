@@ -99,6 +99,8 @@ void	init_ast(t_mini *mini);
 t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
 t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini);
 
+//builtins
+void	ft_echo(t_cmd *cmd);
 
 //exec
 bool	ft_is_builtin(char *arg);
