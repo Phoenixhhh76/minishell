@@ -15,11 +15,15 @@
 void	ft_echo(t_cmd *cmd)
 {
 	int	i;
+	int	option;
 
 	i = 1;
-	//printf("HERE\n");
+	option = 0;
 	if (!ft_strcmp(cmd->cmd_args[i], "-n"))
-		printf("detected\n");
+	{
+		option = 1;
+		i++;
+	}
 	while (cmd->cmd_args[i])
 	{
 		printf("%s", cmd->cmd_args[i]);
@@ -27,5 +31,6 @@ void	ft_echo(t_cmd *cmd)
 			printf(" ");
 		i++;
 	}
-	printf("\n");
+	if (option == 0)
+		printf("\n");
 }

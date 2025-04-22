@@ -102,6 +102,8 @@ t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini 
 
 //builtins
 void	ft_echo(t_cmd *cmd);
+int		ft_pwd(void);
+int		ft_cd(t_cmd *cmd, char ***env);
 
 //exec
 bool	ft_is_builtin(char *arg);
