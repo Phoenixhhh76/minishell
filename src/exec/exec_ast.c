@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:06:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 10:25:35 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/22 12:45:42 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,7 +94,7 @@ void	exec_ast(t_ast *node, char **envp)
 	}
 }
 
-void	exec_pipe_node(t_ast *node, char **envp)
+/* void	exec_pipe_node(t_ast *node, char **envp)
 {
 	pid_t	left_pid;
 	pid_t	right_pid;
@@ -121,4 +121,4 @@ void	exec_pipe_node(t_ast *node, char **envp)
 	close(node->fd[1]);
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, NULL, 0);
-}
+} */
