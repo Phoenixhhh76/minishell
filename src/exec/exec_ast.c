@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:06:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/18 20:06:30 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/22 10:25:35 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,13 @@
 
 void	exec_ast(t_ast *node, char **envp)
 {
-	if (!node)
-		return;
+	pid_t	left_pid;
+	pid_t	right_pid;
 
-	// ─────────────────────────────────────────────
-	if (node->ast_token.type == PIPE)
+	if (!node)
+		return ;
+
+	if (node->ast_token.type == PIPE)//PIPE situation
 	{
 		if (pipe(node->fd) == -1)
 		{
@@ -26,41 +28,36 @@ void	exec_ast(t_ast *node, char **envp)
 			exit(1);
 		}
 
-		pid_t left_pid = fork();
-		if (left_pid == 0)
+		left_pid = fork();
+		if (left_pid == 0) //child do left side, write pipe
 		{
-			// 子進程處理左邊，寫入 pipe
 			close(node->fd[0]);
 			dup2(node->fd[1], STDOUT_FILENO);
 			close(node->fd[1]);
-
 			exec_ast(node->left, envp);
-			exit(1); // 若失敗
+			exit(1); //error handel have to check
 		}
 
-		pid_t right_pid = fork();
-		if (right_pid == 0)
+		right_pid = fork();
+		if (right_pid == 0) //child do right side, read from pipe
 		{
-			// 子進程處理右邊，讀取 pipe
 			close(node->fd[1]);
 			dup2(node->fd[0], STDIN_FILENO);
 			close(node->fd[0]);
-
 			exec_ast(node->right, envp);
-			exit(1);
+			exit(1);//error handel have to check
 		}
 
-		// 父進程收尾
+		// for parent
 		close(node->fd[0]);
 		close(node->fd[1]);
 		waitpid(left_pid, NULL, 0);
 		waitpid(right_pid, NULL, 0);
 	}
-	// ─────────────────────────────────────────────
-	else if (node->ast_token.type == CMD && node->cmd)
+	// ──────────need seperation Pipe and CMD for fit in 25 lines─────────────────────
+	else if (node->ast_token.type == CMD && node->cmd)//CMD situation
 	{
-		// 處理 input redirection
-		if (node->cmd->infile)
+		if (node->cmd->infile)// input redirection
 		{
 			int fd = open(node->cmd->infile, O_RDONLY);
 			if (fd < 0)
@@ -71,9 +68,7 @@ void	exec_ast(t_ast *node, char **envp)
 			dup2(fd, STDIN_FILENO);
 			close(fd);
 		}
-
-		// 處理 output redirection
-		if (node->cmd->outfile)
+		if (node->cmd->outfile)// output redirection
 		{
 			int fd = open(node->cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd < 0)
@@ -88,7 +83,7 @@ void	exec_ast(t_ast *node, char **envp)
 		// 處理 builtin
 		if (ft_is_builtin(node->cmd->cmd_args[0]))
 		{
-			ft_run_builtin(node->cmd, &envp); // 不進 fork 執行的是副本
+			ft_run_builtin(node->cmd, &envp); // no need path ni fork
 			exit(0);
 		}
 
@@ -97,4 +92,33 @@ void	exec_ast(t_ast *node, char **envp)
 		perror("execve");
 		exit(1);
 	}
+}
+
+void	exec_pipe_node(t_ast *node, char **envp)
+{
+	pid_t	left_pid;
+	pid_t	right_pid;
+
+	if (pipe(node->fd) == -1)
+		exit_error("pipe");
+	if ((left_pid = fork()) == 0)
+	{
+		close(node->fd[0]);
+		dup2(node->fd[1], STDOUT_FILENO);
+		close(node->fd[1]);
+		exec_ast(node->left, envp);
+		exit(1);
+	}
+	if ((right_pid = fork()) == 0)
+	{
+		close(node->fd[1]);
+		dup2(node->fd[0], STDIN_FILENO);
+		close(node->fd[0]);
+		exec_ast(node->right, envp);
+		exit(1);
+	}
+	close(node->fd[0]);
+	close(node->fd[1]);
+	waitpid(left_pid, NULL, 0);
+	waitpid(right_pid, NULL, 0);
 }
