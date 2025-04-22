@@ -19,7 +19,7 @@ TOKEN_DIR = $(SRC_DIR)/tokenizing
 
 BUILTINS    :=
 PARSING     :=
-EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c
+EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c $(EXEC_DIR)/exec_path.c
 TOKENIZING  := $(TOKEN_DIR)/token.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
 

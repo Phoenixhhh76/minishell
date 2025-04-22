@@ -94,12 +94,20 @@ void	free_token_list(t_token *token);
 
 //init_ast
 void	init_ast(t_mini *mini);
-t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end);
-t_ast *parse_pipeline(t_token *start, t_token *end);
+//t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end);
+//t_ast *parse_pipeline(t_token *start, t_token *end);
+t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
+t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini);
+
 
 //exec
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_cmd *cmd, char ***envp);
 void	exec_ast(t_ast *node, char **envp);
+char	*resolve_cmd_path(char *cmd, char **envp); //add
+
+//todo
+char *expand_arg(char *str, t_mini *mini);
+
 
 #endif
