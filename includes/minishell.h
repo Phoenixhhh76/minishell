@@ -81,6 +81,7 @@ typedef struct s_mini
 	t_token	*token;
 	char	**env;
 	char	**av;
+	int	 	last_exit; // last exit code for $?
 	//int		ac;
 	//int		heredoc;
 	//???		histoire(readlin add history);
@@ -110,8 +111,14 @@ int		ft_run_builtin(t_cmd *cmd, char ***envp);
 void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 
-//todo
-char *expand_arg(char *str, t_mini *mini);
+//expande
+char	*expand_arg(const char *str, t_mini *mini);
+
+//need to move to libft or outil
+size_t	ft_strlen(const char *s);
+char	*ft_strndup(const char *s, size_t n);
+int		ft_isspace(char c);
+char	*ft_strdup(const char *s1);
 
 
 #endif

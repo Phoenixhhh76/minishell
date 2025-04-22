@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 13:43:30 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/22 16:44:52 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -44,8 +44,8 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == -1)
 		{
-			args[i] = ft_strdup(start->str);
-			//args[i] = expand_arg(start->str, mini);
+			//args[i] = ft_strdup(start->str);
+			args[i] = expand_arg(start->str, mini);
 			i++;
 		}
 		start = start->next;
@@ -86,8 +86,11 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
- 		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2
+ 		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
 		{
+			// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
+			// 	cmd->infile = ft_strdup(tmp->next->str);
+			// else
 			cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
 			tmp = tmp->next;
 		}
@@ -219,10 +222,4 @@ t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini 
 void	init_ast(t_mini *mini)
 {
 	mini->ast = parse_pipeline(mini->token, NULL, mini);
-}
-//----have to fill---//
-char *expand_arg(char *str, t_mini *mini)
-{
-	(void)mini;
-	return ft_strdup(str);
 }
