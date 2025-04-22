@@ -15,15 +15,17 @@ OBJ_DIR = obj
 BUILT_DIR = $(SRC_DIR)/builtins
 PARSING_DIR = $(SRC_DIR)/parsing
 EXEC_DIR = $(SRC_DIR)/exec
+EXPAND_DIR = $(SRC_DIR)/expand
 TOKEN_DIR = $(SRC_DIR)/tokenizing
 
 BUILTINS    := $(BUILT_DIR)/echo.c
 PARSING     :=
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c $(EXEC_DIR)/exec_path.c
+EXPAND      := $(EXPAND_DIR)/expand_arg.c
 TOKENIZING  := $(TOKEN_DIR)/token.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
 
-SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(TOKENIZING) $(COMMON)
+SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(EXPAND) $(TOKENIZING) $(COMMON)
 
 # Replace src/ → obj/ and .c → .o
 OBJS = $(patsubst $(SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRCS))
