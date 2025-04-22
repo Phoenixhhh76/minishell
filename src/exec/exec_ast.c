@@ -79,14 +79,12 @@ void	exec_ast(t_ast *node, char **envp)
 			dup2(fd, STDOUT_FILENO);
 			close(fd);
 		}
-
 		// 處理 builtin
 		if (ft_is_builtin(node->cmd->cmd_args[0]))
 		{
 			ft_run_builtin(node->cmd, &envp); // no need path ni fork
 			exit(0);
 		}
-
 		// 外部指令
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		perror("execve");
@@ -94,7 +92,7 @@ void	exec_ast(t_ast *node, char **envp)
 	}
 }
 
-void	exec_pipe_node(t_ast *node, char **envp)
+/* void	exec_pipe_node(t_ast *node, char **envp)
 {
 	pid_t	left_pid;
 	pid_t	right_pid;
@@ -121,4 +119,4 @@ void	exec_pipe_node(t_ast *node, char **envp)
 	close(node->fd[1]);
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, NULL, 0);
-}
+} */

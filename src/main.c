@@ -88,7 +88,6 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		add_history(line);
-
 		// Tokenize + Parse
 		mini.token = tokenize_input(line);
 		if (!mini.token)
@@ -97,7 +96,6 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		init_ast(&mini); // create mini.ast
-
 		// Fork + 執行 AST
 		if (mini.ast)
 		{
@@ -109,7 +107,6 @@ int	main(int ac, char **av, char **envp)
 			}
 			waitpid(pid, NULL, 0);
 		}
-
 		free_token_list(mini.token);
 		// free_ast(mini.ast); TODO
 		free(line);

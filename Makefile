@@ -17,7 +17,7 @@ PARSING_DIR = $(SRC_DIR)/parsing
 EXEC_DIR = $(SRC_DIR)/exec
 TOKEN_DIR = $(SRC_DIR)/tokenizing
 
-BUILTINS    :=
+BUILTINS    := $(BUILT_DIR)/echo.c
 PARSING     :=
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c
 TOKENIZING  := $(TOKEN_DIR)/token.c

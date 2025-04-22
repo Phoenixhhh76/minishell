@@ -1,4 +1,4 @@
-#include "../includes/test.h"
+#include "../includes/minishell.h"
 
 static int	process_token(const char *input, int i, t_token **tokens);
 static int	process_quoted_token(const char *input, int i, t_token **tokens);
@@ -276,8 +276,8 @@ t_cmd	*build_command(t_token *start, t_token *end)
 	t_cmd	*cmd;
 	t_token	*tmp;
 
-	if (start == end) // 💥 關鍵保護：空指令不建 command
-	return NULL;
+	//if (start == end) // 💥 關鍵保護：空指令不建 command
+	//return NULL;
 	tmp = start;
 	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
 	//if (!node || !cmd)

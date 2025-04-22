@@ -57,7 +57,7 @@ t_cmd	*build_command(t_token *start, t_token *end)
 	t_token	*tmp;
 
 	if (start == end) // 💥 關鍵保護：空指令不建 command
-	return NULL;
+		return NULL;
 	tmp = start;
 	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
 	//if (!node || !cmd)
@@ -146,8 +146,8 @@ t_ast	*parse_pipeline(t_token *start, t_token *end)
 	t_token	*pipe_pos;
 	t_ast	*ast;
 
-	if (start == end)
-	return NULL;
+	//if (start == end)
+	//	return NULL;
 	pipe_pos = find_next_pipe(start, end);
 	if (pipe_pos)
 		return (create_pipe_node(start, pipe_pos, end));
