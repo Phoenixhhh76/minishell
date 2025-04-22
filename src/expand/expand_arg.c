@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 16:39:22 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/22 17:12:15 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,10 +31,10 @@ char	*get_env_value(const char *key, char **env)
 	while (env[i])
 	{
 		if (!ft_strncmp(env[i], key, key_len) && env[i][key_len] == '=')
-			return (strdup(env[i] + key_len + 1));
+			return (ft_strdup(env[i] + key_len + 1));
 		i++;
 	}
-	return (strdup("")); // if not found, return empty string
+	return (ft_strdup("")); // if not found, return empty string
 }
 
 static char	*expand_var(const char *str, int *i, t_mini *mini)
@@ -44,6 +44,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	char	*val;
 	start = ++(*i); // skip $
 	if (str[start] == '?')// $? is for exit code
+	//WEXITSTATUS(status) ????
 	{
 		(*i)++;
 		return (ft_itoa(mini->last_exit));
