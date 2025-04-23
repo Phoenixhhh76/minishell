@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:17:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/18 20:54:11 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/23 11:13:35 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,9 @@ static t_node_type	get_token_type(const char *str)
 	return (CMD);
 }
 
-static t_token	*create_t(char *str)
+
+// add quote option
+static t_token	*create_t(char *str, t_quote_type quote_type)
 {
 	t_token	*new;
 
@@ -41,6 +43,7 @@ static t_token	*create_t(char *str)
 		return (NULL);
 	new->str = str;
 	new->type = get_token_type(str);
+	new->quote_type = quote_type;
 	new->next = NULL;
 	return (new);
 }
@@ -133,8 +136,8 @@ t_token	*tokenize_input(const char *input)
 	}
 	return (tokens);
 }
-
-static int	process_quoted_token(const char *input, int i, t_token **tokens)
+//-----below is the old one without quote fix-----
+/* static int	process_quoted_token(const char *input, int i, t_token **tokens)
 {
 	char	quote; //we need to take care about "" '' later
 	int		start;
@@ -151,7 +154,29 @@ static int	process_quoted_token(const char *input, int i, t_token **tokens)
 	// if we cant fint the seconde quote, we make token as well
 	append_t(tokens, create_t(ft_strndup(&input[start - 1], i - start + 1)));
 	return (i);
+} */
+
+static int	process_quoted_token(const char *input, int i, t_token **tokens)
+{
+	char	quote;
+	int		start;
+
+	quote = input[i];
+	start = ++i;
+	while (input[i] && input[i] != quote)
+		i++;
+
+	if (input[i] == quote)
+	{
+		t_quote_type qtype = (quote == '\'') ? QUOTE_SINGLE : QUOTE_DOUBLE;
+		append_t(tokens, create_t(ft_strndup(&input[start], i - start), qtype));
+		return (i + 1);
+	}
+	// quote 沒結束，就保守地標記為 QUOTE_NONE
+	append_t(tokens, create_t(ft_strndup(&input[start - 1], i - start + 1), QUOTE_NONE));
+	return (i);
 }
+
 
 static int	process_redirection(const char *input, int i, t_token **tokens)
 {
@@ -160,7 +185,7 @@ static int	process_redirection(const char *input, int i, t_token **tokens)
 	len = 1;
 	if (input[i] == input[i + 1])
 		len = 2;
-	append_t(tokens, create_t(ft_strndup(&input[i], len)));
+	append_t(tokens, create_t(ft_strndup(&input[i], len), QUOTE_NONE));
 	return (i + len);
 }
 
@@ -174,7 +199,7 @@ static int	process_token(const char *input, int i, t_token **tokens)
 		return (process_redirection(input, i, tokens));
 	else if (input[i] == '|')
 	{
-		append_t(tokens, create_t(ft_strndup(&input[i], 1)));
+		append_t(tokens, create_t(ft_strndup(&input[i], 1), QUOTE_NONE));
 		return (i + 1);
 	}
 	else
@@ -184,7 +209,7 @@ static int	process_token(const char *input, int i, t_token **tokens)
 			&& input[i] != '|' && input[i] != '<' && input[i] != '>'
 			&& input[i] != '"' && input[i] != '\'')
 			i++;
-		append_t(tokens, create_t(ft_strndup(&input[start], i - start)));
+		append_t(tokens, create_t(ft_strndup(&input[start], i - start), QUOTE_NONE));
 		return (i);
 	}
 }
