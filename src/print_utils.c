@@ -1,0 +1,85 @@
+#include "../includes/minishell.h"
+
+// void	print_token_list(t_token *token)
+// {
+// 	while (token)
+// 	{
+// 		printf("Token: %-10s Type: %d\n", token->str, token->type);
+// 		token = token->next;
+// 	}
+// }
+
+void	print_tab(char **tab)
+{
+	int	i;
+
+	i = 0;
+	while (tab[i])
+	{
+		printf("tab[%i]= %s\n", i, tab[i]);
+		i++;
+	}
+}
+
+void	print_cmd(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (cmd->cmd_args[i])
+	{
+		printf("args[%i]= %s\n", i, cmd->cmd_args[i]);
+		i++;
+	}
+	i = 0;
+	if (cmd->cmd_opts)
+	{
+		while (cmd->cmd_opts[i])
+		{
+			printf("opt[%i]= %s\n", i, cmd->cmd_opts[i]);
+			i++;
+		}
+	}
+	if (cmd->cmd_path)
+		printf("path= %s\n", cmd->cmd_path);
+	printf("fd_in= %i\n", cmd->fd_in);
+	printf("fd_out= %i\n", cmd->fd_out);
+	if (cmd->infile && cmd->outfile)
+	{
+		printf("infile = %s\n", cmd->infile);
+		printf("outfile = %s\n", cmd->outfile);
+	}
+	if (cmd->pipe)
+	{
+		while (cmd->pipe[i])
+		{
+			printf("pipe[%i]= %i\n", i, cmd->pipe[i]);
+			i++;
+		}
+	}
+	if (cmd->pids)
+	{
+		while (cmd->pids[i])
+		{
+			printf("pids[%i]= %i\n", i, cmd->pids[i]);
+			i++;
+		}
+	}
+}
+
+void	print_mini(t_mini *mini)
+{
+	t_token	*tmp;
+	t_ast	*tmp_ast;
+
+	tmp = mini->token;
+	tmp_ast = mini->ast;
+	printf("Mini %p\n", tmp);
+	while (tmp)
+	{
+		printf("Token: %-10s Type: %d\n", tmp->str, tmp->type);
+		//printf("Ast_token: %d\n", tmp_ast->fd[0]);
+		tmp = tmp->next;
+		//tmp_ast = tmp_ast->next;
+	}
+}

@@ -28,7 +28,7 @@ EXPAND      := $(EXPAND_DIR)/expand_arg.c
 UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/fd.c $(UTILS_DIR)/error.c\
 					$(UTILS_DIR)/str.c
 TOKENIZING  := $(TOKEN_DIR)/token.c
-COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
+COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c $(SRC_DIR)/print_utils.c
 
 SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(EXPAND) $(UTILS) $(TOKENIZING) $(COMMON)
 

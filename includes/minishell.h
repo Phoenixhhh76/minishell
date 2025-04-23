@@ -139,5 +139,9 @@ void	exit_error_pipe(int error_status, t_cmd *cmd);
 int		err_msg(char *str1, char *str2, char *str3, int erno);
 void	exit_error(const char *msg);
 
-
+//tests, to be erased
+void	print_tab(char **tab);
+void	print_cmd(t_cmd *cmd);
+void	print_mini(t_mini *mini);
+void	print_token_list(t_token *token);
 #endif
