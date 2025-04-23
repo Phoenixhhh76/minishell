@@ -81,12 +81,11 @@ void	exec_ast(t_ast *node, char **envp)
 		}
 
 		// 處理 builtin
-		if (ft_is_builtin(node->cmd->cmd_args[0]))
-		{
-			ft_run_builtin(node->cmd, &envp); // no need path ni fork
-			exit(0);
-		}
-
+		// if (ft_is_builtin(node->cmd->cmd_args[0]))
+		// {
+		// 	ft_run_builtin(node->cmd, &envp); // no need path ni fork
+		// 	exit(0);
+		// }
 		// 外部指令
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		perror("execve");

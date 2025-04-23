@@ -12,20 +12,17 @@
 
 #include "../../includes/minishell.h"
 
-// int	ft_search_for_path()
-// {
-
-// }
-
-int	ft_cd(t_cmd *cmd, char ***env)
+int	ft_cd(t_cmd *cmd)
 {
 	char	*path;
 
-	(void)env;
-	path = NULL;
 	path = cmd->cmd_args[1];
 	if (!path)
+		path = getenv("HOME");
+	if (chdir(path) < 0)
+	{
+		perror("cd");
 		return (-1);
-	// if ()
+	}
 	return (0);
 }

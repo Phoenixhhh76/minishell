@@ -18,7 +18,7 @@ EXEC_DIR = $(SRC_DIR)/exec
 EXPAND_DIR = $(SRC_DIR)/expand
 TOKEN_DIR = $(SRC_DIR)/tokenizing
 
-BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c $(BUILT_DIR)/pwd.c
+BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c $(BUILT_DIR)/pwd.c $(BUILT_DIR)/export.c
 PARSING     :=
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c $(EXEC_DIR)/exec_path.c
 EXPAND      := $(EXPAND_DIR)/expand_arg.c
