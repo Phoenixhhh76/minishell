@@ -51,8 +51,8 @@ void	free_split(char **split)
 {
 	int	i;
 
-	if (!split)
-		return (NULL);
+	//if (!split)
+	//	return (NULL);
 	i = 0;
 	while (split[i])
 	{

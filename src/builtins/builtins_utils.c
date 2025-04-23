@@ -1,39 +1,42 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-23 17:00:20 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-23 17:00:20 by ndabbous         ###   ########.fr       */
+/*   Created: 2025-04-23 17:00:34 by ndabbous          #+#    #+#             */
+/*   Updated: 2025-04-23 17:00:34 by ndabbous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ft_echo(t_cmd *cmd)
+int	does_var_exist(char **env, const char *var)
 {
-	int	i;
-	int	option;
+	int		i;
+	int		len;
 
-	i = 1;
-	option = 0;
-	print_cmd(cmd);
-	if (!ft_strcmp(cmd->cmd_args[i], "-n"))
+	i = 0;
+	len = ft_strlen(var);
+	while (env[i])
 	{
-		option = 1;
+		if (ft_strncmp(env[i], var, len) == 0 && env[i][len] == '=')
+			return (i);
 		i++;
 	}
-	while (cmd->cmd_args[i])
-	{
-		printf("%s", cmd->cmd_args[i]);
-		if (cmd->cmd_args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (option == 0)
-		printf("\n");
+	return (-1);
 }
 
+void	free_double_tab(char **tab)
+{
+	int	i;
 
+	i = 0;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}

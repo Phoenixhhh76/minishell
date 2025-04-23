@@ -60,25 +60,6 @@ static void	append_t(t_token **head, t_token *new)
 
 #include <stdlib.h>
 
-
-
-t_token	*tokenize_input(const char *input)
-{
-	t_token	*tokens;
-	int		i;
-
-	tokens = NULL;
-	i = 0;
-	while (input[i])
-	{
-		while (ft_isspace(input[i]))
-			i++;
-		if (!input[i])
-			break ;
-		i = process_token(input, i, &tokens);
-	}
-	return (tokens);
-}
 //-----below is the old one without quote fix-----
 /* static int	process_quoted_token(const char *input, int i, t_token **tokens)
 {
@@ -168,6 +149,24 @@ void	free_token_list(t_token *token)
 		free(tmp->str);
 		free(tmp);
 	}
+}
+
+t_token	*tokenize_input(const char *input)
+{
+	t_token	*tokens;
+	int		i;
+
+	tokens = NULL;
+	i = 0;
+	while (input[i])
+	{
+		while (ft_isspace(input[i]))
+			i++;
+		if (!input[i])
+			break ;
+		i = process_token(input, i, &tokens);
+	}
+	return (tokens);
 }
 /*
 void	print_token_list(t_token *token)
