@@ -87,23 +87,14 @@ int	ft_run_builtin(t_cmd *cmd, char ***envp)
 		return (ft_cd(cmd));
 	if (!ft_strcmp(cmd->cmd_args[0], "export"))
 		return (ft_export(cmd, envp));
-// 	if (!ft_strcmp(cmd->cmd_args[0], "env"))
-// 		return (ft_env());
+	if (!ft_strcmp(cmd->cmd_args[0], "env"))
+		return (ft_env(cmd, envp));
 // 	if (!ft_strcmp(cmd->cmd_args[0], "unset"))
 // 		return (ft_unset(args));
-// //____________________________________________ CD
-// 	else if (!ft_strcmp(name, "cd"))
-// 	{
-// 		if (!cmd->cmd_args[1])
-// 			return chdir(getenv("HOME"));
-// 		return chdir(cmd->cmd_args[1]);
-// 	}
 	else if (!ft_strcmp(name, "exit"))
 	{
 		printf("exit\n");
 		exit(0);
 	}
-	// TODO: support export, unset, env
-
 	return (1); // not handled
 }

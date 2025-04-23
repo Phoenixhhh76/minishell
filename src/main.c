@@ -14,13 +14,13 @@
 
 pid_t g_signal_pid = 0;
 
-void	init_mini(t_mini *mini, char **av, char **env)
-{
-	mini->token = NULL;
-	mini->ast = NULL;
-	mini->env = env;
-	mini->av = av;
-}
+// void	init_mini(t_mini *mini, char **av, char **env)
+// {
+// 	mini->token = NULL;
+// 	mini->ast = NULL;
+// 	mini->env = env;
+// 	mini->av = av;
+// }
 
 /* int	main(int ac, char **av, char **env)
 {
