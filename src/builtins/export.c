@@ -99,7 +99,6 @@ int	ft_export(t_cmd *cmd, char ***mini_env)
 	env_index = does_var_exist(env, var[0]);
 	if (env_index >= 0)//var exists
 	{
-		printf(">>>>>>FOUND VAR\n");
 		free(env[env_index]);
 		env[env_index] = ft_strdup(cmd->cmd_args[1]);
 		if (!env[env_index])
@@ -107,7 +106,6 @@ int	ft_export(t_cmd *cmd, char ***mini_env)
 	}
 	else
 	{
-		printf(">>>>>>ADD VAR\n");
 		add_var_to_env(env, cmd->cmd_args[1], mini_env);
 	}
 	free_double_tab(var);

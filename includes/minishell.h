@@ -96,6 +96,11 @@ typedef struct s_mini
 	//struct t_mini *next;
 }	t_mini;
 
+//init_mini
+void	init_mini(t_mini *mini, char **av, char **env);
+char	**copy_env(char **env);
+
+
 //tokenizing
 void	init_token(t_mini *mini);
 t_token	*tokenize_input(const char *input);
@@ -109,6 +114,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 void	ft_echo(t_cmd *cmd);
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
+int		ft_env(t_cmd *cmd, char ***env);
 int		ft_export(t_cmd *cmd, char ***mini_env);
 
 //exec
