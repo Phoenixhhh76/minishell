@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_ast_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-17 12:23:08 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-17 12:23:08 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/17 12:23:08 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/04/23 17:24:07 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,4 +36,19 @@ int	ft_astsize(t_ast **stack)
 		i++;
 	}
 	return (i);
+}
+
+void	ft_ast_addback(t_ast **type, t_ast *new)
+{
+	t_ast	*tmp;
+
+	if (!(*type))
+	{
+		*type = new;
+		return ;
+	}
+	tmp = *type;
+	while (tmp->next)
+		tmp = tmp->next;
+	tmp->next = new;
 }

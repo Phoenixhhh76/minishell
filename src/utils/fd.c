@@ -1,38 +1,22 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   echo.c                                             :+:      :+:    :+:   */
+/*   fd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:38:24 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/04/23 17:02:49 by hho-troc         ###   ########.fr       */
+/*   Created: 2025/04/23 16:31:43 by hho-troc          #+#    #+#             */
+/*   Updated: 2025/04/23 17:14:09 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	ft_echo(t_cmd *cmd)
+void	close_fds(t_cmd *cmd)
 {
-	int	i;
-	int	option;
-
-	i = 1;
-	option = 0;
-	if (!ft_strcmp(cmd->cmd_args[i], "-n"))
-	{
-		option = 1;
-		i++;
-	}
-	while (cmd->cmd_args[i])
-	{
-		printf("%s", cmd->cmd_args[i]);
-		if (cmd->cmd_args[i + 1])
-			printf(" ");
-		i++;
-	}
-	if (option == 0)
-		printf("\n");
+	if (cmd->fd_in != -1)
+		close(cmd->fd_in);
+	if (cmd->fd_out != -1)
+		close(cmd->fd_out);
+	//close_pipe_fds(cmd);
 }
-
-

@@ -69,6 +69,7 @@ typedef struct s_cmd
 	char	*outfile;
 	int		*pipe;
 	int		*pids;
+	int		heredoc;//add for exit_error
 	//int		child;
 }	t_cmd;
 
@@ -90,7 +91,7 @@ typedef struct s_mini
 	char	**av;
 	int	 	last_exit; // last exit code for $?
 	//int		ac;
-	//int		heredoc;
+	//int		heredoc; add in s_cmd
 	//???		histoire(readlin add history);
 	//struct t_mini *next;
 }	t_mini;
@@ -102,15 +103,13 @@ void	free_token_list(t_token *token);
 
 //init_ast
 void	init_ast(t_mini *mini);
-// t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
-// t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini);
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
 void	ft_echo(t_cmd *cmd);
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
-int	ft_export(t_cmd *cmd, char ***mini_env);
+int		ft_export(t_cmd *cmd, char ***mini_env);
 
 //exec
 bool	ft_builtin(t_ast *ast, char ***env);
@@ -133,6 +132,12 @@ t_ast	*create_pipe_node(t_token *start,
 char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
 void	ft_free_char2(char **arr);
+void	free_strs(char *str, char **strs);
+void	free_split(char **split);
+void	close_fds(t_cmd *cmd);
+void	exit_error_pipe(int error_status, t_cmd *cmd);
+int		err_msg(char *str1, char *str2, char *str3, int erno);
+void	exit_error(const char *msg);
 
 
 #endif

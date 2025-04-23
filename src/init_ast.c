@@ -6,13 +6,11 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 14:16:17 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:24:34 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
-
-
 
 static int	count_args(t_token *start, t_token *end)
 {
@@ -26,46 +24,6 @@ static int	count_args(t_token *start, t_token *end)
 		start = start->next;
 	}
 	return (count);
-}
-
-/* static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
-{
-	int		i;
-	int		size;
-	char	**args;
-
-	(void)mini;
-	i = 0;
-	size = count_args(start, end);
-	args = (char **)ft_calloc(size + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-		{
-			//args[i] = ft_strdup(start->str);
-			args[i] = expand_arg(start->str, mini);//here will expand
-			i++;
-		}
-		start = start->next;
-	}
-	args[i] = NULL;
-	return (args);
-} */
-void	free_split(char **split)
-{
-	int	i;
-
-	if (!split)
-		return;
-	i = 0;
-	while (split[i])
-	{
-		free(split[i]);
-		i++;
-	}
-	free(split);
 }
 
 static int	handle_single(char **args, int i, t_token *tok)
@@ -221,9 +179,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		tmp = tmp->next;
 	}
 	cmd->cmd_args = collect_args(start, end, mini);
-//	if (cmd->cmd_args && cmd->cmd_args[0])
-//		cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
-//change to resolve_cmd_path
 	if (cmd->cmd_args && cmd->cmd_args[0])
 	{
 		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
@@ -233,41 +188,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	}
 	return (cmd);
 }
-
-void	ft_ast_addback(t_ast **type, t_ast *new)
-{
-	t_ast	*tmp;
-
-	if (!(*type))
-	{
-		*type = new;
-		return ;
-	}
-	tmp = *type;
-	while (tmp->next)
-		tmp = tmp->next;
-	tmp->next = new;
-}
-
-/* replace by parse_pipeline() + create_pipe_node()
-
-t_ast	*create_ast(t_token *pipe_pos, t_token *mini_token)
-{
-	t_ast	*ast;
-
-	ast = (t_ast *)ft_calloc(sizeof(t_ast), 1);
-	if (!ast)
-		return (NULL);
-	ast->ast_token.type = PIPE;
-	ast->ast_token.str = ft_strdup("|");
-	ast->fd[0] = -1;
-	ast->fd[1] = -1;
-	ast->left = build_command(mini_token, pipe_pos);
-	ast->right = build_command(pipe_pos->next, NULL);
-	ast->next = NULL;
-	return (ast);
-} */
-
 
 void	init_ast(t_mini *mini)
 {

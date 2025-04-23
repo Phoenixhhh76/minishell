@@ -6,20 +6,19 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:06:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 12:45:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:05:29 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-void	exec_ast(t_ast *node, char **envp)
+/* void	exec_ast(t_ast *node, char **envp)
 {
 	pid_t	left_pid;
 	pid_t	right_pid;
 
 	if (!node)
 		return ;
-
 	if (node->ast_token.type == PIPE)//PIPE situation
 	{
 		if (pipe(node->fd) == -1)
@@ -27,7 +26,6 @@ void	exec_ast(t_ast *node, char **envp)
 			perror("pipe");
 			exit(1);
 		}
-
 		left_pid = fork();
 		if (left_pid == 0) //child do left side, write pipe
 		{
@@ -37,7 +35,6 @@ void	exec_ast(t_ast *node, char **envp)
 			exec_ast(node->left, envp);
 			exit(1); //error handel have to check
 		}
-
 		right_pid = fork();
 		if (right_pid == 0) //child do right side, read from pipe
 		{
@@ -47,7 +44,6 @@ void	exec_ast(t_ast *node, char **envp)
 			exec_ast(node->right, envp);
 			exit(1);//error handel have to check
 		}
-
 		// for parent
 		close(node->fd[0]);
 		close(node->fd[1]);
@@ -91,9 +87,9 @@ void	exec_ast(t_ast *node, char **envp)
 		perror("execve");
 		exit(1);
 	}
-}
+} */
 
-/* void	exec_pipe_node(t_ast *node, char **envp)
+void	exec_pipe_node(t_ast *node, char **envp)
 {
 	pid_t	left_pid;
 	pid_t	right_pid;
@@ -120,4 +116,54 @@ void	exec_ast(t_ast *node, char **envp)
 	close(node->fd[1]);
 	waitpid(left_pid, NULL, 0);
 	waitpid(right_pid, NULL, 0);
-} */
+}
+
+void	handle_redirects(t_cmd *cmd)
+{
+	int	fd;
+
+	if (cmd->infile)
+	{
+		fd = open(cmd->infile, O_RDONLY);
+		if (fd < 0)
+			exit_error("open infile");
+		dup2(fd, STDIN_FILENO);
+		close(fd);
+	}
+	if (cmd->outfile)
+	{
+		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (fd < 0)
+			exit_error("open outfile");
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
+	}
+}
+
+void	exec_cmd_node(t_ast *node, char **envp)
+{
+	if (!node->cmd)
+		return ;
+	handle_redirects(node->cmd);
+
+	// 若有實作內建指令，這裡可以啟用：
+	// if (ft_is_builtin(node->cmd->cmd_args[0]))
+	// {
+	// 	ft_run_builtin(node->cmd, &envp);
+	// 	exit(0);
+	// }
+
+	execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
+	perror("execve");
+	exit(1);
+}
+
+void	exec_ast(t_ast *node, char **envp)
+{
+	if (!node)
+		return ;
+	if (node->ast_token.type == PIPE)
+		exec_pipe_node(node, envp);
+	else if (node->ast_token.type == CMD)
+		exec_cmd_node(node, envp);
+}
