@@ -108,8 +108,12 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
 void	ft_echo(t_cmd *cmd);
+int		ft_pwd(void);
+int		ft_cd(t_cmd *cmd);
+int	ft_export(t_cmd *cmd, char ***mini_env);
 
 //exec
+bool	ft_builtin(t_ast *ast, char ***env);
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_cmd *cmd, char ***envp);
 void	exec_ast(t_ast *node, char **envp);
