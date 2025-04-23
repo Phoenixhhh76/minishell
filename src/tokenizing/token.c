@@ -6,16 +6,11 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:17:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 14:50:38 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/23 17:16:15 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-static int	process_token(const char *input, int i, t_token **tokens);
-static int	process_quoted_token(const char *input, int i, t_token **tokens);
-static int	process_redirection(const char *input, int i, t_token **tokens);
-
 
 static t_node_type	get_token_type(const char *str)
 {
@@ -162,7 +157,6 @@ static int	process_token(const char *input, int i, t_token **tokens)
 	}
 }
 
-
 void	free_token_list(t_token *token)
 {
 	t_token	*tmp;
@@ -175,7 +169,7 @@ void	free_token_list(t_token *token)
 		free(tmp);
 	}
 }
-
+/*
 void	print_token_list(t_token *token)
 {
 	while (token)
@@ -183,7 +177,7 @@ void	print_token_list(t_token *token)
 		printf("Token: %-10s Type: %d\n", token->str, token->type);
 		token = token->next;
 	}
-}
+} */
 /* int	main(void)
 {
 	//t_token *tokens = tokenize_input("echo \"hello | world\" > output.txt | cat -e");

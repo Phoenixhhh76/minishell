@@ -19,11 +19,14 @@ EXPAND_DIR = $(SRC_DIR)/expand
 UTILS_DIR = $(SRC_DIR)/utils
 TOKEN_DIR = $(SRC_DIR)/tokenizing
 
-BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c $(BUILT_DIR)/pwd.c $(BUILT_DIR)/export.c
+BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c \
+					$(BUILT_DIR)/pwd.c $(BUILT_DIR)/export.c
 PARSING     := $(PARSING_DIR)/parse_pipeline.c
-EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c $(EXEC_DIR)/exec_path.c
+EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
+					$(EXEC_DIR)/exec_path.c
 EXPAND      := $(EXPAND_DIR)/expand_arg.c
-UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/str.c
+UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/fd.c $(UTILS_DIR)/error.c\
+					$(UTILS_DIR)/str.c
 TOKENIZING  := $(TOKEN_DIR)/token.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c $(SRC_DIR)/print_utils.c
 
