@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:30:57 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 13:38:04 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/23 14:52:53 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,17 +34,6 @@ char	*ft_strjoin_with(const char *s1, const char *s2, char sep)
 }
 
 
-void	ft_free_char2(char **arr)
-{
-	int	i;
-
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free(arr);
-}
 
 char	*get_path_env(char **envp)
 {

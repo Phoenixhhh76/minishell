@@ -128,11 +128,11 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
 t_ast	*create_pipe_node(t_token *start,
 			t_token *pipe_pos, t_token *end, t_mini *mini);
 
-//need to move to libft or outil
-size_t	ft_strlen(const char *s);
+//outil
+
 char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
-char	*ft_strdup(const char *s1);
+void	ft_free_char2(char **arr);
 
 
 #endif
