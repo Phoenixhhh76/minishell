@@ -110,7 +110,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 void	ft_echo(t_cmd *cmd);
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
-int	ft_export(t_cmd *cmd, char ***mini_env);
+int		ft_export(t_cmd *cmd, char ***mini_env);
 
 //exec
 bool	ft_builtin(t_ast *ast, char ***env);
@@ -134,5 +134,9 @@ char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
 void	ft_free_char2(char **arr);
 
-
+//tests, to be erased
+void	print_tab(char **tab);
+void	print_cmd(t_cmd *cmd);
+void	print_mini(t_mini *mini);
+void	print_token_list(t_token *token);
 #endif

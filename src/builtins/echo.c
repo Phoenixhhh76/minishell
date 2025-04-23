@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   echo.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
+/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/22 13:38:24 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/04/22 17:07:15 by hho-troc         ###   ########.fr       */
+/*   Created: 2025-04-23 11:44:19 by ndabbous          #+#    #+#             */
+/*   Updated: 2025-04-23 11:44:19 by ndabbous         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,6 +19,7 @@ void	ft_echo(t_cmd *cmd)
 
 	i = 1;
 	option = 0;
+	print_cmd(cmd);
 	if (!ft_strcmp(cmd->cmd_args[i], "-n"))
 	{
 		option = 1;
