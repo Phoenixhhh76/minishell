@@ -27,10 +27,17 @@ typedef enum e_node_type
 	UNKNOWN = -1
 }	t_node_type;
 
+typedef enum e_quote_type {
+	QUOTE_NONE = 0,
+	QUOTE_SINGLE,
+	QUOTE_DOUBLE
+}	t_quote_type;
+
 typedef struct s_token
 {
 	t_node_type		type;
 	char			*str;
+	t_quote_type	quote_type;
 	struct s_token	*next;
 }	t_token;
 
@@ -95,10 +102,9 @@ void	free_token_list(t_token *token);
 
 //init_ast
 void	init_ast(t_mini *mini);
-//t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end);
-//t_ast *parse_pipeline(t_token *start, t_token *end);
-t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
-t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini);
+// t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
+// t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini);
+t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
 void	ft_echo(t_cmd *cmd);
@@ -111,6 +117,12 @@ char	*resolve_cmd_path(char *cmd, char **envp); //add
 
 //expande
 char	*expand_arg(const char *str, t_mini *mini);
+
+//parsing
+t_token	*find_next_pipe(t_token *start, t_token *end);
+t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
+t_ast	*create_pipe_node(t_token *start,
+			t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //need to move to libft or outil
 size_t	ft_strlen(const char *s);
