@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 12:30:57 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 13:38:04 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/23 16:02:44 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,11 +14,17 @@
 
 char	*ft_strjoin_with(const char *s1, const char *s2, char sep)
 {
-	size_t	len1 = ft_strlen(s1);
-	size_t	len2 = ft_strlen(s2);
-	char	*res = malloc(len1 + len2 + 2); // +1 for sep, +1 for '\0'
-	size_t	i = 0, j = 0;
+	size_t	len1;
+	size_t	len2;
+	size_t	i;
+	size_t	j;
+	char	*res;
 
+	len1 = ft_strlen(s1);
+	len2 = ft_strlen(s2);
+	res = malloc(len1 + len2 + 2);
+	i = 0;
+	j = 0;
 	if (!res)
 		return (NULL);
 	while (i < len1)
@@ -31,19 +37,6 @@ char	*ft_strjoin_with(const char *s1, const char *s2, char sep)
 		res[i++] = s2[j++];
 	res[i] = '\0';
 	return (res);
-}
-
-
-void	ft_free_char2(char **arr)
-{
-	int	i;
-
-	if (!arr)
-		return ;
-	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free(arr);
 }
 
 char	*get_path_env(char **envp)

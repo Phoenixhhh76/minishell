@@ -27,10 +27,17 @@ typedef enum e_node_type
 	UNKNOWN = -1
 }	t_node_type;
 
+typedef enum e_quote_type {
+	QUOTE_NONE = 0,
+	QUOTE_SINGLE,
+	QUOTE_DOUBLE
+}	t_quote_type;
+
 typedef struct s_token
 {
 	t_node_type		type;
 	char			*str;
+	t_quote_type	quote_type;
 	struct s_token	*next;
 }	t_token;
 
@@ -62,6 +69,7 @@ typedef struct s_cmd
 	char	*outfile;
 	int		*pipe;
 	int		*pids;
+	int		heredoc;//add for exit_error
 	//int		child;
 }	t_cmd;
 
@@ -83,7 +91,7 @@ typedef struct s_mini
 	char	**av;
 	int	 	last_exit; // last exit code for $?
 	//int		ac;
-	//int		heredoc;
+	//int		heredoc; add in s_cmd
 	//???		histoire(readlin add history);
 	//struct t_mini *next;
 }	t_mini;
@@ -100,10 +108,7 @@ void	free_token_list(t_token *token);
 
 //init_ast
 void	init_ast(t_mini *mini);
-//t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end);
-//t_ast *parse_pipeline(t_token *start, t_token *end);
-t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
-t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini);
+t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
 void	ft_echo(t_cmd *cmd);
@@ -122,11 +127,23 @@ char	*resolve_cmd_path(char *cmd, char **envp); //add
 //expande
 char	*expand_arg(const char *str, t_mini *mini);
 
-//need to move to libft or outil
-size_t	ft_strlen(const char *s);
+//parsing
+t_token	*find_next_pipe(t_token *start, t_token *end);
+t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
+t_ast	*create_pipe_node(t_token *start,
+			t_token *pipe_pos, t_token *end, t_mini *mini);
+
+//outil
+
 char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
-char	*ft_strdup(const char *s1);
+void	ft_free_char2(char **arr);
+void	free_strs(char *str, char **strs);
+void	free_split(char **split);
+void	close_fds(t_cmd *cmd);
+void	exit_error_pipe(int error_status, t_cmd *cmd);
+int		err_msg(char *str1, char *str2, char *str3, int erno);
+void	exit_error(const char *msg);
 
 //tests, to be erased
 void	print_tab(char **tab);
