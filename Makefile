@@ -23,7 +23,7 @@ PARSING     :=
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c $(EXEC_DIR)/exec_path.c
 EXPAND      := $(EXPAND_DIR)/expand_arg.c
 TOKENIZING  := $(TOKEN_DIR)/token.c
-COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c
+COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c $(SRC_DIR)/print_utils.c
 
 SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(EXPAND) $(TOKENIZING) $(COMMON)
 
