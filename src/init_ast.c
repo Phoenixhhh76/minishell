@@ -12,20 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static int	count_args(t_token *start, t_token *end)
-{
-	int	count;
-
-	count = 0;
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-			count++;
-		start = start->next;
-	}
-	return (count);
-}
-
 static int	handle_single(char **args, int i, t_token *tok)
 {
 	args[i++] = ft_strdup(tok->str);
@@ -67,6 +53,24 @@ static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 	return (handle_expanded(args, i, tok, mini));
 }
 
+static int	count_args(t_token *start, t_token *end)
+{
+	int	count;
+
+	count = 0;
+	while (start && start != end)
+	{
+		if (start->type == CMD || start->type == UNKNOWN)
+			count++;
+		else if ((start->type == REDIR_OUT || start->type == REDIR_OUT \
+			|| start->type == REDIR_APPEND || \
+			start->type == HEREDOC) && start->next)
+			start = start->next;
+		start = start->next;
+	}
+	return (count);
+}
+
 static char **collect_args(t_token *start, t_token *end, t_mini *mini)
 {
 	int		i;
@@ -82,53 +86,15 @@ static char **collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			i = process_token(args, i, start, mini);
+		else if ((start->type == REDIR_OUT || start->type == REDIR_OUT \
+			|| start->type == REDIR_APPEND || \
+			start->type == HEREDOC) && start->next)
+			start = start->next;
 		start = start->next;
 	}
 	args[i] = NULL;
 	return (args);
 }
-
-/*
-static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
-{
-	int		i;
-	int		size;
-	char	**args;
-
-	(void)mini;
-	i = 0;
-	size = count_args(start, end);
-	args = (char **)ft_calloc(size + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-		{
-			if (start->quote_type == QUOTE_SINGLE)
-			{
-				args[i++] = ft_strdup(start->str);
-			}
-			else
-			{
-				char *expanded = expand_arg(start->str, mini);
-				if (start->quote_type == QUOTE_DOUBLE)
-					args[i++] = expanded;
-				else // QUOTE_NONE
-				{
-					char **split = ft_split(expanded, ' ');
-					for (int j = 0; split && split[j]; j++)
-						args[i++] = ft_strdup(split[j]);
-					free(expanded);
-					free_split(split);
-				}
-			}
-		}
-		start = start->next;
-	}
-	args[i] = NULL;
-	return (args);
-} */
 
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 {
@@ -193,3 +159,45 @@ void	init_ast(t_mini *mini)
 {
 	mini->ast = parse_pipeline(mini->token, NULL, mini);
 }
+
+/*
+static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
+{
+	int		i;
+	int		size;
+	char	**args;
+
+	(void)mini;
+	i = 0;
+	size = count_args(start, end);
+	args = (char **)ft_calloc(size + 1, sizeof(char *));
+	if (!args)
+		return (NULL);
+	while (start && start != end)
+	{
+		if (start->type == CMD || start->type == UNKNOWN)
+		{
+			if (start->quote_type == QUOTE_SINGLE)
+			{
+				args[i++] = ft_strdup(start->str);
+			}
+			else
+			{
+				char *expanded = expand_arg(start->str, mini);
+				if (start->quote_type == QUOTE_DOUBLE)
+					args[i++] = expanded;
+				else // QUOTE_NONE
+				{
+					char **split = ft_split(expanded, ' ');
+					for (int j = 0; split && split[j]; j++)
+						args[i++] = ft_strdup(split[j]);
+					free(expanded);
+					free_split(split);
+				}
+			}
+		}
+		start = start->next;
+	}
+	args[i] = NULL;
+	return (args);
+} */

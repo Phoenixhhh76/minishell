@@ -14,11 +14,13 @@ void	print_tab(char **tab)
 	int	i;
 
 	i = 0;
+	printf("*** PRINT TAB ***\n");
 	while (tab[i])
 	{
 		printf("tab[%i]= %s\n", i, tab[i]);
 		i++;
 	}
+	printf("*** END PRINT TAB ***\n");
 }
 
 void	print_cmd(t_cmd *cmd)
@@ -26,6 +28,7 @@ void	print_cmd(t_cmd *cmd)
 	int	i;
 
 	i = 0;
+	printf("### PRINT T_CMD ###\n");
 	while (cmd->cmd_args[i])
 	{
 		printf("args[%i]= %s\n", i, cmd->cmd_args[i]);
@@ -44,11 +47,10 @@ void	print_cmd(t_cmd *cmd)
 		printf("path= %s\n", cmd->cmd_path);
 	printf("fd_in= %i\n", cmd->fd_in);
 	printf("fd_out= %i\n", cmd->fd_out);
-	if (cmd->infile && cmd->outfile)
-	{
+	if (cmd->infile)
 		printf("infile = %s\n", cmd->infile);
-		printf("outfile = %s\n", cmd->outfile);
-	}
+	if (cmd->outfile)
+		printf("infile = %s\n", cmd->outfile);
 	if (cmd->pipe)
 	{
 		while (cmd->pipe[i])
@@ -65,6 +67,7 @@ void	print_cmd(t_cmd *cmd)
 			i++;
 		}
 	}
+	printf("### END PRINT ###\n");
 }
 
 void	print_mini(t_mini *mini)
