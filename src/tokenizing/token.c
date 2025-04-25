@@ -6,11 +6,13 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/17 14:17:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 17:16:15 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/25 10:08:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+static int	process_token(const char *input, int i, t_token **tokens);
 
 static t_node_type	get_token_type(const char *str)
 {
