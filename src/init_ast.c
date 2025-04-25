@@ -62,7 +62,7 @@ static int	count_args(t_token *start, t_token *end)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			count++;
-		else if ((start->type == REDIR_OUT || start->type == REDIR_OUT \
+		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
 			|| start->type == REDIR_APPEND || \
 			start->type == HEREDOC) && start->next)
 			start = start->next;
@@ -86,7 +86,7 @@ static char **collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			i = process_token(args, i, start, mini);
-		else if ((start->type == REDIR_OUT || start->type == REDIR_OUT \
+		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
 			|| start->type == REDIR_APPEND || \
 			start->type == HEREDOC) && start->next)
 			start = start->next;
@@ -100,7 +100,9 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 {
 	t_cmd	*cmd;
 	t_token	*tmp;
+	int		heredoc_nb;
 
+	heredoc_nb = 0;
 	if (start == end)
 		return (NULL);
 	tmp = start;
@@ -128,7 +130,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
- 		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
+		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
 		{
 			// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
 			// 	cmd->infile = ft_strdup(tmp->next->str);
@@ -136,14 +138,16 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
 			tmp = tmp->next;
 		}
-/* 		else if (tmp->type == HEREDOC && tmp->next)
+ 		else if (tmp->type == HEREDOC && tmp->next)
 		{
-			cmd->heredoc_tmpfile = create_tmpfile(tmp->next->str);
-			tmp = tmp->next;
-		} */
-
+				heredoc_nb++;
+				//cmd->heredoc_tmpfile = create_tmpfile(tmp->next->str);
+				tmp = tmp->next;
+		}
 		tmp = tmp->next;
 	}
+	cmd->heredoc_nb = heredoc_nb;
+	cmd->heredocs = get_heredoc(heredoc_nb, start, end, mini);
 	cmd->cmd_args = collect_args(start, end, mini);
 	if (cmd->cmd_args && cmd->cmd_args[0])
 	{

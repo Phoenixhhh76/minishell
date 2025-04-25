@@ -131,6 +131,7 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		init_ast(&mini);
+	//	print_ast(mini.ast, 5);
 		if (mini.ast)
 		{
 			if (ft_builtin(mini.ast, &mini.env))

@@ -61,7 +61,7 @@ char *expand_arg(const char *str, t_mini *mini)
 {
 	char	*result;
 	int		i;
-	int	start;
+	int		start;
 
 	i = 0;
 	result = calloc(1, sizeof(char));

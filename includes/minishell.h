@@ -69,7 +69,9 @@ typedef struct s_cmd
 	char	*outfile;
 	int		*pipe;
 	int		*pids;
-	int		heredoc;//add for exit_error
+	char	**heredocs;
+	int		heredoc_nb;
+	int		heredoc_error;//add for exit_error
 	//int		child;
 }	t_cmd;
 
@@ -127,6 +129,8 @@ bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_cmd *cmd, char ***envp);
 void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
+char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
+int		exec_heredocs(t_cmd *cmd);
 
 //expande
 char	*expand_arg(const char *str, t_mini *mini);
@@ -135,7 +139,7 @@ char	*expand_arg(const char *str, t_mini *mini);
 t_token	*find_next_pipe(t_token *start, t_token *end);
 t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
 t_ast	*create_pipe_node(t_token *start,
-			t_token *pipe_pos, t_token *end, t_mini *mini);
+t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //outil
 
@@ -154,4 +158,5 @@ void	print_tab(char **tab);
 void	print_cmd(t_cmd *cmd);
 void	print_mini(t_mini *mini);
 void	print_token_list(t_token *token);
+void	print_ast(t_ast *node, int depth);
 #endif
