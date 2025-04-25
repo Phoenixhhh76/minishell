@@ -1,6 +1,6 @@
 */*.o
 /libft/*.o
-/objects/
+/obj/
 .vscode
 .vscode/
 /libft/libft.a
