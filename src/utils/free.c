@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:53:15 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 17:19:53 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/25 10:06:53 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,7 +52,7 @@ void	free_split(char **split)
 	int	i;
 
 	if (!split)
-		return (NULL);
+		return ;
 	i = 0;
 	while (split[i])
 	{
