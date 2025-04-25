@@ -105,6 +105,10 @@ char	**copy_env(char **env);
 void	init_token(t_mini *mini);
 t_token	*tokenize_input(const char *input);
 void	free_token_list(t_token *token);
+t_token	*create_t(char *str, t_quote_type quote_type);
+void	append_t(t_token **head, t_token *new);
+
+
 
 //init_ast
 void	init_ast(t_mini *mini);
@@ -126,6 +130,8 @@ char	*resolve_cmd_path(char *cmd, char **envp); //add
 
 //expande
 char	*expand_arg(const char *str, t_mini *mini);
+char	*expand_if_needed(t_token *token, t_mini *mini);
+char	*ft_strjoin_f(char *s1, char *s2);
 
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);

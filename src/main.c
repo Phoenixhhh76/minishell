@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:40:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 09:22:47 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/25 16:43:25 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -125,6 +125,7 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(line);
 		mini.token = tokenize_input(line);
+		print_token_list(mini.token); //tet
 		if (!mini.token)
 		{
 			free(line);
@@ -146,6 +147,8 @@ int	main(int ac, char **av, char **envp)
 				waitpid(pid, NULL, 0);
 			}
 		}
+
+
 		free_token_list(mini.token);
 		// free_ast(mini.ast); TODO
 		free(line);
