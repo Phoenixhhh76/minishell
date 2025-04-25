@@ -21,7 +21,8 @@ TOKEN_DIR = $(SRC_DIR)/tokenizing
 
 BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c \
 					$(BUILT_DIR)/pwd.c $(BUILT_DIR)/export.c \
-					$(BUILT_DIR)/env.c
+          			$(BUILT_DIR)/env.c $(BUILT_DIR)/unset.c \
+					$(BUILT_DIR)/builtins_utils.c
 PARSING     := $(PARSING_DIR)/parse_pipeline.c
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 					$(EXEC_DIR)/exec_path.c
@@ -31,7 +32,7 @@ UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/fd.c $(UTILS_DIR)/error.c \
 					$(UTILS_DIR)/str.c
 TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c \
-					$(SRC_DIR)/init_mini.c $(SRC_DIR)/print_utils.c
+					$(SRC_DIR)/print_utils.c $(SRC_DIR)/init_mini.c
 
 SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(EXPAND) $(UTILS) $(TOKENIZING) $(COMMON)
 

@@ -100,7 +100,6 @@ typedef struct s_mini
 void	init_mini(t_mini *mini, char **av, char **env);
 char	**copy_env(char **env);
 
-
 //tokenizing
 void	init_token(t_mini *mini);
 t_token	*tokenize_input(const char *input);
@@ -115,10 +114,15 @@ void	init_ast(t_mini *mini);
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
+int		does_var_exist(char **env, const char *var);
+int		find_equal_sign(t_cmd *cmd);
+void	free_double_tab(char **tab);
+
 void	ft_echo(t_cmd *cmd);
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
+int		ft_unset(t_cmd *cmd, char ***mini_env);
 int		ft_export(t_cmd *cmd, char ***mini_env);
 
 //exec
