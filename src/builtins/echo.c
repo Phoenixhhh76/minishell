@@ -19,7 +19,6 @@ void	ft_echo(t_cmd *cmd)
 
 	i = 1;
 	option = 0;
-	print_cmd(cmd);
 	if (!ft_strcmp(cmd->cmd_args[i], "-n"))
 	{
 		option = 1;

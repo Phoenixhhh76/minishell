@@ -71,7 +71,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 {
 	char	*result;
 	int		i;
-	int	start;
+	int		start;
 
 	i = 0;
 	result = calloc(1, sizeof(char));
@@ -106,6 +106,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	}
 	return (result);
 } */
+
 char	*expand_arg(const char *str, t_mini *mini)
 {
 	char	*result;

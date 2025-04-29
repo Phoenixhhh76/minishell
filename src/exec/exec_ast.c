@@ -144,6 +144,11 @@ void	exec_cmd_node(t_ast *node, char **envp)
 {
 	if (!node->cmd)
 		return ;
+	// if (node->cmd->heredoc_nb > 0)//Nina working on it
+	// {
+	// 		if (exec_heredocs(node->cmd) < 0)
+	// 			exit(1);//to be determined
+	// }
 	handle_redirects(node->cmd);
 
 	// 若有實作內建指令，這裡可以啟用：

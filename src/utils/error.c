@@ -24,7 +24,7 @@ void	exit_error_pipe(int error_status, t_cmd *cmd)
 		if (cmd->cmd_opts != NULL || cmd->cmd_path != NULL)
 			free_strs(cmd->cmd_path, cmd->cmd_opts);
 	}
-	if (cmd->heredoc == 1)
+	if (cmd->heredoc_nb == 1)
 		unlink(".heredoc.tmp");
 	exit(error_status);
 }

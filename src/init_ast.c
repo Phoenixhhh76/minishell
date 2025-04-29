@@ -12,20 +12,6 @@
 
 #include "../includes/minishell.h"
 
-static int	count_args(t_token *start, t_token *end)
-{
-	int	count;
-
-	count = 0;
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-			count++;
-		start = start->next;
-	}
-	return (count);
-}
-
 static int	handle_single(char **args, int i, t_token *tok)
 {
 	args[i++] = ft_strdup(tok->str);
@@ -73,8 +59,6 @@ char	*merge_and_expand(t_token **current, t_token *end, t_mini *mini)
 	return (result);
 }
 
-
-
 static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 {
 	char	*expanded;
@@ -112,7 +96,25 @@ static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 	return (handle_expanded(args, i, tok, mini));
 }
 
-static char **collect_args(t_token *start, t_token *end, t_mini *mini)
+static int	count_args(t_token *start, t_token *end)
+{
+	int	count;
+
+	count = 0;
+	while (start && start != end)
+	{
+		if (start->type == CMD || start->type == UNKNOWN)
+			count++;
+		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
+			|| start->type == REDIR_APPEND || \
+			start->type == HEREDOC) && start->next)
+			start = start->next;
+		start = start->next;
+	}
+	return (count);
+}
+
+static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 {
 	int		i;
 	int		size;
@@ -127,12 +129,83 @@ static char **collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			i = process_token(args, i, start, mini);
+		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
+			|| start->type == REDIR_APPEND || \
+			start->type == HEREDOC) && start->next)
+			start = start->next;
 		start = start->next;
 	}
 	args[i] = NULL;
 	return (args);
 }
 
+t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
+{
+	t_cmd	*cmd;
+	t_token	*tmp;
+	int		heredoc_nb;
+
+	heredoc_nb = 0;
+	if (start == end)
+		return (NULL);
+	tmp = start;
+	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
+	//if (!node || !cmd)
+		//ERROR, return (NULL);
+	cmd->fd_in = -1; //to be determined;
+	cmd->fd_out = -1; //to be determined;
+	while (tmp && tmp != end)
+	{
+		if (tmp->type == REDIR_IN && tmp->next)
+		{
+			cmd->infile = expand_arg(tmp->next->str, mini);
+			tmp = tmp->next;
+		}
+		else if (tmp->type == REDIR_OUT && tmp->next)
+		{
+			cmd->outfile = expand_arg(tmp->next->str, mini);
+			cmd->fd_out = STDOUT_FILENO;
+			tmp = tmp->next;
+		}
+		else if (tmp->type == REDIR_APPEND && tmp->next)
+		{
+			cmd->outfile = expand_arg(tmp->next->str, mini);
+			cmd->fd_out = STDOUT_FILENO;
+			tmp = tmp->next;
+		}
+		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
+		{
+			// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
+			// 	cmd->infile = ft_strdup(tmp->next->str);
+			// else
+			cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
+			tmp = tmp->next;
+		}
+ 		else if (tmp->type == HEREDOC && tmp->next)
+		{
+				heredoc_nb++;
+				//cmd->heredoc_tmpfile = create_tmpfile(tmp->next->str);
+				tmp = tmp->next;
+		}
+		tmp = tmp->next;
+	}
+	cmd->heredoc_nb = heredoc_nb;
+	cmd->heredocs = get_heredoc(heredoc_nb, start, end, mini);
+	cmd->cmd_args = collect_args(start, end, mini);
+	if (cmd->cmd_args && cmd->cmd_args[0])
+	{
+		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
+			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
+		else
+			cmd->cmd_path = resolve_cmd_path(cmd->cmd_args[0], mini->env);
+	}
+	return (cmd);
+}
+
+void	init_ast(t_mini *mini)
+{
+	mini->ast = parse_pipeline(mini->token, NULL, mini);
+}
 
 /*
 static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
@@ -175,67 +248,3 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	args[i] = NULL;
 	return (args);
 } */
-
-t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
-{
-	t_cmd	*cmd;
-	t_token	*tmp;
-
-	if (start == end)
-		return (NULL);
-	tmp = start;
-	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
-	//if (!node || !cmd)
-		//ERROR, return (NULL);
-	cmd->fd_in = -1; //to be determined;
-	cmd->fd_out = -1; //to be determined;
-	while (tmp && tmp != end)
-	{
-		if (tmp->type == REDIR_IN && tmp->next)
-		{
-			cmd->infile = expand_arg(tmp->next->str, mini);
-			tmp = tmp->next;
-		}
-		else if (tmp->type == REDIR_OUT && tmp->next)
-		{
-			cmd->outfile = expand_arg(tmp->next->str, mini);
-			cmd->fd_out = STDOUT_FILENO;
-			tmp = tmp->next;
-		}
-		else if (tmp->type == REDIR_APPEND && tmp->next)
-		{
-			cmd->outfile = expand_arg(tmp->next->str, mini);
-			cmd->fd_out = STDOUT_FILENO;
-			tmp = tmp->next;
-		}
- 		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
-		{
-			// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
-			// 	cmd->infile = ft_strdup(tmp->next->str);
-			// else
-			cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
-			tmp = tmp->next;
-		}
-/* 		else if (tmp->type == HEREDOC && tmp->next)
-		{
-			cmd->heredoc_tmpfile = create_tmpfile(tmp->next->str);
-			tmp = tmp->next;
-		} */
-
-		tmp = tmp->next;
-	}
-	cmd->cmd_args = collect_args(start, end, mini);
-	if (cmd->cmd_args && cmd->cmd_args[0])
-	{
-		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
-			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
-		else
-			cmd->cmd_path = resolve_cmd_path(cmd->cmd_args[0], mini->env);
-	}
-	return (cmd);
-}
-
-void	init_ast(t_mini *mini)
-{
-	mini->ast = parse_pipeline(mini->token, NULL, mini);
-}
