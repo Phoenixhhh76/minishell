@@ -135,8 +135,10 @@ void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
 void	check_heredocs(t_ast *node);
+int		create_heredocs(t_cmd *cmd);
 int		exec_heredocs(t_cmd *cmd);
 int		**create_heredoc_pipe(int heredoc_nb);
+void	close_all_heredocs(t_ast *ast);
 
 //expande
 char	*expand_arg(const char *str, t_mini *mini);

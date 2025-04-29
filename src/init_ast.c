@@ -193,6 +193,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
 		else
 			cmd->cmd_path = resolve_cmd_path(cmd->cmd_args[0], mini->env);
+		//cmd->cmd_path == NULL;
+
 	}
 	return (cmd);
 }

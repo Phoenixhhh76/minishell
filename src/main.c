@@ -136,11 +136,16 @@ int	main(int ac, char **av, char **envp)
 		//print_ast(mini.ast, 5);
 		if (mini.ast)
 		{
+			check_heredocs(mini.ast);
 			if (ft_builtin(mini.ast, &mini.env))
+			{
+				// free_token_list(mini.token);
+				// free_ast(mini.ast);
+				// free(line);
 				continue ;
+			}
 			else
 			{
-				check_heredocs(mini.ast);
 				pid = fork();
 				if (pid == 0)
 				{
@@ -148,6 +153,7 @@ int	main(int ac, char **av, char **envp)
 					exit(1);
 				}
 				waitpid(pid, NULL, 0);
+				close_all_heredocs(mini.ast);
 			}
 		}
 		free_token_list(mini.token);

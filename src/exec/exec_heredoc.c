@@ -33,6 +33,7 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini)
 		}
 		tmp = tmp->next;
 	}
+	tab_heredocs[i] = NULL;
 	return (tab_heredocs);
 }
 
@@ -56,54 +57,33 @@ int	**create_heredoc_pipe(int heredoc_nb)
 	}
 	return (tab_pipe);
 }
-// void	cleanup_heredocs(t_cmd *cmd)
-// {
-// 	int		i;
-// 	char	filename[256];
 
-// 	i = 0;
-// 	while (i < cmd->heredoc_nb)
-// 	{
-// 		unlink(filename);
-// 		i++;
-// 	}
-// }
+void	close_all_heredocs(t_ast *ast)
+{
+	int	i;
+
+	if (!ast)
+		return ;
+	if (ast->ast_token.type == PIPE)
+	{
+		close_all_heredocs(ast->left);
+		close_all_heredocs(ast->right);
+	}
+	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
+	{
+		i = 0;
+		while (i < ast->cmd->heredoc_nb)
+		{
+			close(ast->cmd->heredoc_pipe[i][0]);
+			i++;
+		}
+	}
+}
 
 int	exec_heredocs(t_cmd *cmd)
 {
 	int		i;
-	int		fd;
 	char	*line;
-	char	*tmpfile;
-
-	i = 0;
-	tmpfile = "/tmp/.heredoc[%i]";
-	fd = open(tmpfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
-	if (fd < 0)
-		return (perror("heredoc open"), -1);
-	while (i < cmd->heredoc_nb)
-	{
-		while (1)
-		{
-			line = readline("> ");
-			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)
-				break ;
-			write(fd, line, ft_strlen(line));
-			write(fd, "\n", 1);
-			free(line);
-		}
-		i++;
-		free(line);
-	}
-	close(fd);
-	cmd->infile = ft_strdup(tmpfile);
-	return (0);
-}
-
-int	process_heredocs(t_cmd *cmd)
-{
-	char	*line;
-	int		i;
 
 	i = 0;
 	while (i < cmd->heredoc_nb)
@@ -130,8 +110,14 @@ void	check_heredocs(t_ast *ast)
 {
 	if (!ast)
 		return ;
-	if (ast->cmd && ast->cmd->heredoc_nb > 0)
-		process_heredocs(ast->cmd);
-	check_heredocs(ast->left);
-	check_heredocs(ast->right);
+	if (ast->ast_token.type == PIPE)
+	{
+		check_heredocs(ast->left);
+		check_heredocs(ast->right);
+	}
+	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
+	{
+		printf("HERE check_heredocs");
+		exec_heredocs(ast->cmd);
+	}
 }

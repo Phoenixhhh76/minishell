@@ -122,13 +122,18 @@ void	exec_pipe_node(t_ast *node, char **envp)
 
 void	handle_redirects(t_cmd *cmd)
 {
+	int	i;
 	int	fd;
 
+	i = 0;
 	if (cmd->heredoc_nb > 0)
 	{
 		dup2(cmd->heredoc_pipe[cmd->heredoc_nb - 1][0], STDIN_FILENO);
-		for (int i = 0; i < cmd->heredoc_nb; i++)
+		while (i < cmd->heredoc_nb)
+		{
 			close(cmd->heredoc_pipe[i][0]);
+			i++;
+		}
 	}
 	if (cmd->infile)
 	{
@@ -155,29 +160,17 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	i = 0;
 	if (!node->cmd)
 		return ;
-	// if (node->cmd->heredoc_nb > 0)//Nina working on it
-	// {
-	// 		if (exec_heredocs(node->cmd) < 0)
-	// 		{
-	// 			printf("Error: heredoc failed\n");
-	// 			exit(1);//to be determined
-	// 		}
-	// }
-	if (node->cmd->heredoc_nb > 0)
-	{
-		dup2(node->cmd->heredoc_pipe[node->cmd->heredoc_nb - 1][0], STDIN_FILENO);
-		while (i < node->cmd->heredoc_nb)
-		{
-			close(node->cmd->heredoc_pipe[i][0]);
-			i++;
-		}
-	}
 	handle_redirects(node->cmd);
 	// if (ft_is_builtin(node->cmd->cmd_args[0]))
 	// {
 	// 	ft_run_builtin(node->cmd, &envp);
 	// 	exit(0);
 	// }
+	if (!node->cmd->cmd_path)
+	{
+		perror("command not found");
+		exit(127);//to be determined
+	}
 	execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 	perror("execve");
 	exit(1);
