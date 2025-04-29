@@ -59,7 +59,6 @@ int	exec_heredocs(t_cmd *cmd)
 	fd = open(tmpfile, O_CREAT | O_WRONLY | O_TRUNC, 0644);
 	if (fd < 0)
 		return (perror("heredoc open"), -1);
-
 	while (i < cmd->heredoc_nb)
 	{
 		while (1)
@@ -75,7 +74,6 @@ int	exec_heredocs(t_cmd *cmd)
 		free(line);
 	}
 	close(fd);
-
 	cmd->infile = ft_strdup(tmpfile);
 	return (0);
 }
