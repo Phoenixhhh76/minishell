@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 12:33:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/29 15:39:03 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/29 16:40:37 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,9 +66,56 @@ bool	find_matching_quote(const char *str)
 	}
 	return (false);
 }
+/* static int	process_token(const char *input, int i, t_token **tokens)
+{
+	char	*token_str = calloc(1, sizeof(char));
+	char	*part;
+	int		start;
+	char	quote;
+
+	// ✅ 處理 redirection（> >> < <<）
+	if (input[i] == '>' || input[i] == '<')
+		return process_redirection(input, i, tokens);
+
+	// ✅ 處理 pipe
+	if (input[i] == '|')
+	{
+		append_t(tokens, create_t(ft_strndup(&input[i], 1), QUOTE_NONE));
+		return i + 1;
+	}
+
+	// ✅ 主體：組合 quoted/unquoted 為單一 token
+	while (input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
+	{
+		if (input[i] == '"' || input[i] == '\'')
+		{
+			quote = input[i++];
+			start = i;
+			while (input[i] && input[i] != quote)
+				i++;
+			part = ft_strndup(input + start, i - start); // 提取 quote 內容
+			token_str = ft_strjoin_f(token_str, part);
+			if (input[i] == quote)
+				i++; // skip closing quote
+		}
+		else
+		{
+			start = i;
+			while (input[i] && input[i] != '"' && input[i] != '\'' &&
+				!ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
+				i++;
+			part = ft_strndup(input + start, i - start);
+			token_str = ft_strjoin_f(token_str, part);
+		}
+	}
+
+	append_t(tokens, create_t(token_str, QUOTE_NONE));
+	return i;
+} */
 
 
-//version not take quote into account//
+
+//for empty, version not take quote into account//
 static int	process_token(const char *input, int i, t_token **tokens)
 {
 	int	start;
@@ -129,11 +176,16 @@ static int	process_token(const char *input, int i, t_token **tokens)
 		return (i);
 	}
 } */
+
+//for ""empty
 t_token	*tokenize_input(const char *input)
 {
-	t_token	*tokens = NULL;
-	int		i = 0;
+	t_quote_type qt;
+	t_token	*tokens;
+	int		i;
 
+	tokens = NULL;
+	i = 0;
 	while (input[i])
 	{
 		while (ft_isspace(input[i]))
@@ -143,15 +195,17 @@ t_token	*tokenize_input(const char *input)
 			break;
 
 		// Special case: "" or '' (empty string token)
-		if ((input[i] == '"' && input[i + 1] == '"') ||
-			(input[i] == '\'' && input[i + 1] == '\''))
+		if ((input[i] == '"' && input[i + 1] == '"' && input[i + 2] == ' ') ||
+			(input[i] == '\'' && input[i + 1] == '\'' && input[i + 2] == ' '))
 		{
-			t_quote_type qt = (input[i] == '"') ? QUOTE_DOUBLE : QUOTE_SINGLE;
-			append_t(&tokens, create_t(ft_strdup(""), qt));
+			if (input[i] == '"')
+				qt = QUOTE_DOUBLE;
+			else
+				qt = QUOTE_SINGLE;
 			i += 2;
+			append_t(&tokens, create_t(ft_strdup(""), qt));
 			continue;
 		}
-
 		i = process_token(input, i, &tokens);
 	}
 
