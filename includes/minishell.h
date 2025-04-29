@@ -16,6 +16,23 @@
 
 extern pid_t	g_signal_pid;
 
+// typedef struct s_ast
+// {
+// 	t_token	type;
+// 	char	**cmd_args;
+// 	char	**cmd_opts;
+// 	char	*cmd_path;
+// 	char	*infile;
+// 	char	*outfile;
+// 	int		fd_in;
+// 	int		fd_out;
+// 	int		*pipe;
+// 	int		*pids;
+// 	//int		child;
+// 	//int		fd[2];
+// 	t_ast	*next;
+// }	t_ast;
+
 typedef enum e_node_type
 {
 	CMD,
@@ -41,27 +58,10 @@ typedef struct s_token
 	struct s_token	*next;
 }	t_token;
 
-// typedef struct s_ast
-// {
-// 	t_token	type;
-// 	char	**cmd_args;
-// 	char	**cmd_opts;
-// 	char	*cmd_path;
-// 	char	*infile;
-// 	char	*outfile;
-// 	int		fd_in;
-// 	int		fd_out;
-// 	int		*pipe;
-// 	int		*pids;
-// 	//int		child;
-// 	//int		fd[2];
-// 	t_ast	*next;
-// }	t_ast;
-
 typedef struct s_cmd
 {
 	char	**cmd_args;
-	char	**cmd_opts;
+	//char	**cmd_opts;
 	char	*cmd_path;
 	int		fd_in;
 	int		fd_out;
@@ -71,6 +71,7 @@ typedef struct s_cmd
 	int		*pids;
 	char	**heredocs;
 	int		heredoc_nb;
+	int		**heredoc_pipe;
 	int		heredoc_error;//add for exit_error
 	//int		child;
 }	t_cmd;
@@ -95,7 +96,6 @@ typedef struct s_mini
 	//int		ac;
 	//int		heredoc; add in s_cmd
 	//???		histoire(readlin add history);
-	//struct t_mini *next;
 }	t_mini;
 
 //init_mini
@@ -134,7 +134,9 @@ int		ft_run_builtin(t_cmd *cmd, char ***envp);
 void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
+void	check_heredocs(t_ast *node);
 int		exec_heredocs(t_cmd *cmd);
+int		**create_heredoc_pipe(int heredoc_nb);
 
 //expande
 char	*expand_arg(const char *str, t_mini *mini);
@@ -144,8 +146,8 @@ char	*ft_strjoin_f(char *s1, char *s2);
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);
 t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
-t_ast	*create_pipe_node(t_token *start,
-t_token *pipe_pos, t_token *end, t_mini *mini);
+t_ast	*create_pipe_node(t_token *start, \
+	t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //outil
 
