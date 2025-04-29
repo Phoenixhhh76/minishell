@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/25 18:10:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:52:24 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -185,6 +185,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		{
 				heredoc_nb++;
 				//cmd->heredoc_tmpfile = create_tmpfile(tmp->next->str);
+				//cmd->infile = ft_strdup(tmp->next->str); just here is not expand_arg
 				tmp = tmp->next;
 		}
 		tmp = tmp->next;
@@ -196,8 +197,12 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
 			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
-		else
+		else //add and change
+		{
 			cmd->cmd_path = resolve_cmd_path(cmd->cmd_args[0], mini->env);
+			if (!cmd->cmd_path)
+				cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);// <<<<<<for empty"""
+		}
 	}
 	return (cmd);
 }
