@@ -125,14 +125,14 @@ int	main(int ac, char **av, char **envp)
 		}
 		add_history(line);
 		mini.token = tokenize_input(line);
-		print_token_list(mini.token); //tet
+		//print_token_list(mini.token); //tet
 		if (!mini.token)
 		{
 			free(line);
 			continue ;
 		}
 		init_ast(&mini);
-	//	print_ast(mini.ast, 5);
+		//print_ast(mini.ast, 5);
 		if (mini.ast)
 		{
 			if (ft_builtin(mini.ast, &mini.env))

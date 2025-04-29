@@ -173,14 +173,14 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
-		{
-			// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
-			// 	cmd->infile = ft_strdup(tmp->next->str);
-			// else
-			cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
-			tmp = tmp->next;
-		}
+		// else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
+		// {
+		// 	// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
+		// 	// 	cmd->infile = ft_strdup(tmp->next->str);
+		// 	// else
+		// 	cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
+		// 	tmp = tmp->next;
+		// }
  		else if (tmp->type == HEREDOC && tmp->next)
 		{
 				heredoc_nb++;
