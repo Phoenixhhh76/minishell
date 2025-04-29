@@ -6,11 +6,20 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/22 17:12:15 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/25 17:22:52 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+/* for "'$USER'" */
+char	*expand_if_needed(t_token *token, t_mini *mini)
+{
+	if (token->quote_type == QUOTE_SINGLE)
+		return (ft_strdup(token->str));
+	return (expand_arg(token->str, mini));
+}
+
 
 char	*ft_strjoin_f(char *s1, char *s2)
 {
@@ -42,6 +51,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	int	start;
 	char	*var;
 	char	*val;
+
 	start = ++(*i); // skip $
 	if (str[start] == '?')// $? is for exit code
 	//WEXITSTATUS(status) ????
@@ -57,7 +67,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	return (val);
 }
 
-char *expand_arg(const char *str, t_mini *mini)
+/* char *expand_arg(const char *str, t_mini *mini)
 {
 	char	*result;
 	int		i;
@@ -83,13 +93,43 @@ char *expand_arg(const char *str, t_mini *mini)
 			{
 				if (str[i] == '$')
 				result = ft_strjoin_f(result, expand_var(str, &i, mini));
-				else
+				elseecho abcd"$USERAAA$PATH"
 					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 			}
 			if (str[i] == '"')
 				i++;
 		}
 		else if (str[i] == '$') // $USER...etc
+			result = ft_strjoin_f(result, expand_var(str, &i, mini));
+		else
+			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
+	}
+	return (result);
+} */
+
+char	*expand_arg(const char *str, t_mini *mini)
+{
+	char	*result;
+	int		i;
+
+	i = 0;
+	result = calloc(1, sizeof(char));
+	while (str[i])
+	{
+		if (str[i] == '"')
+		{
+			i++;
+			while (str[i] && str[i] != '"')
+			{
+				if (str[i] == '$')
+					result = ft_strjoin_f(result, expand_var(str, &i, mini));
+				else
+					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
+			}
+			if (str[i] == '"')
+				i++;
+		}
+		else if (str[i] == '$')
 			result = ft_strjoin_f(result, expand_var(str, &i, mini));
 		else
 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
