@@ -173,25 +173,19 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		// else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard in W2, and '$USER' cant expand
-		// {
-		// 	// if (is_quoted(tmp->next->str)) // function is_quoted need to creat
-		// 	// 	cmd->infile = ft_strdup(tmp->next->str);
-		// 	// else
-		// 	cmd->infile = expand_arg(tmp->next->str, mini);//need a tempfile
-		// 	tmp = tmp->next;
-		// }
- 		else if (tmp->type == HEREDOC && tmp->next)
+		else if (tmp->type == HEREDOC && tmp->next)
 		{
 				heredoc_nb++;
-				//cmd->heredoc_tmpfile = create_tmpfile(tmp->next->str);
-				//cmd->infile = ft_strdup(tmp->next->str); just here is not expand_arg
 				tmp = tmp->next;
 		}
 		tmp = tmp->next;
 	}
 	cmd->heredoc_nb = heredoc_nb;
-	cmd->heredocs = get_heredoc(heredoc_nb, start, end, mini);
+	if (heredoc_nb > 0)
+	{
+		cmd->heredoc_pipe = create_heredoc_pipe(heredoc_nb);
+		cmd->heredocs = get_heredoc(heredoc_nb, start, end, mini);
+	}
 	cmd->cmd_args = collect_args(start, end, mini);
 	if (cmd->cmd_args && cmd->cmd_args[0])
 	{

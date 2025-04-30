@@ -104,6 +104,7 @@ pid_t g_signal_pid = 0;
 /*
 int	main(int ac, char **av, char **envp)
 {
+	pid_t	pid;
 	t_mini	mini;
 	char	*line;
 
@@ -135,21 +136,26 @@ int	main(int ac, char **av, char **envp)
 		//print_ast(mini.ast, 5);
 		if (mini.ast)
 		{
+			check_heredocs(mini.ast);
 			if (ft_builtin(mini.ast, &mini.env))
+			{
+				// free_token_list(mini.token);
+				// free_ast(mini.ast);
+				// free(line);
 				continue ;
+			}
 			else
 			{
-				pid_t pid = fork();
+				pid = fork();
 				if (pid == 0)
 				{
 					exec_ast(mini.ast, mini.env);
 					exit(1);
 				}
 				waitpid(pid, NULL, 0);
+				close_all_heredocs(mini.ast);
 			}
 		}
-
-
 		free_token_list(mini.token);
 		// free_ast(mini.ast); TODO
 		free(line);

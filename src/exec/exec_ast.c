@@ -96,7 +96,8 @@ void	exec_pipe_node(t_ast *node, char **envp)
 
 	if (pipe(node->fd) == -1)
 		exit_error("pipe");
-	if ((left_pid = fork()) == 0)
+	left_pid = fork();
+	if (left_pid == 0)
 	{
 		close(node->fd[0]);
 		dup2(node->fd[1], STDOUT_FILENO);
@@ -104,7 +105,8 @@ void	exec_pipe_node(t_ast *node, char **envp)
 		exec_ast(node->left, envp);
 		exit(1);
 	}
-	if ((right_pid = fork()) == 0)
+	right_pid = fork();
+	if (right_pid == 0)
 	{
 		close(node->fd[1]);
 		dup2(node->fd[0], STDIN_FILENO);
@@ -120,8 +122,19 @@ void	exec_pipe_node(t_ast *node, char **envp)
 
 void	handle_redirects(t_cmd *cmd)
 {
+	int	i;
 	int	fd;
 
+	i = 0;
+	if (cmd->heredoc_nb > 0)
+	{
+		dup2(cmd->heredoc_pipe[cmd->heredoc_nb - 1][0], STDIN_FILENO);
+		while (i < cmd->heredoc_nb)
+		{
+			close(cmd->heredoc_pipe[i][0]);
+			i++;
+		}
+	}
 	if (cmd->infile)
 	{
 		fd = open(cmd->infile, O_RDONLY);
@@ -142,22 +155,22 @@ void	handle_redirects(t_cmd *cmd)
 
 void	exec_cmd_node(t_ast *node, char **envp)
 {
+	int	i;
+
+	i = 0;
 	if (!node->cmd)
 		return ;
-	// if (node->cmd->heredoc_nb > 0)//Nina working on it
-	// {
-	// 		if (exec_heredocs(node->cmd) < 0)
-	// 			exit(1);//to be determined
-	// }
 	handle_redirects(node->cmd);
-
-	// 若有實作內建指令，這裡可以啟用：
 	// if (ft_is_builtin(node->cmd->cmd_args[0]))
 	// {
 	// 	ft_run_builtin(node->cmd, &envp);
 	// 	exit(0);
 	// }
-
+	if (!node->cmd->cmd_path)
+	{
+		perror("command not found");
+		exit(127);//to be determined
+	}
 	execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 	perror("execve");
 	exit(1);
