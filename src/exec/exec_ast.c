@@ -132,6 +132,7 @@ void	handle_redirects(t_cmd *cmd)
 		while (i < cmd->heredoc_nb)
 		{
 			close(cmd->heredoc_pipe[i][0]);
+			close(cmd->heredoc_pipe[i][1]);
 			i++;
 		}
 	}
@@ -145,7 +146,13 @@ void	handle_redirects(t_cmd *cmd)
 	}
 	else if (cmd->outfile)
 	{
-		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+		if (ft_strcmp(cmd->outfile, cmd->append) == 0)
+		{
+			printf("last append detected \n");
+			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+		}
+		else
+			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd < 0)
 			exit_error("open outfile");
 		dup2(fd, STDOUT_FILENO);
