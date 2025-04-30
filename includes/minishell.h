@@ -122,7 +122,7 @@ int		does_var_exist(char **env, const char *var);
 int		find_equal_sign(t_cmd *cmd);
 void	free_double_tab(char **tab);
 
-void	ft_echo(t_cmd *cmd);
+int	ft_echo(t_cmd *cmd); //change void to int for return 0
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);

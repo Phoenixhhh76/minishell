@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:00:20 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/04/29 15:33:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/30 18:19:29 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,7 +107,7 @@ int	is_valid_n_option(const char *str)
 	return (1);
 }
 
-void	ft_echo(t_cmd *cmd)
+int	ft_echo(t_cmd *cmd)
 {
 	int	i;
 	int	option;
@@ -131,4 +131,5 @@ void	ft_echo(t_cmd *cmd)
 	}
 	if (!option)
 		printf("\n");
+	return (0);
 }
