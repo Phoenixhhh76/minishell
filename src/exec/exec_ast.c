@@ -135,7 +135,7 @@ void	handle_redirects(t_cmd *cmd)
 			i++;
 		}
 	}
-	if (cmd->infile)
+	else if (cmd->infile)
 	{
 		fd = open(cmd->infile, O_RDONLY);
 		if (fd < 0)
@@ -143,7 +143,7 @@ void	handle_redirects(t_cmd *cmd)
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
-	if (cmd->outfile)
+	else if (cmd->outfile)
 	{
 		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd < 0)

@@ -63,16 +63,16 @@ typedef struct s_cmd
 	char	**cmd_args;
 	//char	**cmd_opts;
 	char	*cmd_path;
-	int		fd_in;
-	int		fd_out;
 	char	*infile;
 	char	*outfile;
+	int		fd_in;
+	int		fd_out;
 	int		*pipe;
 	int		*pids;
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
-	int		heredoc_error;//add for exit_error
+	//int		heredoc_error;//add for exit_error
 	//int		child;
 }	t_cmd;
 

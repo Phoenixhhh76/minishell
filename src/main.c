@@ -294,7 +294,6 @@ int	main(int ac, char **av, char **envp)
 				close_all_heredocs(mini.ast);
 			}
 		}
-
 		free_token_list(mini.token);
 		// free_ast(mini.ast); //TO DO
 		free(line);

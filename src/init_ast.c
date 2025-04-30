@@ -143,6 +143,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 {
 	t_cmd	*cmd;
 	t_token	*tmp;
+	int		fd;
 	int		heredoc_nb;
 
 	heredoc_nb = 0;
@@ -158,12 +159,20 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (tmp->type == REDIR_IN && tmp->next)
 		{
+			if (cmd->infile)
+				free(cmd->infile);
 			cmd->infile = expand_arg(tmp->next->str, mini);
 			tmp = tmp->next;
 		}
 		else if (tmp->type == REDIR_OUT && tmp->next)
 		{
+			if (cmd->outfile)
+				free(cmd->outfile);
 			cmd->outfile = expand_arg(tmp->next->str, mini);
+			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+			if (fd < 0)
+				exit_error("creation outfile");
+			close(fd);
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
