@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 12:33:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/29 16:40:37 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:33:06 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -48,24 +48,6 @@ static int	process_redirection(const char *input, int i, t_token **tokens)
 	return (i + len);
 }
 
-bool	find_matching_quote(const char *str)
-{
-	char	quote;
-	int		i;
-
-	if (!str || (*str != '\'' && *str != '"'))
-		return (false);
-
-	quote = *str;
-	i = 1;
-	while (str[i])
-	{
-		if (str[i] == quote)
-			return (true);
-		i++;
-	}
-	return (false);
-}
 /* static int	process_token(const char *input, int i, t_token **tokens)
 {
 	char	*token_str = calloc(1, sizeof(char));

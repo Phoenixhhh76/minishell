@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 16:19:28 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 17:11:14 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/30 14:59:51 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,4 +43,12 @@ void exit_error(const char *msg)
 	perror(msg);
 	//need to care about memory leak
 	exit(1);
+}
+int	syntax_err_msg(char *str1, char *str2, int erno)
+{
+	ft_putstr_fd("minishell: ", 2);
+	ft_putstr_fd("syntax error ", 2);
+	ft_putstr_fd(str1, 2);
+	ft_putendl_fd(str2, 2);
+	return (erno);
 }

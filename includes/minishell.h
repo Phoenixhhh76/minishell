@@ -108,6 +108,8 @@ t_token	*tokenize_input(const char *input);
 void	free_token_list(t_token *token);
 t_token	*create_t(char *str, t_quote_type quote_type);
 void	append_t(t_token **head, t_token *new);
+int		check_unclosed_quotes(const char *line);
+bool	check_syntax(t_token *tokens);
 
 
 
@@ -149,7 +151,7 @@ char	*ft_strjoin_f(char *s1, char *s2);
 t_token	*find_next_pipe(t_token *start, t_token *end);
 t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
 t_ast	*create_pipe_node(t_token *start, \
-	t_token *pipe_pos, t_token *end, t_mini *mini);
+t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //outil
 
@@ -161,6 +163,7 @@ void	free_split(char **split);
 void	close_fds(t_cmd *cmd);
 void	exit_error_pipe(int error_status, t_cmd *cmd);
 int		err_msg(char *str1, char *str2, char *str3, int erno);
+int		syntax_err_msg(char *str1, char *str2, int erno);
 void	exit_error(const char *msg);
 
 //tests, to be erased

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:40:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/29 14:46:57 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/30 15:44:31 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -251,8 +251,21 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		add_history(line);
+		if (check_unclosed_quotes(line))
+		{
+			mini.last_exit = 2;
+			free(line);
+			continue ;
+		}
 		mini.token = tokenize_input(line);
 		//print_token_list(mini.token);
+		if (!check_syntax(mini.token))
+		{
+			mini.last_exit = 2;
+			free_token_list(mini.token);
+			free(line);
+			continue ;
+		}
 		if (!mini.token)
 		{
 			free(line);
