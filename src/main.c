@@ -101,8 +101,8 @@ pid_t g_signal_pid = 0;
 // 	rl_clear_history();
 // 	return (0);
 // }
-/*
-int	main(int ac, char **av, char **envp)
+
+/*int	main(int ac, char **av, char **envp)
 {
 	pid_t	pid;
 	t_mini	mini;
@@ -163,12 +163,12 @@ int	main(int ac, char **av, char **envp)
 	}
 	rl_clear_history();
 	return (0);
-} */
-int	main(int ac, char **av, char **envp)
+}*/
+/*int	main(int ac, char **av, char **envp)
 {
+	pid_t	pid;
 	t_mini	mini;
 	char	*line;
-	pid_t	pid;
 
 	(void)ac;
 	init_mini(&mini, av, envp);
@@ -186,19 +186,17 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		add_history(line);
-
 		mini.token = tokenize_input(line);
-		print_token_list(mini.token);
+		//print_token_list(mini.token);
 		if (!mini.token)
 		{
 			free(line);
 			continue ;
 		}
 		init_ast(&mini);
-
 		if (mini.ast)
 		{
-			//check from the AST top
+			check_heredocs(mini.ast);
 			if (mini.ast->ast_token.type == CMD && mini.ast->cmd
 				&& ft_is_builtin(mini.ast->cmd->cmd_args[0]))
 			{
@@ -224,6 +222,68 @@ int	main(int ac, char **av, char **envp)
 
 		free_token_list(mini.token);
 		// free_ast(mini.ast); // TODO: 如果要乾淨釋放 AST
+		free(line);
+		g_signal_pid = 0;
+	}
+	rl_clear_history();
+	return (0);
+}*/
+
+int	main(int ac, char **av, char **envp)
+{
+	pid_t	pid;
+	t_mini	mini;
+	char	*line;
+
+	(void)ac;
+	init_mini(&mini, av, envp);
+	while (1)
+	{
+		line = readline("minishell> ");
+		if (!line)
+		{
+			write(1, "exit\n", 5);
+			break ;
+		}
+		if (line[0] == '\0')
+		{
+			free(line);
+			continue ;
+		}
+		add_history(line);
+		mini.token = tokenize_input(line);
+		//print_token_list(mini.token);
+		if (!mini.token)
+		{
+			free(line);
+			continue ;
+		}
+		init_ast(&mini);
+		if (mini.ast)
+		{
+			check_heredocs(mini.ast);
+			if (ft_builtin(mini.ast, &mini.env))
+			{
+				// free_token_list(mini.token);
+				// free_ast(mini.ast);
+				// free(line);
+				continue ;
+			}
+			else
+			{
+				pid = fork();
+				if (pid == 0)
+				{
+					exec_ast(mini.ast, mini.env);
+					exit(1);
+				}
+				waitpid(pid, NULL, 0);
+				close_all_heredocs(mini.ast);
+			}
+		}
+
+		free_token_list(mini.token);
+		// free_ast(mini.ast); //TO DO
 		free(line);
 		g_signal_pid = 0;
 	}

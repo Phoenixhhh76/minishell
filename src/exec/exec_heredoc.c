@@ -116,8 +116,5 @@ void	check_heredocs(t_ast *ast)
 		check_heredocs(ast->right);
 	}
 	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
-	{
-		printf("HERE check_heredocs");
 		exec_heredocs(ast->cmd);
-	}
 }
