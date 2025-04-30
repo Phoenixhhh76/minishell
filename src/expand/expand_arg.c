@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/25 17:22:52 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/29 12:59:54 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -66,18 +66,17 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	free(var);
 	return (val);
 }
-
-/* char *expand_arg(const char *str, t_mini *mini)
+char	*expand_arg(const char *str, t_mini *mini)
 {
 	char	*result;
-	int		i;
+	int		i = 0;
 	int		start;
+	//char	quote;
 
-	i = 0;
 	result = calloc(1, sizeof(char));
 	while (str[i])
 	{
-		if (str[i] == '\'') // '$USER' can't be expand
+		if (str[i] == '\'') // single quote : copy raw
 		{
 			start = ++i;
 			while (str[i] && str[i] != '\'')
@@ -86,27 +85,28 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 			if (str[i] == '\'')
 				i++;
 		}
-		else if (str[i] == '"') // "$USER" can be expand
+		else if (str[i] == '"') // double quote : expand inside
 		{
 			start = ++i;
 			while (str[i] && str[i] != '"')
 			{
 				if (str[i] == '$')
-				result = ft_strjoin_f(result, expand_var(str, &i, mini));
-				elseecho abcd"$USERAAA$PATH"
+					result = ft_strjoin_f(result, expand_var(str, &i, mini));
+				else
 					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 			}
 			if (str[i] == '"')
 				i++;
 		}
-		else if (str[i] == '$') // $USER...etc
+		else if (str[i] == '$') // outside quote, expand
 			result = ft_strjoin_f(result, expand_var(str, &i, mini));
-		else
+		else // normal char
 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 	}
 	return (result);
-} */
+}
 
+/*
 char	*expand_arg(const char *str, t_mini *mini)
 {
 	char	*result;
@@ -135,4 +135,4 @@ char	*expand_arg(const char *str, t_mini *mini)
 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 	}
 	return (result);
-}
+} */

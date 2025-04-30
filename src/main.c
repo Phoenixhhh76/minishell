@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:40:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/25 16:43:25 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/29 14:46:57 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,7 @@ pid_t g_signal_pid = 0;
 // 	rl_clear_history();
 // 	return (0);
 // }
-
+/*
 int	main(int ac, char **av, char **envp)
 {
 	pid_t	pid;
@@ -158,6 +158,72 @@ int	main(int ac, char **av, char **envp)
 		}
 		free_token_list(mini.token);
 		// free_ast(mini.ast); TODO
+		free(line);
+		g_signal_pid = 0;
+	}
+	rl_clear_history();
+	return (0);
+} */
+int	main(int ac, char **av, char **envp)
+{
+	t_mini	mini;
+	char	*line;
+	pid_t	pid;
+
+	(void)ac;
+	init_mini(&mini, av, envp);
+	while (1)
+	{
+		line = readline("minishell> ");
+		if (!line)
+		{
+			write(1, "exit\n", 5);
+			break ;
+		}
+		if (line[0] == '\0')
+		{
+			free(line);
+			continue ;
+		}
+		add_history(line);
+
+		mini.token = tokenize_input(line);
+		print_token_list(mini.token);
+		if (!mini.token)
+		{
+			free(line);
+			continue ;
+		}
+		init_ast(&mini);
+
+		if (mini.ast)
+		{
+			//check from the AST top
+			if (mini.ast->ast_token.type == CMD && mini.ast->cmd
+				&& ft_is_builtin(mini.ast->cmd->cmd_args[0]))
+			{
+				ft_run_builtin(mini.ast->cmd, &mini.env);
+			// <<<<<<<< do builtin and clean
+				free_token_list(mini.token);
+				// free_ast(mini.ast); // 如果要記得
+				free(line);
+				g_signal_pid = 0;
+				continue ;
+			}
+			else
+			{
+				pid = fork();
+				if (pid == 0) // 子進程
+				{
+					exec_ast(mini.ast, mini.env);
+					exit(1); // exec_ast失敗時退出
+				}
+				waitpid(pid, NULL, 0); // 父進程等子進程
+			}
+		}
+
+		free_token_list(mini.token);
+		// free_ast(mini.ast); // TODO: 如果要乾淨釋放 AST
 		free(line);
 		g_signal_pid = 0;
 	}
