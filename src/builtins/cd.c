@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   cd.c                                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-22 14:38:35 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-22 14:38:35 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/22 14:38:35 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/04/30 17:41:38 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,7 +22,7 @@ int	ft_cd(t_cmd *cmd)
 	if (chdir(path) < 0)
 	{
 		perror("cd");
-		return (-1);
+		return (1);
 	}
 	return (0);
 }
