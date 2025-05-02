@@ -115,6 +115,7 @@ int		ft_unset(t_cmd *cmd, char ***mini_env);
 int		ft_export(t_cmd *cmd, char ***mini_env);
 
 //exec
+void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast, char ***env);
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_cmd *cmd, char ***envp);
