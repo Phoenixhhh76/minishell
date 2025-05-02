@@ -161,6 +161,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		{
 			if (cmd->infile)
 				free(cmd->infile);
+			cmd->last_redirin = 0;
 			cmd->infile = expand_arg(tmp->next->str, mini);
 			tmp = tmp->next;
 		}
@@ -193,8 +194,12 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		}
 		else if (tmp->type == HEREDOC && tmp->next)
 		{
-				heredoc_nb++;
-				tmp = tmp->next;
+			if (cmd->infile)
+				free(cmd->infile);
+			cmd->last_redirin = 1;
+			cmd->infile = expand_arg(tmp->next->str, mini);
+			heredoc_nb++;
+			tmp = tmp->next;
 		}
 		tmp = tmp->next;
 	}

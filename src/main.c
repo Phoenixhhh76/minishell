@@ -14,7 +14,6 @@
 
 pid_t g_signal_pid = 0;
 
-
 /* use char **line, otherwise can't send information to main */
 static int	read_and_prepare_line(char **line)
 {
@@ -49,6 +48,7 @@ static int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	init_ast(mini);
+	//print_ast(mini->ast, 10);
 	return (1);
 }
 /*
@@ -69,7 +69,18 @@ static void	exec_or_builtin(t_mini *mini)
 	}
 	waitpid(pid, NULL, 0);
 	close_all_heredocs(mini->ast);
-} */
+	} */
+
+bool	is_there_pipe(t_mini *mini)
+{
+	t_token	tmp;
+
+	tmp = mini->ast->ast_token;
+	if (tmp.type == PIPE)
+		return (true);
+	return (false);
+}
+
 
 static void	exec_or_builtin(t_mini *mini)
 {
@@ -78,6 +89,10 @@ static void	exec_or_builtin(t_mini *mini)
 
 	if (!mini->ast)
 		return ;
+	// if (is_there_pipe(mini) == false)
+	// {
+	// 	printf("XXXXXX there's no pipe\n");
+	// }
 	check_heredocs(mini->ast);
 	if (ft_builtin(mini->ast, &mini->env))
 	{

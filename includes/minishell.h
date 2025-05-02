@@ -16,23 +16,6 @@
 
 extern pid_t	g_signal_pid;
 
-// typedef struct s_ast
-// {
-// 	t_token	type;
-// 	char	**cmd_args;
-// 	char	**cmd_opts;
-// 	char	*cmd_path;
-// 	char	*infile;
-// 	char	*outfile;
-// 	int		fd_in;
-// 	int		fd_out;
-// 	int		*pipe;
-// 	int		*pids;
-// 	//int		child;
-// 	//int		fd[2];
-// 	t_ast	*next;
-// }	t_ast;
-
 typedef enum e_node_type
 {
 	CMD,
@@ -70,6 +53,7 @@ typedef struct s_cmd
 	int		fd_out;
 	int		*pipe;
 	int		*pids;
+	bool	last_redirin;
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
@@ -123,7 +107,7 @@ int		does_var_exist(char **env, const char *var);
 int		find_equal_sign(t_cmd *cmd);
 void	free_double_tab(char **tab);
 
-int	ft_echo(t_cmd *cmd); //change void to int for return 0
+int		ft_echo(t_cmd *cmd); //change void to int for return 0
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
