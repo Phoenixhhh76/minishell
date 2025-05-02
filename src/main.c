@@ -5,8 +5,8 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/15 11:40:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/30 15:44:31 by hho-troc         ###   ########.fr       */
+/*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
+/*   Updated: 2025/04/30 18:21:20 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,224 +14,106 @@
 
 pid_t g_signal_pid = 0;
 
-// void	init_mini(t_mini *mini, char **av, char **env)
-// {
-// 	mini->token = NULL;
-// 	mini->ast = NULL;
-// 	mini->env = env;
-// 	mini->av = av;
-// }
 
-/* int	main(int ac, char **av, char **env)
+/* use char **line, otherwise can't send information to main */
+static int	read_and_prepare_line(char **line)
 {
-	t_mini	mini;
-	char	*line;
-	(void)ac;
-	//(void)av;
-	//(void)env;
-
-	init_mini(mini, av, env);
-	while (1)
+	*line = readline("minishell> ");
+	if (!*line)
 	{
-		line = readline("minishell>");
-		if (!line) // Ctrl+D or error
-		{
-			write(1, "exit\n", 5);
-			break ;
-		}
-		add_history(line);
-		free(line);
-		g_signal_pid = 0;
+		write(1, "exit\n", 5);
+		return (1);
 	}
-	rl_clear_history();
-	//free
+	if ((*line)[0] == '\0')
+	{
+		free(*line);
+		return (1);
+	}
+	add_history(*line);
 	return (0);
+}
+
+static int	check_line(char *line, t_mini *mini)
+{
+	if (check_unclosed_quotes(line))
+	{
+		mini->last_exit = 2;
+		return (0);
+	}
+	mini->token = tokenize_input(line);
+	if (!mini->token || !check_syntax(mini->token))
+	{
+		mini->last_exit = 2;
+		free_token_list(mini->token);
+		mini->token = NULL;
+		return (0);
+	}
+	init_ast(mini);
+	return (1);
+}
+/*
+static void	exec_or_builtin(t_mini *mini)
+{
+	pid_t	pid;
+
+	if (!mini->ast)
+		return ;
+	check_heredocs(mini->ast);
+	if (ft_builtin(mini->ast, &mini->env))
+		return ;
+	pid = fork();
+	if (pid == 0)
+	{
+		exec_ast(mini->ast, mini->env);
+		exit(1);
+	}
+	waitpid(pid, NULL, 0);
+	close_all_heredocs(mini->ast);
 } */
 
-// int	main(int ac, char **av, char **envp)
-// {
-// 	t_mini	mini;
-// 	char	*line;
-
-// 	(void)ac;
-// 	init_mini(&mini, av, envp);
-
-// 	while (1)
-// 	{
-// 		line = readline("minishell> ");
-// 		if (!line)
-// 		{
-// 			//exit_shell();
-// 			write(1, "exit\n", 5);
-// 			break ;
-// 		}
-// 		if (line[0] == '\0')
-// 		{
-// 			free(line);
-// 			continue ;
-// 		}
-// 		add_history(line);
-
-// 		// Tokenize + Parse
-// 		mini.token = tokenize_input(line);
-// 		if (!mini.token)
-// 		{
-// 			free(line);
-// 			continue ;
-// 		}
-// 		init_ast(&mini); // create mini.ast
-
-// 		// Fork + 執行 AST
-// 		if (mini.ast)
-// 		{
-// 			pid_t pid = fork();
-// 			if (pid == 0)
-// 			{
-// 				exec_ast(mini.ast, mini.env);
-// 				exit(1);
-// 			}
-// 			waitpid(pid, NULL, 0);
-// 		}
-
-// 		free_token_list(mini.token);
-// 		// free_ast(mini.ast); TODO
-// 		free(line);
-// 		g_signal_pid = 0;
-// 	}
-// 	rl_clear_history();
-// 	return (0);
-// }
-
-/*int	main(int ac, char **av, char **envp)
+static void	exec_or_builtin(t_mini *mini)
 {
 	pid_t	pid;
-	t_mini	mini;
-	char	*line;
+	int		status;
 
-	(void)ac;
-	init_mini(&mini, av, envp);
-	while (1)
+	if (!mini->ast)
+		return ;
+	check_heredocs(mini->ast);
+	if (ft_builtin(mini->ast, &mini->env))
 	{
-		line = readline("minishell> ");
-		if (!line)
-		{
-			//exit_minishell();
-			write(1, "exit\n", 5);
-			break ;
-		}
-		if (line[0] == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		add_history(line);
-		mini.token = tokenize_input(line);
-		//print_token_list(mini.token); //tet
-		if (!mini.token)
-		{
-			free(line);
-			continue ;
-		}
-		init_ast(&mini);
-		//print_ast(mini.ast, 5);
-		if (mini.ast)
-		{
-			check_heredocs(mini.ast);
-			if (ft_builtin(mini.ast, &mini.env))
-			{
-				// free_token_list(mini.token);
-				// free_ast(mini.ast);
-				// free(line);
-				continue ;
-			}
-			else
-			{
-				pid = fork();
-				if (pid == 0)
-				{
-					exec_ast(mini.ast, mini.env);
-					exit(1);
-				}
-				waitpid(pid, NULL, 0);
-				close_all_heredocs(mini.ast);
-			}
-		}
-		free_token_list(mini.token);
-		// free_ast(mini.ast); TODO
-		free(line);
-		g_signal_pid = 0;
+		mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+		return ;
 	}
-	rl_clear_history();
-	return (0);
-}*/
-/*int	main(int ac, char **av, char **envp)
+	pid = fork();
+	if (pid == 0)
+	{
+		exec_ast(mini->ast, mini->env);
+		exit(1); // fallback if execve fails
+	}
+	waitpid(pid, &status, 0);
+	if (WIFEXITED(status))
+		mini->last_exit = WEXITSTATUS(status);
+	else
+		mini->last_exit = 1;
+	close_all_heredocs(mini->ast);
+}
+
+static void	safe_cleanup(t_mini *mini, char *line)
 {
-	pid_t	pid;
-	t_mini	mini;
-	char	*line;
-
-	(void)ac;
-	init_mini(&mini, av, envp);
-	while (1)
-	{
-		line = readline("minishell> ");
-		if (!line)
-		{
-			write(1, "exit\n", 5);
-			break ;
-		}
-		if (line[0] == '\0')
-		{
-			free(line);
-			continue ;
-		}
-		add_history(line);
-		mini.token = tokenize_input(line);
-		//print_token_list(mini.token);
-		if (!mini.token)
-		{
-			free(line);
-			continue ;
-		}
-		init_ast(&mini);
-		if (mini.ast)
-		{
-			check_heredocs(mini.ast);
-			if (mini.ast->ast_token.type == CMD && mini.ast->cmd
-				&& ft_is_builtin(mini.ast->cmd->cmd_args[0]))
-			{
-				ft_run_builtin(mini.ast->cmd, &mini.env);
-			// <<<<<<<< do builtin and clean
-				free_token_list(mini.token);
-				// free_ast(mini.ast); // 如果要記得
-				free(line);
-				g_signal_pid = 0;
-				continue ;
-			}
-			else
-			{
-				pid = fork();
-				if (pid == 0) // 子進程
-				{
-					exec_ast(mini.ast, mini.env);
-					exit(1); // exec_ast失敗時退出
-				}
-				waitpid(pid, NULL, 0); // 父進程等子進程
-			}
-		}
-
-		free_token_list(mini.token);
-		// free_ast(mini.ast); // TODO: 如果要乾淨釋放 AST
-		free(line);
-		g_signal_pid = 0;
-	}
-	rl_clear_history();
-	return (0);
-}*/
+	free_token_list(mini->token);
+	mini->token = NULL;
+	// free_ast(mini->ast); // ← TODO if implemented
+	free(line);
+	g_signal_pid = 0;
+}
+/* have to choose a good name */
+static int	read_and_prepare_line(char **line);
+static int	check_line(char *line, t_mini *mini);
+static void	exec_or_builtin(t_mini *mini);
+static void	safe_cleanup(t_mini *mini, char *line);
 
 int	main(int ac, char **av, char **envp)
 {
-	pid_t	pid;
 	t_mini	mini;
 	char	*line;
 
@@ -239,65 +121,13 @@ int	main(int ac, char **av, char **envp)
 	init_mini(&mini, av, envp);
 	while (1)
 	{
-		line = readline("minishell> ");
-		if (!line)
-		{
-			write(1, "exit\n", 5);
+		if (read_and_prepare_line(&line))
 			break ;
-		}
-		if (line[0] == '\0')
+		if (check_line(line, &mini))
 		{
-			free(line);
-			continue ;
+			exec_or_builtin(&mini);
 		}
-		add_history(line);
-		if (check_unclosed_quotes(line))
-		{
-			mini.last_exit = 2;
-			free(line);
-			continue ;
-		}
-		mini.token = tokenize_input(line);
-		//print_token_list(mini.token);
-		if (!check_syntax(mini.token))
-		{
-			mini.last_exit = 2;
-			free_token_list(mini.token);
-			free(line);
-			continue ;
-		}
-		if (!mini.token)
-		{
-			free(line);
-			continue ;
-		}
-		init_ast(&mini);
-		if (mini.ast)
-		{
-			check_heredocs(mini.ast);
-			if (ft_builtin(mini.ast, &mini.env))
-			{
-				// free_token_list(mini.token);
-				// free_ast(mini.ast);
-				// free(line);
-				continue ;
-			}
-			else
-			{
-				pid = fork();
-				if (pid == 0)
-				{
-					exec_ast(mini.ast, mini.env);
-					exit(1);
-				}
-				waitpid(pid, NULL, 0);
-				close_all_heredocs(mini.ast);
-			}
-		}
-		free_token_list(mini.token);
-		// free_ast(mini.ast); //TO DO
-		free(line);
-		g_signal_pid = 0;
+		safe_cleanup(&mini, line);
 	}
 	rl_clear_history();
 	return (0);

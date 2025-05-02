@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:14:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 14:23:16 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/04/30 17:16:52 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static int	validate_pipe_pos(t_token *start, t_token *pipe_pos, t_token *end)
 {
 	if (!start || start == pipe_pos || !pipe_pos->next || pipe_pos->next == end)
 	{
-		fprintf(stderr, "syntax error near unexpected pipe\n");
+		err_msg("syntax error ", "near unexpected token ", "pipe", 2);
 		return (0);
 	}
 	return (1);
@@ -118,14 +118,14 @@ t_ast	*create_pipe_node(t_token *start,
 	ast->left = parse_pipeline(start, pipe_pos, mini);
 	if (!ast->left)
 	{
-		fprintf(stderr, "syntax error: empty command before pipe\n");
+		err_msg("syntax error ", "near unexpected token ", "pipe", 2);
 		free(ast);
 		return (NULL);
 	}
 	right_ast = parse_pipeline(pipe_pos->next, end, mini);
 	if (!right_ast)
 	{
-		fprintf(stderr, "syntax error: invalid command after pipe\n");
+		err_msg("syntax error ", "near unexpected token ", "pipe", 2);
 		free(ast);
 		return (NULL);
 	}
