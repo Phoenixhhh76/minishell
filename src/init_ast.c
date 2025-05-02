@@ -178,7 +178,16 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		}
 		else if (tmp->type == REDIR_APPEND && tmp->next)
 		{
+			if (cmd->outfile)
+				free(cmd->outfile);
 			cmd->outfile = expand_arg(tmp->next->str, mini);
+			if (cmd->append)
+				free(cmd->append);
+			cmd->append = expand_arg(tmp->next->str, mini);
+			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+			if (fd < 0)
+				exit_error("creation outfile (append)");
+			close(fd);
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}

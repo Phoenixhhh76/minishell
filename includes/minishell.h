@@ -65,6 +65,7 @@ typedef struct s_cmd
 	char	*cmd_path;
 	char	*infile;
 	char	*outfile;
+	char	*append;
 	int		fd_in;
 	int		fd_out;
 	int		*pipe;
