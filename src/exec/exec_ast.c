@@ -178,9 +178,12 @@ void	exec_cmd_node(t_ast *node, char **envp)
 		perror("command not found");
 		exit(127);//to be determined
 	}
-	execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
-	perror("execve");
-	exit(1);
+	if (node->cmd->cmd_args)
+	{
+		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
+		perror("execve");
+		exit(1);
+	}
 }
 
 void	exec_ast(t_ast *node, char **envp)
