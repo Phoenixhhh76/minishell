@@ -23,6 +23,7 @@ void	print_cmd(t_cmd *cmd)
 		printf("  outfile: (null)\n");
 	printf("  fd_in: %d\n", cmd->fd_in);
 	printf("  fd_out: %d\n", cmd->fd_out);
+	printf("  lat_redirin: %d\n", cmd->last_redirin);
 	if (cmd->cmd_args)
 	{
 		printf("  args: ");

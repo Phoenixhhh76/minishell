@@ -14,7 +14,6 @@
 
 pid_t g_signal_pid = 0;
 
-
 /* use char **line, otherwise can't send information to main */
 static int	read_and_prepare_line(char **line)
 {
@@ -49,6 +48,7 @@ static int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	init_ast(mini);
+	//print_ast(mini->ast, 10);
 	return (1);
 }
 /*
@@ -69,32 +69,94 @@ static void	exec_or_builtin(t_mini *mini)
 	}
 	waitpid(pid, NULL, 0);
 	close_all_heredocs(mini->ast);
-} */
+	} */
+
+bool	is_there_pipe(t_mini *mini)
+{
+	t_token	tmp;
+
+	tmp = mini->ast->ast_token;
+	if (tmp.type == PIPE)
+		return (true);
+	return (false);
+}
+
+bool	has_redirection(t_cmd *cmd)
+{
+	if (cmd->infile || cmd->outfile || cmd->heredoc_nb > 0)
+		return (true);
+	return (false);
+}
+
+// static void	exec_or_builtin(t_mini *mini)
+// {
+// 	pid_t	pid;
+// 	int		status;
+
+// 	if (!mini->ast)
+// 		return ;
+// 	if (is_there_pipe(mini) == false)
+// 	{
+// 		printf("XXXXXX there's no pipe\n");
+// 	}
+// 	check_heredocs(mini->ast);
+// 	if (ft_builtin(mini->ast, &mini->env))
+// 	{
+// 		mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+// 		return ;
+// 	}
+// 	pid = fork();
+// 	if (pid == 0)
+// 	{
+// 		exec_ast(mini->ast, mini->env);
+// 		exit(1); // fallback if execve fails
+// 	}
+// 	waitpid(pid, &status, 0);
+// 	if (WIFEXITED(status))
+// 		mini->last_exit = WEXITSTATUS(status);
+// 	else
+// 		mini->last_exit = 1;
+// 	close_all_heredocs(mini->ast);
+// }
 
 static void	exec_or_builtin(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
+	int		fd;
 
 	if (!mini->ast)
 		return ;
 	check_heredocs(mini->ast);
-	if (ft_builtin(mini->ast, &mini->env))
+	if (!is_there_pipe(mini) && ft_builtin(mini->ast, &mini->env))
 	{
+		fd = dup(STDOUT_FILENO);
+		if (has_redirection(mini->ast->cmd))
+			handle_redirects(mini->ast->cmd);
 		mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+		dup2(fd, STDOUT_FILENO);
+		close(fd);
 		return ;
 	}
-	pid = fork();
-	if (pid == 0)
-	{
-		exec_ast(mini->ast, mini->env);
-		exit(1); // fallback if execve fails
-	}
-	waitpid(pid, &status, 0);
-	if (WIFEXITED(status))
-		mini->last_exit = WEXITSTATUS(status);
 	else
-		mini->last_exit = 1;
+	{
+		pid = fork();
+		if (ft_builtin(mini->ast, &mini->env))
+		{
+			mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+			return ;
+		}
+		if (pid == 0)
+		{
+			exec_ast(mini->ast, mini->env);
+			exit(1); // fallback if execve fails
+		}
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			mini->last_exit = WEXITSTATUS(status);
+	}
+	// else
+	// 	mini->last_exit = 1;
 	close_all_heredocs(mini->ast);
 }
 
