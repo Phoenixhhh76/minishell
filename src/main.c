@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/30 18:21:20 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/07 14:39:22 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,6 +40,7 @@ static int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	mini->token = tokenize_input(line);
+	print_token_list(mini->token);
 	if (!mini->token || !check_syntax(mini->token))
 	{
 		mini->last_exit = 2;

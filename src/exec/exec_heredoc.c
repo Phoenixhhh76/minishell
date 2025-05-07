@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exec_heredoc.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-25 13:06:45 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-25 13:06:45 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/25 13:06:45 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/07 15:47:10 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,7 +27,7 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini)
 	{
 		if (tmp->type == HEREDOC && tmp->next)
 		{
-			tab_heredocs[i] = expand_arg(tmp->next->str, mini);
+			tab_heredocs[i] = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			tmp = tmp->next;
 			i++;
 		}

@@ -129,7 +129,8 @@ int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 
 //expande
-char	*expand_arg(const char *str, t_mini *mini);
+//char	*expand_arg(const char *str, t_mini *mini);
+char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
 char	*ft_strjoin_f(char *s1, char *s2);
 

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/29 12:59:54 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:42:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -17,7 +17,9 @@ char	*expand_if_needed(t_token *token, t_mini *mini)
 {
 	if (token->quote_type == QUOTE_SINGLE)
 		return (ft_strdup(token->str));
-	return (expand_arg(token->str, mini));
+	//return (expand_arg(token->str, mini));
+	return expand_arg(token->str, mini, token->quote_type);
+
 }
 
 
@@ -59,6 +61,11 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 		(*i)++;
 		return (ft_itoa(mini->last_exit));
 	}
+	if (!str[start] || !(ft_isalpha(str[start]) || str[start] == '_'))
+	{
+		// echo $
+		return (ft_strdup("$"));
+	}
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
 		(*i)++;
 	var = ft_strndup(str + start, *i - start);
@@ -66,17 +73,57 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	free(var);
 	return (val);
 }
-char	*expand_arg(const char *str, t_mini *mini)
+// char	*expand_arg(const char *str, t_mini *mini)
+// {
+// 	char	*result;
+// 	int		i = 0;
+// 	int		start;
+// 	//char	quote;
+
+// 	result = calloc(1, sizeof(char));
+// 	while (str[i])
+// 	{
+// 		if (str[i] == '\'') // single quote : copy raw
+// 		{
+// 			start = ++i;
+// 			while (str[i] && str[i] != '\'')
+// 				i++;
+// 			result = ft_strjoin_f(result, ft_strndup(str + start, i - start));
+// 			if (str[i] == '\'')
+// 				i++;
+// 		}
+// 		else if (str[i] == '"') // double quote : expand inside
+// 		{
+// 			start = ++i;
+// 			while (str[i] && str[i] != '"')
+// 			{
+// 				if (str[i] == '$')
+// 					result = ft_strjoin_f(result, expand_var(str, &i, mini));
+// 				else
+// 					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
+// 			}
+// 			if (str[i] == '"')
+// 				i++;
+// 		}
+// 		else if (str[i] == '$') // outside quote, expand
+// 			result = ft_strjoin_f(result, expand_var(str, &i, mini));
+// 		else // normal char
+// 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
+// 	}
+// 	return (result);
+// }
+//char	*expand_arg(const char *str, t_mini *mini)
+char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 {
 	char	*result;
 	int		i = 0;
 	int		start;
-	//char	quote;
 
 	result = calloc(1, sizeof(char));
 	while (str[i])
 	{
-		if (str[i] == '\'') // single quote : copy raw
+		//if (str[i] == '\'') // 單引號：整段當作原始文字
+		if (str[i] == '\'' && quote_type == QUOTE_NONE) // 只有在外部沒引號時，才當 quote 處理
 		{
 			start = ++i;
 			while (str[i] && str[i] != '\'')
@@ -85,22 +132,38 @@ char	*expand_arg(const char *str, t_mini *mini)
 			if (str[i] == '\'')
 				i++;
 		}
-		else if (str[i] == '"') // double quote : expand inside
+		else if (str[i] == '"') // 雙引號：展開 $，保留空格
 		{
 			start = ++i;
 			while (str[i] && str[i] != '"')
 			{
 				if (str[i] == '$')
-					result = ft_strjoin_f(result, expand_var(str, &i, mini));
+				{
+					// 處理 $"" 或 $'' 作為空字串
+					if (str[i + 1] == '"' && str[i + 2] == '"')
+						i += 3;
+					else if (str[i + 1] == '\'' && str[i + 2] == '\'')
+						i += 3;
+					else
+						result = ft_strjoin_f(result, expand_var(str, &i, mini));
+				}
 				else
 					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 			}
 			if (str[i] == '"')
 				i++;
 		}
-		else if (str[i] == '$') // outside quote, expand
-			result = ft_strjoin_f(result, expand_var(str, &i, mini));
-		else // normal char
+		else if (str[i] == '$') // 無引號時：展開 $
+		{
+			// 🟡 這裡處理 $"" 或 $'' 為空字串
+			if (str[i + 1] == '"' && str[i + 2] == '"')
+				i += 3;
+			else if (str[i + 1] == '\'' && str[i + 2] == '\'')
+				i += 3;
+			else
+				result = ft_strjoin_f(result, expand_var(str, &i, mini));
+		}
+		else // 普通字元
 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 	}
 	return (result);

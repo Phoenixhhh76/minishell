@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/29 14:52:24 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/07 15:46:46 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,32 +32,32 @@ static int	add_split(char **args, int i, char *expanded)
 	return (i);
 }
 
-//for echo abcd"$USER"efgh, is not 3 arg, is one
-char	*merge_and_expand(t_token **current, t_token *end, t_mini *mini)
-{
-	char	*result;
-	char	*part;
-	t_token	*tok;
+//for echo abcd"$USER"efgh, is not 3 arg, is one TO REMOVE
+// char	*merge_and_expand(t_token **current, t_token *end, t_mini *mini)
+// {
+// 	char	*result;
+// 	char	*part;
+// 	t_token	*tok;
 
-	result = ft_strdup("");
-	tok = *current;
+// 	result = ft_strdup("");
+// 	tok = *current;
 
-	while (tok && tok != end && (tok->type == CMD || tok->type == UNKNOWN))
-	{
-		if (tok->quote_type == QUOTE_SINGLE)
-			part = ft_strdup(tok->str);
-		else
-			part = expand_arg(tok->str, mini);
-		result = ft_strjoin_f(result, part);
+// 	while (tok && tok != end && (tok->type == CMD || tok->type == UNKNOWN))
+// 	{
+// 		if (tok->quote_type == QUOTE_SINGLE)
+// 			part = ft_strdup(tok->str);
+// 		else
+// 			part = expand_arg(tok->str, mini);
+// 		result = ft_strjoin_f(result, part);
 
-		tok = tok->next;
-		if (tok && (tok->type != CMD && tok->type != UNKNOWN))
-			break ;
-	}
-	*current = tok;
+// 		tok = tok->next;
+// 		if (tok && (tok->type != CMD && tok->type != UNKNOWN))
+// 			break ;
+// 	}
+// 	*current = tok;
 
-	return (result);
-}
+// 	return (result);
+// }
 
 static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 {
@@ -162,14 +162,14 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			if (cmd->infile)
 				free(cmd->infile);
 			cmd->last_redirin = 0;
-			cmd->infile = expand_arg(tmp->next->str, mini);
+			cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			tmp = tmp->next;
 		}
 		else if (tmp->type == REDIR_OUT && tmp->next)
 		{
 			if (cmd->outfile)
 				free(cmd->outfile);
-			cmd->outfile = expand_arg(tmp->next->str, mini);
+			cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd < 0)
 				exit_error("creation outfile");
@@ -181,10 +181,10 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		{
 			if (cmd->outfile)
 				free(cmd->outfile);
-			cmd->outfile = expand_arg(tmp->next->str, mini);
+			cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			if (cmd->append)
 				free(cmd->append);
-			cmd->append = expand_arg(tmp->next->str, mini);
+			cmd->append = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
 			if (fd < 0)
 				exit_error("append creation outfile");
@@ -197,7 +197,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			if (cmd->infile)
 				free(cmd->infile);
 			cmd->last_redirin = 1;
-			cmd->infile = expand_arg(tmp->next->str, mini);
+			cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			heredoc_nb++;
 			tmp = tmp->next;
 		}
