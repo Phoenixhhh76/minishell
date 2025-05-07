@@ -6,15 +6,19 @@
 # include <stdbool.h>
 # include <sys/types.h>
 # include <sys/wait.h>
+# include <sys/stat.h>
 # include <unistd.h>
 # include <limits.h>
 # include <fcntl.h>
-# include <sys/stat.h>
+# include <signal.h>
+# include <errno.h>
 # include <readline/readline.h>
 # include <readline/history.h>
 # include "../libft/libft.h"
 
-extern pid_t	g_signal_pid;
+extern pid_t				g_signal_pid;
+
+typedef struct sigaction	t_sigaction;
 
 typedef enum e_node_type
 {
@@ -87,6 +91,9 @@ typedef struct s_mini
 void	init_mini(t_mini *mini, char **av, char **env);
 char	**copy_env(char **env);
 
+//signals
+void	signal_handler(int sig);
+
 //tokenizing
 void	init_token(t_mini *mini);
 t_token	*tokenize_input(const char *input);
@@ -95,8 +102,6 @@ t_token	*create_t(char *str, t_quote_type quote_type);
 void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
-
-
 
 //init_ast
 void	init_ast(t_mini *mini);

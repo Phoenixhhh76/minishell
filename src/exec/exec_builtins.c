@@ -75,5 +75,22 @@ int	ft_run_builtin(t_cmd *cmd, char ***envp)
 		printf("exit\n");
 		exit(0);
 	}
+	// 	else if (!ft_strcmp(name, "exit"))
+	// {
+	// 	int status = 0;
+	// 	if (cmd->cmd_args[1])
+	// 	{
+	// 		if (!ft_isdigit_str(cmd->cmd_args[1]))
+	// 		{
+	// 			fprintf(stderr, "minishell: exit: %s: numeric argument required\n", cmd->cmd_args[1]);
+	// 			status = 2;
+	// 		}
+	// 		else
+	// 			status = ft_atoi(cmd->cmd_args[1]);
+	// 	}
+	// 	printf("exit\n");
+	// 	cleanup_all(mini); // Fonction à définir pour libérer les ressources
+	// 	exit(status);
+	// }
 	return (1); // not handled
 }
