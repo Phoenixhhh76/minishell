@@ -84,10 +84,10 @@ void	print_tab(char **tab)
 void	print_mini(t_mini *mini)
 {
 	t_token	*tmp;
-	t_ast	*tmp_ast;
+	//t_ast	*tmp_ast;
 
 	tmp = mini->token;
-	tmp_ast = mini->ast;
+	//tmp_ast = mini->ast;
 	printf("Mini %p\n", tmp);
 	while (tmp)
 	{

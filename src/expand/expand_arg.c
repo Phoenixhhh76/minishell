@@ -6,11 +6,12 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/07 15:42:28 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:58:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
 
 /* for "'$USER'" */
 char	*expand_if_needed(t_token *token, t_mini *mini)
@@ -55,6 +56,13 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	char	*val;
 
 	start = ++(*i); // skip $
+	if (str[start] == '"' || str[start] == '\'')
+	{
+		// Bash 中：$"" → 空變數（返回空字串）
+		(*i)++; // 前進 1 讓 tokenizer 不卡住
+		return (ft_strdup(""));
+	}
+
 	if (str[start] == '?')// $? is for exit code
 	//WEXITSTATUS(status) ????
 	{
@@ -64,6 +72,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	if (!str[start] || !(ft_isalpha(str[start]) || str[start] == '_'))
 	{
 		// echo $
+		//(*i)++; // for echo "$"""
 		return (ft_strdup("$"));
 	}
 	while (str[*i] && (ft_isalnum(str[*i]) || str[*i] == '_'))
@@ -73,46 +82,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	free(var);
 	return (val);
 }
-// char	*expand_arg(const char *str, t_mini *mini)
-// {
-// 	char	*result;
-// 	int		i = 0;
-// 	int		start;
-// 	//char	quote;
 
-// 	result = calloc(1, sizeof(char));
-// 	while (str[i])
-// 	{
-// 		if (str[i] == '\'') // single quote : copy raw
-// 		{
-// 			start = ++i;
-// 			while (str[i] && str[i] != '\'')
-// 				i++;
-// 			result = ft_strjoin_f(result, ft_strndup(str + start, i - start));
-// 			if (str[i] == '\'')
-// 				i++;
-// 		}
-// 		else if (str[i] == '"') // double quote : expand inside
-// 		{
-// 			start = ++i;
-// 			while (str[i] && str[i] != '"')
-// 			{
-// 				if (str[i] == '$')
-// 					result = ft_strjoin_f(result, expand_var(str, &i, mini));
-// 				else
-// 					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
-// 			}
-// 			if (str[i] == '"')
-// 				i++;
-// 		}
-// 		else if (str[i] == '$') // outside quote, expand
-// 			result = ft_strjoin_f(result, expand_var(str, &i, mini));
-// 		else // normal char
-// 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
-// 	}
-// 	return (result);
-// }
-//char	*expand_arg(const char *str, t_mini *mini)
 char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 {
 	char	*result;
@@ -139,7 +109,7 @@ char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 			{
 				if (str[i] == '$')
 				{
-					// 處理 $"" 或 $'' 作為空字串
+					//處理 $"" 或 $'' 作為空字串
 					if (str[i + 1] == '"' && str[i + 2] == '"')
 						i += 3;
 					else if (str[i + 1] == '\'' && str[i + 2] == '\'')
@@ -166,36 +136,6 @@ char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 		else // 普通字元
 			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
 	}
+	result = ft_strjoin_f(result, ft_strdup(""));
 	return (result);
 }
-
-/*
-char	*expand_arg(const char *str, t_mini *mini)
-{
-	char	*result;
-	int		i;
-
-	i = 0;
-	result = calloc(1, sizeof(char));
-	while (str[i])
-	{
-		if (str[i] == '"')
-		{
-			i++;
-			while (str[i] && str[i] != '"')
-			{
-				if (str[i] == '$')
-					result = ft_strjoin_f(result, expand_var(str, &i, mini));
-				else
-					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
-			}
-			if (str[i] == '"')
-				i++;
-		}
-		else if (str[i] == '$')
-			result = ft_strjoin_f(result, expand_var(str, &i, mini));
-		else
-			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
-	}
-	return (result);
-} */

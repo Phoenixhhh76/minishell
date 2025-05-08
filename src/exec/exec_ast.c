@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:06:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 17:05:29 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/08 10:06:40 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,9 +86,9 @@ void	handle_redirects(t_cmd *cmd)
 
 void	exec_cmd_node(t_ast *node, char **envp)
 {
-	int	i;
+	//int	i;
 
-	i = 0;
+	//i = 0;
 	if (!node->cmd)
 		return ;
 	handle_redirects(node->cmd);

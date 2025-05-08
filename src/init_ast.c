@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/07 15:46:46 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/08 11:35:21 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,32 +32,6 @@ static int	add_split(char **args, int i, char *expanded)
 	return (i);
 }
 
-//for echo abcd"$USER"efgh, is not 3 arg, is one TO REMOVE
-// char	*merge_and_expand(t_token **current, t_token *end, t_mini *mini)
-// {
-// 	char	*result;
-// 	char	*part;
-// 	t_token	*tok;
-
-// 	result = ft_strdup("");
-// 	tok = *current;
-
-// 	while (tok && tok != end && (tok->type == CMD || tok->type == UNKNOWN))
-// 	{
-// 		if (tok->quote_type == QUOTE_SINGLE)
-// 			part = ft_strdup(tok->str);
-// 		else
-// 			part = expand_arg(tok->str, mini);
-// 		result = ft_strjoin_f(result, part);
-
-// 		tok = tok->next;
-// 		if (tok && (tok->type != CMD && tok->type != UNKNOWN))
-// 			break ;
-// 	}
-// 	*current = tok;
-
-// 	return (result);
-// }
 
 static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 {
@@ -73,21 +47,6 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 		i = add_split(args, i, expanded);
 	return (i);
 }
-
-/* replace for the condition "'$USER'"
-static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
-{
-	char	*expanded;
-
-	expanded = expand_arg(tok->str, mini);
-	if (!expanded)
-		return (i);
-	if (tok->quote_type == QUOTE_DOUBLE)
-		args[i++] = expanded;
-	else
-		i = add_split(args, i, expanded);
-	return (i);
-} */
 
 static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 {

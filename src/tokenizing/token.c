@@ -5,96 +5,119 @@
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025/04/25 12:33:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/07 15:51:02 by hho-troc         ###   ########.fr       */
+/*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
+/*   Updated: 2025/05/08 12:59:42 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	process_redirection(const char *input, int i, t_token **tokens)
+static	int is_meta_char(char c)
 {
-	int	len;
+	return (c == '|' || c == '<' || c == '>');
+}
 
-	len = 1;
-	if (input[i] == input[i + 1])
-		len = 2;
+static	void skip_spaces(const char *input, int *i)
+{
+	while (input[*i] && ft_isspace(input[*i]))
+		(*i)++;
+}
+/* problemetic case:
+bash-5.2$ echo abcd"$USER"efgh
+abcdphoenixefgh
+
+minishell> echo abcd"$USER"efgh
+Token: [echo], quote_type: 0
+Token: [abcd$USERefgh], quote_type: 2
+abcd -> no good
+
+add is_wrapped() to keep quote while it's in a string
+minishell> echo abcd"$USER"efgh
+Token: [echo], quote_type: 0
+Token: [abcd"$USER"efgh], quote_type: 0
+abcdphoenixefgh
+
+*/
+
+static char *extract_quoted(const char *input, int *i, char *current, t_quote_type *qt)
+{
+	char quote = input[(*i)++];
+	int start = *i;
+	int is_wrapped = (current[0] == '\0'); // ⬅️ 如果 quote 出現在 token 一開始
+	while (input[*i] && input[*i] != quote)
+		(*i)++;
+	int len = *i - start;
+	if (input[*i] == quote)
+		(*i)++;
+	char *quoted;
+	if (is_wrapped && (input[*i] == '\0' || ft_isspace(input[*i]) || is_meta_char(input[*i])))
+	{
+		// quote 是獨立整段包裹 → 拿掉 quote，設定 quote_type
+		quoted = ft_strndup(&input[start], len);
+		if (quote == '"')
+			*qt = QUOTE_DOUBLE;
+		else if (quote == '\'')
+			*qt = QUOTE_SINGLE;
+	}
+	else
+	{
+		// quote 是中間的一部分 → 保留原始 quote，整段屬於 unquoted 結構
+		quoted = ft_strndup(&input[start - 1], len + 2);
+		*qt = QUOTE_NONE;
+	}
+	return ft_strjoin_f(current, quoted);
+}
+
+static char *extract_plain(const char *input, int *i, char *current)
+{
+	int start = *i;
+
+	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '"' &&
+		input[*i] != '\'' && !is_meta_char(input[*i]))
+		(*i)++;
+	return ft_strjoin_f(current, ft_strndup(&input[start], *i - start));
+}
+
+static int handle_meta(const char *input, int i, t_token **tokens)
+{
+	int len = (input[i] == input[i + 1]) ? 2 : 1;
 	append_t(tokens, create_t(ft_strndup(&input[i], len), QUOTE_NONE));
 	return (i + len);
 }
 
-static int	process_token(const char *input, int i, t_token **tokens)
+t_token *tokenize_input(const char *input)
 {
-	int		start;
-	char	quote;
-	char	*content;
-
-	if (input[i] == '>' || input[i] == '<')
-		return (process_redirection(input, i, tokens));
-	else if (input[i] == '|')
-	{
-		append_t(tokens, create_t(ft_strndup(&input[i], 1), QUOTE_NONE));
-		return (i + 1);
-	}
-	else if (input[i] == '"' || input[i] == '\'')
-	{
-		quote = input[i++];
-		start = i;
-		while (input[i] && input[i] != quote)
-			i++;
-		content = ft_strndup(input + start, i - start);
-		if (input[i] == quote)
-			i++;
-		append_t(tokens, create_t(content, quote == '"' ? QUOTE_DOUBLE : QUOTE_SINGLE));
-		return (i);
-	}
-	else
-	{
-		start = i;
-		while (input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
-			i++;
-		append_t(tokens, create_t(ft_strndup(&input[start], i - start), QUOTE_NONE));
-		return (i);
-	}
-}
-
-
-//for ""empty
-t_token	*tokenize_input(const char *input)
-{
+	t_token *tokens = NULL;
+	char *current = NULL;
 	t_quote_type qt;
-	t_token	*tokens;
-	int		i;
-
-	tokens = NULL;
-	i = 0;
+	int i = 0;
 	while (input[i])
 	{
-		while (ft_isspace(input[i]))
-			i++;
-
+		skip_spaces(input, &i);
 		if (!input[i])
 			break;
-
-		// Special case: "" or '' (empty string token)
-		if ((input[i] == '"' && input[i + 1] == '"' && input[i + 2] == ' ') ||
-			(input[i] == '\'' && input[i + 1] == '\'' && input[i + 2] == ' '))
+		current = ft_strdup("");
+		qt = QUOTE_NONE;
+		while (input[i] && !ft_isspace(input[i]) && !is_meta_char(input[i]))
 		{
-			if (input[i] == '"')
-				qt = QUOTE_DOUBLE;
+			if (input[i] == '\'' || input[i] == '"')
+				current = extract_quoted(input, &i, current, &qt);
 			else
-				qt = QUOTE_SINGLE;
-			i += 2;
-			append_t(&tokens, create_t(ft_strdup(""), qt));
-			continue;
+				current = extract_plain(input, &i, current);
 		}
-		i = process_token(input, i, &tokens);
+		if (current[0] || qt != QUOTE_NONE)
+			append_t(&tokens, create_t(current, qt));
+		else
+			free(current);
+		if (is_meta_char(input[i]))
+			i = handle_meta(input, i, &tokens);
+		else if (input[i])
+			i++;
 	}
-
 	return tokens;
 }
 
-void	print_token_list(t_token *token)
+void print_token_list(t_token *token)
 {
 	while (token)
 	{
