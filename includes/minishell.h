@@ -95,6 +95,14 @@ t_token	*create_t(char *str, t_quote_type quote_type);
 void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
+//token_helper
+// int		is_meta_char(char c);
+// void	skip_spaces(const char *input, int *i);
+
+// char	*extract_plain(const char *input, int *i, char *current);
+// int		handle_meta(const char *input, int i, t_token **tokens);
+//extract_quoted.c
+// char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt);
 
 
 

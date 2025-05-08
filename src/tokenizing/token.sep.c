@@ -6,21 +6,21 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 20:22:57 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/08 21:18:00 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	is_meta_char(char c)
-{
-	return (c == '|' || c == '<' || c == '>');
-}
-static void	skip_spaces(const char *input, int *i)
-{
-	while (input[*i] && ft_isspace(input[*i]))
-		(*i)++;
-}
+/*
+
+seperate vertion
+problemtic case:
+echo $"" , $''HOME
+
+*/
+
+
 /* problemetic case:
 bash-5.2$ echo abcd"$USER"efgh
 abcdphoenixefgh
@@ -37,7 +37,8 @@ Token: [abcd"$USER"efgh], quote_type: 0
 abcdphoenixefgh
 
 */
-/* seperate in several small function */
+/* seperate in several small function : */
+/*
 static char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt)
 {
 	char quote = input[(*i)++];
@@ -82,36 +83,96 @@ static int	handle_meta(const char *input, int i, t_token **tokens)
 	int len = (input[i] == input[i + 1]) ? 2 : 1;
 	append_t(tokens, create_t(ft_strndup(&input[i], len), QUOTE_NONE));
 	return (i + len);
+} */
+/* over 25line, need seperate */
+// t_token	*tokenize_input(const char *input)
+// {
+// 	t_token			*tokens;
+// 	char			*current;
+// 	t_quote_type		qt;
+// 	int			i;
+
+// 	i = 0;
+// 	tokens = NULL;
+// 	current = NULL;
+// 	while (input[i])
+// 	{
+// 		skip_spaces(input, &i);
+// 		if (!input[i])
+// 			break ;
+// 		current = ft_strdup("");
+// 		qt = QUOTE_NONE;
+// 		while (input[i] && !ft_isspace(input[i]) && !is_meta_char(input[i]))
+// 		{
+// 			if (input[i] == '\'' || input[i] == '"')
+// 				current = extract_quoted(input, &i, current, &qt);
+// 			else
+// 				current = extract_plain(input, &i, current);
+// 		}
+// 		if (current[0] || qt != QUOTE_NONE)
+// 			append_t(&tokens, create_t(current, qt));
+// 		else
+// 			free(current);
+// 		if (is_meta_char(input[i]))
+// 			i = handle_meta(input, i, &tokens);
+// 		else if (input[i])
+// 			i++;
+// 	}
+// 	return (tokens);
+// }
+void	init_token_loop_vars(char **current, t_quote_type *qt)
+{
+	*current = ft_strdup("");
+	if (!*current)
+		exit_error("malloc failed in init_token_loop_vars");
+	*qt = QUOTE_NONE;
+}
+
+void	fill_current_token(const char *input, int *i, char **current, t_quote_type *qt)
+{
+	while (input[*i] && !ft_isspace(input[*i]) && !is_meta_char(input[*i]))
+	{
+		if (input[*i] == '\'' || input[*i] == '"')
+			*current = extract_quoted(input, i, *current, qt);
+		else
+			*current = extract_plain(input, i, *current);
+	}
+}
+
+void	finalize_token(char *current, t_quote_type qt, t_token **tokens)
+{
+	if (current[0] || qt != QUOTE_NONE)
+		append_t(tokens, create_t(current, qt));
+	else
+		free(current);
+}
+
+void	check_and_handle_meta(const char *input, int *i, t_token **tokens)
+{
+	if (is_meta_char(input[*i]))
+		*i = handle_meta(input, *i, tokens);
+	else if (input[*i])
+		(*i)++;
 }
 
 t_token	*tokenize_input(const char *input)
 {
-	t_token *tokens = NULL;
-	char *current = NULL;
-	t_quote_type qt;
-	int i = 0;
+	t_token			*tokens;
+	char			*current;
+	t_quote_type	qt;
+	int				i;
+
+	tokens = NULL;
+	i = 0;
 	while (input[i])
 	{
 		skip_spaces(input, &i);
 		if (!input[i])
 			break ;
-		current = ft_strdup("");
-		qt = QUOTE_NONE;
-		while (input[i] && !ft_isspace(input[i]) && !is_meta_char(input[i]))
-		{
-			if (input[i] == '\'' || input[i] == '"')
-				current = extract_quoted(input, &i, current, &qt);
-			else
-				current = extract_plain(input, &i, current);
-		}
-		if (current[0] || qt != QUOTE_NONE)
-			append_t(&tokens, create_t(current, qt));
-		else
-			free(current);
-		if (is_meta_char(input[i]))
-			i = handle_meta(input, i, &tokens);
-		else if (input[i])
-			i++;
+		init_token_loop_vars(&current, &qt);
+		fill_current_token(input, &i, &current, &qt);
+		finalize_token(current, qt, &tokens);
+		check_and_handle_meta(input, &i, &tokens);
 	}
 	return (tokens);
 }
