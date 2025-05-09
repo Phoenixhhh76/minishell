@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 21:01:47 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 09:12:46 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,7 +33,8 @@ static void	set_quote_type(char quote, t_quote_type *qt)
 static int	should_strip_quotes(const char *input, int i, const char *current)
 {
 	return (current[0] == '\0'
-		&& (input[i] == '\0' || ft_isspace(input[i]) || is_meta_char(input[i])));
+		&& (input[i] == '\0' || ft_isspace(input[i])
+			|| is_meta_char(input[i])));
 }
 
 char	*extract_quoted(const char *input, int *i,
