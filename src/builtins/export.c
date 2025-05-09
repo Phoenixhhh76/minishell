@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 16:21:09 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 17:40:43 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -356,78 +356,78 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 
  static int	handle_var_assignment(char **env, char *joined, char ***mini_env, int index)
  {
-	 if (!joined)
-		 return (-1);
-	 if (index >= 0)
-	 {
-		 free(env[index]);
-		 env[index] = ft_strdup(joined);
-		 if (!env[index])
-			 return (-1);
+	if (!joined)
+		return (-1);
+	if (index >= 0)
+	{
+		free(env[index]);
+		env[index] = ft_strdup(joined);
+		if (!env[index])
+			return (-1);
+	}
+	else
+	{
+		// do not free joined here, ownership passes to add_var_to_env's strdup
+		if (add_var_to_env(env, joined, mini_env) < 0)
+			return (-1);
 	 }
-	 else
-	 {
-		 // do not free joined here, ownership passes to add_var_to_env's strdup
-		 if (add_var_to_env(env, joined, mini_env) < 0)
-			 return (-1);
-	 }
-	 printf("export assigned: [%s]\n", joined);
-	 return (0);
+	printf("export assigned: [%s]\n", joined);
+	return (0);
  }
 
  int	ft_export(t_cmd *cmd, char ***mini_env)
  {
-	 int i = 1;
-	 int env_index;
-	 char **var;
-	 char *joined;
-	 char **env = *mini_env;
+	int	i = 1;
+	int	env_index;
+	char	**var;
+	char	*joined;
+	char	**env = *mini_env;
 
 	 if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
-		 return (0);
+		return (0);
 	 while (cmd->cmd_args[i])
 	 {
-		 char *fallback = ft_strdup("");
-		 int j = i + 1;
-		 while (cmd->cmd_args[j])
-		 {
-			 char *tmp = fallback;
-			 fallback = ft_strjoin_f(tmp, cmd->cmd_args[j]);
-			 fallback = ft_strjoin_f(fallback, " ");
-			 j++;
-		 }
+		char *fallback = ft_strdup("");
+		int j = i + 1;
+		while (cmd->cmd_args[j])
+		{
+			char *tmp = fallback;
+			fallback = ft_strjoin_f(tmp, cmd->cmd_args[j]);
+			fallback = ft_strjoin_f(fallback, " ");
+			j++;
+		}
 
-		 var = split_export_arg_fallback(cmd->cmd_args[i], fallback);
-		 free(fallback);
-		 if (!var || !var[0] || var[0][0] == '\0')
+		var = split_export_arg_fallback(cmd->cmd_args[i], fallback);
+		free(fallback);
+		if (!var || !var[0] || var[0][0] == '\0')
 		 {
-			 free_double_tab(var);
-			 //fprintf(stderr, "export: invalid assignment of var\n");
-			 i++;
-			 continue;
+			free_double_tab(var);
+			//fprintf(stderr, "export: invalid assignment of var\n");
+			i++;
+			continue;
 		 }
-		 joined = make_joined_assignment(var);
-		 if (!joined)
-		 {
-			 free_double_tab(var);
-			 i++;
-			 continue;
+		joined = make_joined_assignment(var);
+		if (!joined)
+		{
+			free_double_tab(var);
+			i++;
+			continue;
+		}
+		if (!is_valid_var_name(var[0]))
+		{
+			fprintf(stderr, "export: invalid identifier\n");
+			free_double_tab(var);
+			free(joined);
+			i++;
+			continue;
 		 }
-		 if (!is_valid_var_name(var[0]))
-		 {
-			 fprintf(stderr, "export: invalid identifier\n");
-			 free_double_tab(var);
-			 free(joined);
-			 i++;
-			 continue;
-		 }
-		 env_index = does_var_exist(env, var[0]);
-		 if (handle_var_assignment(env, joined, mini_env, env_index) < 0)
-		 {
-			 free_double_tab(var);
-			 free(joined);
-			 i++;
-			 continue;
+		env_index = does_var_exist(env, var[0]);
+		if (handle_var_assignment(env, joined, mini_env, env_index) < 0)
+		{
+			free_double_tab(var);
+			free(joined);
+			i++;
+			continue;
 		}
 		env = *mini_env;
 		free_double_tab(var);
@@ -436,5 +436,7 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 	 }
 	return (0);
  }
+
+ 
 
 
