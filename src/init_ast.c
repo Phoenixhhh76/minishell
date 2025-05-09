@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 11:35:21 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 10:55:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -166,7 +166,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	if (heredoc_nb > 0)
 	{
 		cmd->heredoc_pipe = create_heredoc_pipe(heredoc_nb);
-		cmd->heredocs = get_heredoc(heredoc_nb, start, end, mini);
+		cmd->heredocs = get_heredoc(heredoc_nb, start, end, cmd);
 	}
 	cmd->cmd_args = collect_args(start, end, mini);
 	if (cmd->cmd_args && cmd->cmd_args[0])

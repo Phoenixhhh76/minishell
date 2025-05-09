@@ -6,12 +6,13 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 13:06:45 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/07 15:47:10 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 12:50:25 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
+/*
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini)
 {
 	int		i;
@@ -27,7 +28,38 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini)
 	{
 		if (tmp->type == HEREDOC && tmp->next)
 		{
-			tab_heredocs[i] = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+			//tab_heredocs[i] = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+			//Limiter we don't need to expand
+			tab_heredocs[i] = ft_strdup(tmp->next->str);
+			tmp = tmp->next;
+			i++;
+		}
+		tmp = tmp->next;
+	}
+	tab_heredocs[i] = NULL;
+	return (tab_heredocs);
+} */
+/* have to keep quote type, but we can have just 4 argument, so I get nb and quote from CMD */
+char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd)
+{
+	int		i;
+	char	**tab_heredocs;
+	t_token	*tmp;
+
+	i = 0;
+	tmp = start;
+	tab_heredocs = (char **)ft_calloc(nb + 1, sizeof(char *));
+	if (!tab_heredocs)
+		return (NULL);
+	cmd->heredocs_quote = (t_quote_type *)ft_calloc(nb, sizeof(t_quote_type));
+	if (!cmd->heredocs_quote)
+		return (NULL);
+	while (tmp && tmp != end)
+	{
+		if (tmp->type == HEREDOC && tmp->next)
+		{
+			tab_heredocs[i] = ft_strdup(tmp->next->str);
+			cmd->heredocs_quote[i] = tmp->next->quote_type;
 			tmp = tmp->next;
 			i++;
 		}
@@ -80,10 +112,12 @@ void	close_all_heredocs(t_ast *ast)
 	}
 }
 
-int	exec_heredocs(t_cmd *cmd)
+/* We have to get quote_type of limiter to see if we expand $ in heredoc */
+int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand function
 {
 	int		i;
 	char	*line;
+	char	*expanded;
 
 	i = 0;
 	while (i < cmd->heredoc_nb)
@@ -95,8 +129,19 @@ int	exec_heredocs(t_cmd *cmd)
 				break ;
 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
 				return (-1);//error
-			write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
-			write(cmd->heredoc_pipe[i][1], "\n", 1);
+			if (cmd->heredocs_quote[i] == QUOTE_NONE) // have to expand a
+			{
+				expanded = expand_heredoc_line(line, mini);
+				//expanded = expand_arg(line, mini, QUOTE_NONE); dosen't work for '$USER'
+				write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
+				write(cmd->heredoc_pipe[i][1], "\n", 1);
+				free(expanded);
+			}
+			else
+			{
+				write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
+				write(cmd->heredoc_pipe[i][1], "\n", 1);
+			}
 			free(line);
 		}
 		free(line);
@@ -106,15 +151,17 @@ int	exec_heredocs(t_cmd *cmd)
 	return (0);
 }
 
-void	check_heredocs(t_ast *ast)
+void	check_heredocs(t_ast *ast, t_mini *mini)// add t_mini *mini
 {
 	if (!ast)
 		return ;
 	if (ast->ast_token.type == PIPE)
 	{
-		check_heredocs(ast->left);
-		check_heredocs(ast->right);
+		check_heredocs(ast->left, mini);
+		check_heredocs(ast->right, mini);
 	}
 	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
-		exec_heredocs(ast->cmd);
+		exec_heredocs(ast->cmd, mini);
 }
+
+

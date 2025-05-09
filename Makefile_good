@@ -31,8 +31,7 @@ EXPAND      := $(EXPAND_DIR)/expand_arg.c
 UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/fd.c $(UTILS_DIR)/error.c \
 					$(UTILS_DIR)/str.c
 
-TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c \
-					$(TOKEN_DIR)/helper.c $(TOKEN_DIR)/extract_quoted.c
+TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c \
 					$(SRC_DIR)/print_utils.c $(SRC_DIR)/init_mini.c $(SRC_DIR)/print_ast.c
 

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 13:58:13 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 15:21:51 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,14 +24,45 @@ char	*expand_if_needed(t_token *token, t_mini *mini)
 }
 
 
+// char	*ft_strjoin_f(char *s1, char *s2)
+// {
+// 	char	*joined;
+
+// 	joined = ft_strjoin(s1, s2);
+// 	free(s1);
+// 	return (joined);
+// }
+
+// char	*ft_strjoin_f(char *s1, char *s2)
+// {
+// 	char *joined;
+
+// 	if (!s1 || !s2)
+// 	{
+// 		free(s1);
+// 		free(s2);
+// 		return (NULL);
+// 	}
+// 	joined = ft_strjoin(s1, s2);
+// 	free(s1);
+// 	return joined;
+// }
 char	*ft_strjoin_f(char *s1, char *s2)
 {
-	char	*joined;
+	char *joined;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+		return (s1); // 已有內容，後面是 NULL，不連接
 
 	joined = ft_strjoin(s1, s2);
 	free(s1);
-	return (joined);
+	return joined;
 }
+
 
 char	*get_env_value(const char *key, char **env)
 {
@@ -89,7 +120,8 @@ char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 	int		i = 0;
 	int		start;
 
-	result = calloc(1, sizeof(char));
+	//result = calloc(1, sizeof(char));
+	result = ft_strdup("");
 	while (str[i])
 	{
 		//if (str[i] == '\'') // 單引號：整段當作原始文字

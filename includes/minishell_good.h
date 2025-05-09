@@ -57,8 +57,6 @@ typedef struct s_cmd
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
-	t_quote_type	*heredocs_quote; // maybe we can change t_quote_type in a shorter name ?
-
 	//int		heredoc_error;//add for exit_error
 	//int		child;
 }	t_cmd;
@@ -98,14 +96,13 @@ void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
 //token_helper
-int		is_meta_char(char c);
-void	skip_spaces(const char *input, int *i);
+// int		is_meta_char(char c);
+// void	skip_spaces(const char *input, int *i);
 
-char	*extract_plain(const char *input, int *i, char *current);
-int		handle_meta(const char *input, int i, t_token **tokens);
+// char	*extract_plain(const char *input, int *i, char *current);
+// int		handle_meta(const char *input, int i, t_token **tokens);
 //extract_quoted.c
-char	*extract_quoted(const char *input, int *i, \
-							char *current, t_quote_type *qt);
+// char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt);
 
 
 
@@ -132,31 +129,18 @@ bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_cmd *cmd, char ***envp);
 void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
-//char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
-char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);
-//void	check_heredocs(t_ast *node);
-void	check_heredocs(t_ast *ast, t_mini *mini);
+char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
+void	check_heredocs(t_ast *node);
 int		create_heredocs(t_cmd *cmd);
-//int		exec_heredocs(t_cmd *cmd);
-int		exec_heredocs(t_cmd *cmd, t_mini *mini);
+int		exec_heredocs(t_cmd *cmd);
 int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 
 //expande
 //char	*expand_arg(const char *str, t_mini *mini);
-char	*expand_arg(const char *str, t_mini *mini, t_quote_type quote_type);
+char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
 char	*ft_strjoin_f(char *s1, char *s2);
-char	*get_env_value(const char *key, char **env);
-char	*expand_heredoc_line(const char *str, t_mini *mini);
-//char	*expand_var(const char *str, int *i, t_mini *mini);
-char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
-char	*handle_exit_code(char *result, int *i, t_mini *mini);
-char	*handle_pid(char *result, int *i);
-char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
-
-// 處理單一普通字元追加到結果字串
-char	*append_char(char *result, char c);
 
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);

@@ -27,11 +27,12 @@ PARSING     := $(PARSING_DIR)/parse_pipeline.c
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c
 
-EXPAND      := $(EXPAND_DIR)/expand_arg.c
+EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c
 UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/fd.c $(UTILS_DIR)/error.c \
 					$(UTILS_DIR)/str.c
 
-TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c
+TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c \
+					$(TOKEN_DIR)/helper.c $(TOKEN_DIR)/extract_quoted.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c $(SRC_DIR)/init_ast.c \
 					$(SRC_DIR)/print_utils.c $(SRC_DIR)/init_mini.c $(SRC_DIR)/print_ast.c
 

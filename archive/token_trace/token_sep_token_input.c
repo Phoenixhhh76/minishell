@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   token_all_in_one.c                                 :+:      :+:    :+:   */
+/*   token.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 10:03:44 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 08:43:03 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,67 +16,57 @@ static int	is_meta_char(char c)
 {
 	return (c == '|' || c == '<' || c == '>');
 }
-
 static void	skip_spaces(const char *input, int *i)
 {
 	while (input[*i] && ft_isspace(input[*i]))
 		(*i)++;
 }
+/* problemetic case:
+bash-5.2$ echo abcd"$USER"efgh
+abcdphoenixefgh
 
-static int	get_quote_len(const char *input, int start, char quote)
+minishell> echo abcd"$USER"efgh
+Token: [echo], quote_type: 0
+Token: [abcd$USERefgh], quote_type: 2
+abcd -> no good
+
+add is_wrapped() to keep quote while it's in a string
+minishell> echo abcd"$USER"efgh
+Token: [echo], quote_type: 0
+Token: [abcd"$USER"efgh], quote_type: 0
+abcdphoenixefgh
+
+*/
+/* seperate in several small function */
+static char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt)
 {
-	int	i;
-
-	i = start;
-	while (input[i] && input[i] != quote)
-		i++;
-	return (i - start);
-}
-
-static void	set_quote_type(char quote, t_quote_type *qt)
-{
-	if (quote == '"')
-		*qt = QUOTE_DOUBLE;
-	else if (quote == '\'')
-		*qt = QUOTE_SINGLE;
-}
-
-static int	should_strip_quotes(const char *input, int i, const char *current)
-{
-	return (current[0] == '\0'
-		&& (input[i] == '\0' || ft_isspace(input[i]) || is_meta_char(input[i])));
-}
-
-char	*extract_quoted(const char *input, int *i,
-						char *current, t_quote_type *qt)
-{
-	char	quote;
-	int		start;
-	int		len;
-	int		strip;
-	char	*quoted;
-
-	quote = input[(*i)++];
-	start = *i;
-	len = get_quote_len(input, start, quote);
-	if (input[*i + len] == quote)
-		*i += len + 1;
-	else
-		*i += len;
-	strip = should_strip_quotes(input, *i, current);
-	if (strip)
+	char quote = input[(*i)++];
+	int start = *i;
+	int is_wrapped = (current[0] == '\0'); // ⬅️ 如果 quote 出現在 token 一開始
+	while (input[*i] && input[*i] != quote)
+		(*i)++;
+	int len = *i - start;
+	if (input[*i] == quote)
+		(*i)++;
+	char *quoted;
+	if (is_wrapped && (input[*i] == '\0' || ft_isspace(input[*i]) || is_meta_char(input[*i])))
 	{
+		// quote 是獨立整段包裹 → 拿掉 quote，設定 quote_type
 		quoted = ft_strndup(&input[start], len);
-		set_quote_type(quote, qt);
+		if (quote == '"')
+			*qt = QUOTE_DOUBLE;
+		else if (quote == '\'')
+			*qt = QUOTE_SINGLE;
 	}
 	else
 	{
+		// quote 是中間的一部分 → 保留原始 quote，整段屬於 unquoted 結構
 		quoted = ft_strndup(&input[start - 1], len + 2);
 		*qt = QUOTE_NONE;
 	}
-	return (ft_strjoin_f(current, quoted));
+	return ft_strjoin_f(current, quoted);
 }
-//----------------------------------
+
 static char	*extract_plain(const char *input, int *i, char *current)
 {
 	int start = *i;
@@ -94,6 +84,37 @@ static int	handle_meta(const char *input, int i, t_token **tokens)
 	return (i + len);
 }
 
+// t_token	*tokenize_input(const char *input)
+// {
+// 	t_token *tokens = NULL;
+// 	char *current = NULL;
+// 	t_quote_type qt;
+// 	int i = 0;
+// 	while (input[i])
+// 	{
+// 		skip_spaces(input, &i);
+// 		if (!input[i])
+// 			break ;
+// 		current = ft_strdup("");
+// 		qt = QUOTE_NONE;
+// 		while (input[i] && !ft_isspace(input[i]) && !is_meta_char(input[i]))
+// 		{
+// 			if (input[i] == '\'' || input[i] == '"')
+// 				current = extract_quoted(input, &i, current, &qt);
+// 			else
+// 				current = extract_plain(input, &i, current);
+// 		}
+// 		if (current[0] || qt != QUOTE_NONE)
+// 			append_t(&tokens, create_t(current, qt));
+// 		else
+// 			free(current);
+// 		if (is_meta_char(input[i]))
+// 			i = handle_meta(input, i, &tokens);
+// 		else if (input[i])
+// 			i++;
+// 	}
+// 	return (tokens);
+// }
 void	init_token_loop_vars(char **current, t_quote_type *qt)
 {
 	*current = ft_strdup("");
@@ -160,48 +181,3 @@ void print_token_list(t_token *token)
 		token = token->next;
 	}
 }
-/* problemetic case:
-bash-5.2$ echo abcd"$USER"efgh
-abcdphoenixefgh
-
-minishell> echo abcd"$USER"efgh
-Token: [echo], quote_type: 0
-Token: [abcd$USERefgh], quote_type: 2
-abcd -> no good
-
-add is_wrapped() to keep quote while it's in a string
-minishell> echo abcd"$USER"efgh
-Token: [echo], quote_type: 0
-Token: [abcd"$USER"efgh], quote_type: 0
-abcdphoenixefgh
-
-*/
-/* seperate in several small function */
-// static char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt)
-// {
-// 	char quote = input[(*i)++];
-// 	int start = *i;
-// 	int is_wrapped = (current[0] == '\0'); // ⬅️ 如果 quote 出現在 token 一開始
-// 	while (input[*i] && input[*i] != quote)
-// 		(*i)++;
-// 	int len = *i - start;
-// 	if (input[*i] == quote)
-// 		(*i)++;
-// 	char *quoted;
-// 	if (is_wrapped && (input[*i] == '\0' || ft_isspace(input[*i]) || is_meta_char(input[*i])))
-// 	{
-// 		// quote 是獨立整段包裹 → 拿掉 quote，設定 quote_type
-// 		quoted = ft_strndup(&input[start], len);
-// 		if (quote == '"')
-// 			*qt = QUOTE_DOUBLE;
-// 		else if (quote == '\'')
-// 			*qt = QUOTE_SINGLE;
-// 	}
-// 	else
-// 	{
-// 		// quote 是中間的一部分 → 保留原始 quote，整段屬於 unquoted 結構
-// 		quoted = ft_strndup(&input[start - 1], len + 2);
-// 		*qt = QUOTE_NONE;
-// 	}
-// 	return ft_strjoin_f(current, quoted);
-// }

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/07 14:39:22 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 11:48:47 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -128,7 +128,7 @@ static void	exec_or_builtin(t_mini *mini)
 
 	if (!mini->ast)
 		return ;
-	check_heredocs(mini->ast);
+	check_heredocs(mini->ast, mini);
 	if (!is_there_pipe(mini) && ft_builtin(mini->ast, &mini->env))
 	{
 		fd = dup(STDOUT_FILENO);
