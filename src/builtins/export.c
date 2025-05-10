@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 17:40:43 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/10 18:24:54 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -282,7 +282,7 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 	return (0);
  }
 
- static char *strip_quotes_and_trim(const char *val)
+/* static char *strip_quotes_and_trim(const char *val)
  {
 	 char	*stripped;
 	 char	*trimmed;
@@ -299,9 +299,46 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 	trimmed = ft_strtrim(stripped, " \t");
 	free(stripped);
 	return trimmed ? trimmed : ft_strdup("");
- }
+} */
 
- static char **split_export_arg_fallback(const char *arg, const char *fallback_val)
+static char *strip_quotes_and_trim(const char *val)
+{
+	char	*val_copy;
+	char	*stripped;
+	char	*trimmed;
+	size_t	len;
+
+	if (!val)
+		return (NULL);
+
+	len = ft_strlen(val);
+
+	// 🛡️ Copy first to ensure safe malloc-ownership
+	val_copy = ft_strdup(val);
+	if (!val_copy)
+		return (NULL);
+
+	if (len >= 2 && ((val_copy[0] == '"' && val_copy[len - 1] == '"') ||
+					 (val_copy[0] == '\'' && val_copy[len - 1] == '\'')))
+		stripped = ft_substr(val_copy, 1, len - 2);
+	else
+		stripped = ft_strdup(val_copy);
+
+	free(val_copy); // ✅ 安全釋放複製品
+
+	if (!stripped)
+		return (NULL);
+
+	trimmed = ft_strtrim(stripped, " \t");
+	free(stripped);
+
+	// ✅ Debug 地址檢查
+	printf("[DEBUG] trimmed val addr: %p\n", (void *)trimmed);
+	return trimmed ? trimmed : ft_strdup("");
+}
+
+
+static char **split_export_arg_fallback(const char *arg, const char *fallback_val)
  {
 	if (!arg)
 		return (NULL);
@@ -334,10 +371,12 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 		return (NULL);
 	 }
 	return (out);
- }
+}
 
- static char	*make_joined_assignment(char **var)
- {
+static char	*make_joined_assignment(char **var)
+{
+
+	printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
 	 char *cleaned_val = strip_quotes_and_trim(var[1]);
 	 if (!cleaned_val)
 		 return (NULL);
@@ -374,6 +413,118 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 	printf("export assigned: [%s]\n", joined);
 	return (0);
  }
+/* wrong vertion */
+//  void	print_export_env(char **env)
+//  {
+// 	 int		i = 0;
+// 	 char	*equal;
+// 	 size_t	name_len, val_len;
+
+// 	 while (env && env[i])
+// 	 {
+// 		 equal = ft_strchr(env[i], '=');
+// 		 if (equal && equal != env[i])
+// 		 {
+// 			 name_len = equal - env[i];
+// 			 val_len = ft_strlen(equal + 1);
+
+// 			 write(1, "declare -x ", 11);
+// 			 write(1, env[i], name_len);
+// 			 write(1, "=\"", 2);
+// 			 write(1, equal + 1, val_len);
+// 			 write(1, "\"\n", 2);
+// 		 }
+// 		 else
+// 		 {
+// 			 write(1, "declare -x ", 11);
+// 			 write(1, env[i], ft_strlen(env[i]));
+// 			 write(1, "\n", 1);
+// 		 }
+// 		 i++;
+// 	 }
+//  }
+
+#include <stdlib.h>
+#include <unistd.h>
+#include <string.h>
+
+// 🔧 fonction de swap pour trier
+static void	swap(char **a, char **b)
+{
+	char *tmp = *a;
+	*a = *b;
+	*b = tmp;
+}
+
+// 🧠 tri alphabétique simple (bubble sort)
+static void	sort_env(char **env)
+{
+	int	i, j;
+
+	for (i = 0; env[i]; i++)
+	{
+		for (j = i + 1; env[j]; j++)
+		{
+			if (ft_strcmp(env[i], env[j]) > 0)
+				swap(&env[i], &env[j]);
+		}
+	}
+}
+
+void	print_export_env(char **env)
+{
+	int		i = 0;
+	char	*equal;
+	size_t	name_len, val_len;
+
+	if (!env)
+		return;
+
+	// ✅ clone pour ne pas modifier mini_env d'origine
+	int		count = 0;
+	while (env[count])
+		count++;
+
+	char	**sorted = ft_calloc(count + 1, sizeof(char *));
+	if (!sorted)
+		return;
+
+	while (i < count)
+	{
+		sorted[i] = ft_strdup(env[i]);
+		i++;
+	}
+	sorted[i] = NULL;
+
+	sort_env(sorted); // 🧠 trier par ordre alphabétique
+
+	i = 0;
+	while (sorted[i])
+	{
+		equal = ft_strchr(sorted[i], '=');
+		if (equal && equal != sorted[i])
+		{
+			name_len = equal - sorted[i];
+			val_len = ft_strlen(equal + 1);
+
+			write(1, "declare -x ", 11);
+			write(1, sorted[i], name_len);
+			write(1, "=\"", 2);
+			write(1, equal + 1, val_len);
+			write(1, "\"\n", 2);
+		}
+		else
+		{
+			write(1, "declare -x ", 11);
+			write(1, sorted[i], ft_strlen(sorted[i]));
+			write(1, "\n", 1);
+		}
+		i++;
+	}
+	free_double_tab(sorted);
+}
+
+
 
  int	ft_export(t_cmd *cmd, char ***mini_env)
  {
@@ -383,29 +534,37 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 	char	*joined;
 	char	**env = *mini_env;
 
-	 if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
+	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
+	{
+		print_export_env(env);
 		return (0);
-	 while (cmd->cmd_args[i])
-	 {
-		char *fallback = ft_strdup("");
-		int j = i + 1;
-		while (cmd->cmd_args[j])
+	}
+	while (cmd->cmd_args[i])
+	{
+		// ✅ 只處理帶等號的 token
+		if (!ft_strchr(cmd->cmd_args[i], '='))
 		{
-			char *tmp = fallback;
-			fallback = ft_strjoin_f(tmp, cmd->cmd_args[j]);
-			fallback = ft_strjoin_f(fallback, " ");
-			j++;
+			i++; // 完全忽略 a 這種不含 '=' 的參數
+			continue;
 		}
 
-		var = split_export_arg_fallback(cmd->cmd_args[i], fallback);
-		free(fallback);
-		if (!var || !var[0] || var[0][0] == '\0')
-		 {
-			free_double_tab(var);
-			//fprintf(stderr, "export: invalid assignment of var\n");
+		// ✅ 現在才進一步檢查錯誤格式（如 =bonjour）
+		if (cmd->cmd_args[i][0] == '=')
+		{
+			fprintf(stderr, "minishell: export: `%s': not a valid identifier\n", cmd->cmd_args[i]);
 			i++;
 			continue;
-		 }
+		}
+
+
+		var = split_export_arg_fallback(cmd->cmd_args[i], NULL);
+		if (!var || !var[0] || var[0][0] == '\0')
+		{
+			free_double_tab(var);
+			i++;
+			continue;
+		}
+
 		joined = make_joined_assignment(var);
 		if (!joined)
 		{
@@ -413,14 +572,16 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 			i++;
 			continue;
 		}
+
 		if (!is_valid_var_name(var[0]))
 		{
-			fprintf(stderr, "export: invalid identifier\n");
+			fprintf(stderr, "export: invalid identifier: %s\n", var[0]);
 			free_double_tab(var);
 			free(joined);
 			i++;
 			continue;
-		 }
+		}
+
 		env_index = does_var_exist(env, var[0]);
 		if (handle_var_assignment(env, joined, mini_env, env_index) < 0)
 		{
@@ -429,14 +590,16 @@ int ft_export(t_cmd *cmd, char ***mini_env)
 			i++;
 			continue;
 		}
+
 		env = *mini_env;
 		free_double_tab(var);
 		free(joined);
 		i++;
-	 }
+	}
+
 	return (0);
  }
 
- 
+
 
 
