@@ -17,6 +17,8 @@ pid_t g_signal_pid = 0;
 static int	read_and_prepare_line(char **line)
 {
 	*line = readline("minishell> ");
+	//signal(SIGINT, signal_handler);
+	//signal(SIGTERM, signal_handler);
 	if (!*line)
 	{
 		write(1, "exit\n", 5);
@@ -24,8 +26,6 @@ static int	read_and_prepare_line(char **line)
 	}
 	if ((*line)[0] == '\0')
 		return (0);
-	signal(SIGINT, signal_handler);
-	signal(SIGTERM, signal_handler);
 	add_history(*line);
 	return (0);
 }
@@ -115,6 +115,8 @@ static void	exec_or_builtin(t_mini *mini)
 		}
 		if (pid == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini->ast, mini->env);
 			exit(1); // fallback if execve fails
 		}
@@ -148,6 +150,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	init_mini(&mini, av, envp);
+	ft_setup_signals();
 	while (1)
 	{
 		if (read_and_prepare_line(&line))

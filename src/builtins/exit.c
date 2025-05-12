@@ -19,7 +19,7 @@ int	ft_exit(t_cmd *cmd, t_mini *mini)
 	printf("exit\n");
 	if (cmd->cmd_args[1])
 	{
-		if (!ft_isnumber(cmd->cmd_args[1]))
+		if (!ft_isdigit(cmd->cmd_args[1]))
 		{
 			ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
 			//safe_cleanup(mini, NULL); 
@@ -37,3 +37,7 @@ int	ft_exit(t_cmd *cmd, t_mini *mini)
 	//safe_cleanup(mini, NULL);
 	exit(mini->last_exit);
 }
+
+
+//long max lomg min
+//error code, use %256

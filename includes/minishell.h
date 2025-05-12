@@ -93,6 +93,7 @@ char	**copy_env(char **env);
 
 //signals
 void	signal_handler(int sig);
+void	ft_setup_signals(void);
 
 //tokenizing
 void	init_token(t_mini *mini);
