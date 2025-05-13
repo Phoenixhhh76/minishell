@@ -82,6 +82,7 @@ typedef struct s_mini
 	t_ast	*ast;
 	t_token	*token;
 	char	**env;
+	char	**exp_list; // for export without args, not in env
 	char	**av;
 	int	 	last_exit; // last exit code for $?
 	//int		ac;
@@ -129,13 +130,16 @@ int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
 int		ft_unset(t_cmd *cmd, char ***mini_env);
-int		ft_export(t_cmd *cmd, char ***mini_env);
+int		ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini);
+void	print_export_env(char **env, char **exp_list);
+char	**clone_and_sort_env(char **env);
+void	print_sorted_env_line(const char *entry);
 
 //exec
 void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast, char ***env);
 bool	ft_is_builtin(char *arg);
-int		ft_run_builtin(t_cmd *cmd, char ***envp);
+int		ft_run_builtin(t_cmd *cmd, t_mini *mini);
 void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 //char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);

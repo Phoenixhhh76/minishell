@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/10 17:53:27 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:13:06 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,6 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	expanded = expand_if_needed(tok, mini);
 	if (!expanded)
 		return (i);
-
 	if (tok->quote_type == QUOTE_DOUBLE)
 		args[i++] = expanded;
 	else
@@ -104,7 +103,7 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 			}
 		}
 		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
-				  start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
+			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -127,7 +126,7 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 		if (start->type == CMD || start->type == UNKNOWN)
 			i = process_token(args, i, start, mini);
 		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
-				  start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
+			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -161,17 +160,51 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	return (args);
 } */
 
-static char	**collect_args_for_export(t_token *start, t_token *end)
+// static char	**collect_args_for_export(t_token *start, t_token *end)
+// {
+// 	int		count = 0;
+// 	int		i = 0;
+// 	char	**args;
+// 	t_token *tmp = start;
+
+// 	while (tmp && tmp != end)
+// 	{
+// 		if (tmp->type == CMD || tmp->type == UNKNOWN)
+// 			count++;
+// 		tmp = tmp->next;
+// 	}
+
+// 	args = (char **)ft_calloc(count + 1, sizeof(char *));
+// 	if (!args)
+// 		return (NULL);
+
+// 	while (start && start != end)
+// 	{
+// 		if (start->type == CMD || start->type == UNKNOWN)
+// 			args[i++] = ft_strdup(start->str); // 不展開，不 split
+// 		start = start->next;
+// 	}
+// 	args[i] = NULL;
+// 	return (args);
+// }
+static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini)
 {
 	int		count = 0;
 	int		i = 0;
+	char	*expanded;
 	char	**args;
 	t_token *tmp = start;
 
+	// 第一次遍歷：計算 token 數量
 	while (tmp && tmp != end)
 	{
 		if (tmp->type == CMD || tmp->type == UNKNOWN)
-			count++;
+		{
+			expanded = expand_if_needed(tmp, mini);
+			if (expanded && expanded[0] != '\0')
+				count++;
+			free(expanded);
+		}
 		tmp = tmp->next;
 	}
 
@@ -179,10 +212,17 @@ static char	**collect_args_for_export(t_token *start, t_token *end)
 	if (!args)
 		return (NULL);
 
+	// 第二次遍歷：填值
 	while (start && start != end)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
-			args[i++] = ft_strdup(start->str); // 不展開，不 split
+		{
+			expanded = expand_if_needed(start, mini);
+			if (expanded && expanded[0] != '\0')
+				args[i++] = expanded; // ✅ 保留空格，不 split，但展開
+			else
+				free(expanded);
+		}
 		start = start->next;
 	}
 	args[i] = NULL;
@@ -264,7 +304,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 
 	// check if it's  export command
 	if (start && start->str && ft_strcmp(start->str, "export") == 0)
-		cmd->cmd_args = collect_args_for_export(start, end);
+		cmd->cmd_args = collect_args_for_export(start, end, mini);
 	else
 		cmd->cmd_args = collect_args(start, end, mini);
 

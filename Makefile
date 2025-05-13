@@ -22,7 +22,7 @@ TOKEN_DIR = $(SRC_DIR)/tokenizing
 BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c \
 					$(BUILT_DIR)/pwd.c $(BUILT_DIR)/export.c \
 					$(BUILT_DIR)/env.c $(BUILT_DIR)/unset.c \
-					$(BUILT_DIR)/builtins_utils.c
+					$(BUILT_DIR)/builtins_utils.c $(BUILT_DIR)/export_utils.c
 PARSING     := $(PARSING_DIR)/parse_pipeline.c
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c

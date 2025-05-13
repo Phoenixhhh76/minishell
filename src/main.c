@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 11:48:47 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/13 16:44:42 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -101,7 +101,22 @@ static void	exec_or_builtin(t_mini *mini)
 		fd = dup(STDOUT_FILENO);
 		if (has_redirection(mini->ast->cmd))
 			handle_redirects(mini->ast->cmd);
-		mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+
+// printf("RUN BUILTIN: %s\n", mini->ast->cmd->cmd_args[0]);
+// int ret = ft_run_builtin(mini->ast->cmd, mini);
+// printf("RETURN CODE: %d\n", ret);
+// mini->last_exit = ret;
+
+
+
+		mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
+
+
+// printf("RUN BUILTIN: %s\n", mini->ast->cmd->cmd_args[0]);
+// int ret = ft_run_builtin(mini->ast->cmd, mini);
+// printf("RETURN CODE: %d\n", ret);
+// mini->last_exit = ret;
+
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
 		return ;
@@ -109,11 +124,11 @@ static void	exec_or_builtin(t_mini *mini)
 	else
 	{
 		pid = fork();
-		if (ft_builtin(mini->ast, &mini->env))
-		{
-			mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
-			return ;
-		}
+		// if (ft_builtin(mini->ast, &mini->env))
+		// {
+		// 	mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
+		// 	return ;
+		// }
 		if (pid == 0)
 		{
 			signal(SIGINT, SIG_DFL);
@@ -121,9 +136,23 @@ static void	exec_or_builtin(t_mini *mini)
 			exec_ast(mini->ast, mini->env);
 			exit(1); // fallback if execve fails
 		}
-		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			mini->last_exit = WEXITSTATUS(status);
+		else if (pid > 0)
+		{
+			waitpid(pid, &status, 0);
+			if (WIFEXITED(status))
+				mini->last_exit = WEXITSTATUS(status);
+			else
+				mini->last_exit = 1;
+		}
+		else
+		{
+			perror("fork");
+			mini->last_exit = 1;
+			//exit(1);
+		}
+		// waitpid(pid, &status, 0);
+		// if (WIFEXITED(status))
+		// 	mini->last_exit = WEXITSTATUS(status);
 	}
 	// else
 	// 	mini->last_exit = 1;
@@ -151,6 +180,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	init_mini(&mini, av, envp);
+	mini.last_exit = 0;
 	ft_setup_signals();
 	while (1)
 	{
