@@ -125,7 +125,7 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 		while (1)
 		{
 			line = readline("> ");
-			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)
+			if (g_signal_pid == 1 || !line || ft_strcmp(line, cmd->heredocs[i]) == 0)
 				break ;
 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
 				return (-1);//error
@@ -148,6 +148,7 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 		close(cmd->heredoc_pipe[i][1]);
 		i++;
 	}
+	//printf("signal_pid= %d\n", g_signal_pid);
 	return (0);
 }
 

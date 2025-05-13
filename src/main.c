@@ -14,20 +14,18 @@
 
 pid_t g_signal_pid = 0;
 
-/* use char **line, otherwise can't send information to main */
 static int	read_and_prepare_line(char **line)
 {
 	*line = readline("minishell> ");
+	//signal(SIGINT, signal_handler);
+	//signal(SIGTERM, signal_handler);
 	if (!*line)
 	{
 		write(1, "exit\n", 5);
 		return (1);
 	}
 	if ((*line)[0] == '\0')
-	{
-		free(*line);
-		return (1);
-	}
+		return (0);
 	add_history(*line);
 	return (0);
 }
@@ -89,37 +87,6 @@ bool	has_redirection(t_cmd *cmd)
 	return (false);
 }
 
-// static void	exec_or_builtin(t_mini *mini)
-// {
-// 	pid_t	pid;
-// 	int		status;
-
-// 	if (!mini->ast)
-// 		return ;
-// 	if (is_there_pipe(mini) == false)
-// 	{
-// 		printf("XXXXXX there's no pipe\n");
-// 	}
-// 	check_heredocs(mini->ast);
-// 	if (ft_builtin(mini->ast, &mini->env))
-// 	{
-// 		mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
-// 		return ;
-// 	}
-// 	pid = fork();
-// 	if (pid == 0)
-// 	{
-// 		exec_ast(mini->ast, mini->env);
-// 		exit(1); // fallback if execve fails
-// 	}
-// 	waitpid(pid, &status, 0);
-// 	if (WIFEXITED(status))
-// 		mini->last_exit = WEXITSTATUS(status);
-// 	else
-// 		mini->last_exit = 1;
-// 	close_all_heredocs(mini->ast);
-// }
-
 static void	exec_or_builtin(t_mini *mini)
 {
 	pid_t	pid;
@@ -149,6 +116,8 @@ static void	exec_or_builtin(t_mini *mini)
 		}
 		if (pid == 0)
 		{
+			signal(SIGINT, SIG_DFL);
+			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini->ast, mini->env);
 			exit(1); // fallback if execve fails
 		}
@@ -182,6 +151,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	init_mini(&mini, av, envp);
+	ft_setup_signals();
 	while (1)
 	{
 		if (read_and_prepare_line(&line))
