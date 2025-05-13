@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:43:08 by hho-troc          #+#    #+#             */
-/*   Updated: 2024/11/11 14:33:22 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/08 13:37:15 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -27,5 +27,6 @@ char	*ft_strjoin(char const *s1, char const *s2)
 		s3[i++] = *s1++;
 	while (*s2)
 		s3[i++] = *s2++;
+	s3[i] = '\0';
 	return (s3);
 }

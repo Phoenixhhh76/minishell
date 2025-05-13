@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   main.c                                             :+:      :+:    :+:   */
+/*   main_origin.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:40:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/30 15:44:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 10:42:14 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -274,7 +274,7 @@ int	main(int ac, char **av, char **envp)
 		init_ast(&mini);
 		if (mini.ast)
 		{
-			check_heredocs(mini.ast);
+			check_heredocs(mini.ast, mini);
 			if (ft_builtin(mini.ast, &mini.env))
 			{
 				// free_token_list(mini.token);

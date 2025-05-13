@@ -84,10 +84,10 @@ void	print_tab(char **tab)
 void	print_mini(t_mini *mini)
 {
 	t_token	*tmp;
-	t_ast	*tmp_ast;
+	//t_ast	*tmp_ast;
 
 	tmp = mini->token;
-	tmp_ast = mini->ast;
+	//tmp_ast = mini->ast;
 	printf("Mini %p\n", tmp);
 	while (tmp)
 	{
@@ -97,3 +97,16 @@ void	print_mini(t_mini *mini)
 		//tmp_ast = tmp_ast->next;
 	}
 }
+
+void	print_token_list(t_token *token)
+{
+	while (token)
+	{
+		if (token->str[0])
+			printf("Token [%s]  quote_type %d\n", token->str, token->quote_type);
+		else
+			printf("Token [(empty)]  quote_type %d\n", token->quote_type);
+		token = token->next;
+	}
+}
+

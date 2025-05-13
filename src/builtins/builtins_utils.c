@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   builtins_utils.c                                   :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-23 17:00:34 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-23 17:00:34 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/23 17:00:34 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/09 14:31:23 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	does_var_exist(char **env, const char *var)
 	return (-1);
 }
 
-void	free_double_tab(char **tab)
+/* void	free_double_tab(char **tab)
 {
 	int	i;
 
@@ -38,5 +38,16 @@ void	free_double_tab(char **tab)
 		free(tab[i]);
 		i++;
 	}
+	free(tab);
+} */
+void free_double_tab(char **tab)
+{
+	int i;
+
+	if (!tab)
+		return;
+	i = 0;
+	while (tab[i])
+		free(tab[i++]);
 	free(tab);
 }

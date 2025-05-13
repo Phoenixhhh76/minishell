@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/10 17:53:27 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/09 10:55:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -54,7 +54,7 @@ static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
 }
-/*
+
 static int	count_args(t_token *start, t_token *end)
 {
 	int	count;
@@ -71,71 +71,8 @@ static int	count_args(t_token *start, t_token *end)
 		start = start->next;
 	}
 	return (count);
-} */
-static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
-{
-	int		count = 0;
-	char	*expanded;
-	char	**split;
-	int		i;
-
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-		{
-			if (start->quote_type == QUOTE_SINGLE || start->quote_type == QUOTE_DOUBLE)
-			{
-				count++;  // 不分割引號內容
-			}
-			else
-			{
-				expanded = expand_if_needed(start, mini);
-				if (!expanded)
-				{
-					start = start->next;
-					continue;
-				}
-				split = ft_split(expanded, ' ');
-				i = 0;
-				while (split && split[i])
-					count++, i++;
-				free(expanded);
-				free_split(split);
-			}
-		}
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
-				  start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
-			start = start->next;
-		start = start->next;
-	}
-	return (count);
 }
 
-static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
-{
-	int		i;
-	int		size;
-	char	**args;
-
-	size = count_args_advanced(start, end, mini); // ⬅️ 使用精確計算
-	args = (char **)ft_calloc(size + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-			i = process_token(args, i, start, mini);
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
-				  start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
-			start = start->next;
-		start = start->next;
-	}
-	args[i] = NULL;
-	return (args);
-}
-
-/*
 static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 {
 	int		i;
@@ -159,36 +96,7 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	}
 	args[i] = NULL;
 	return (args);
-} */
-
-static char	**collect_args_for_export(t_token *start, t_token *end)
-{
-	int		count = 0;
-	int		i = 0;
-	char	**args;
-	t_token *tmp = start;
-
-	while (tmp && tmp != end)
-	{
-		if (tmp->type == CMD || tmp->type == UNKNOWN)
-			count++;
-		tmp = tmp->next;
-	}
-
-	args = (char **)ft_calloc(count + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-			args[i++] = ft_strdup(start->str); // 不展開，不 split
-		start = start->next;
-	}
-	args[i] = NULL;
-	return (args);
 }
-
 
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 {
@@ -260,15 +168,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		cmd->heredoc_pipe = create_heredoc_pipe(heredoc_nb);
 		cmd->heredocs = get_heredoc(heredoc_nb, start, end, cmd);
 	}
-	//cmd->cmd_args = collect_args(start, end, mini);//here will have problem about abc=" bonjour ye "
-
-	// check if it's  export command
-	if (start && start->str && ft_strcmp(start->str, "export") == 0)
-		cmd->cmd_args = collect_args_for_export(start, end);
-	else
-		cmd->cmd_args = collect_args(start, end, mini);
-
-
+	cmd->cmd_args = collect_args(start, end, mini);
 	if (cmd->cmd_args && cmd->cmd_args[0])
 	{
 		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
