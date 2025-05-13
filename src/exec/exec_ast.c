@@ -53,7 +53,8 @@ void	handle_redirects(t_cmd *cmd)
 	{
 		fd = open(cmd->infile, O_RDONLY);
 		if (fd < 0)
-			exit_error("open infile");
+			perror(cmd->infile);
+			//exit_error(cmd->infile);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
@@ -77,7 +78,7 @@ void	handle_redirects(t_cmd *cmd)
 		{
 			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 			if (fd < 0)
-				exit_error("open outfile");
+				perror("open outfile");
 		}
 		dup2(fd, STDOUT_FILENO);
 		close(fd);
@@ -86,10 +87,10 @@ void	handle_redirects(t_cmd *cmd)
 
 void	exec_cmd_node(t_ast *node, char **envp)
 {
-	//int	i;
 
-	//i = 0;
 	if (!node->cmd)
+		return ;
+	if (node->cmd->flag_error == 1 || node->cmd->path_error == 1)
 		return ;
 	handle_redirects(node->cmd);
 	// if (ft_is_builtin(node->cmd->cmd_args[0]))

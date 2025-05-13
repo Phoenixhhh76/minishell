@@ -70,6 +70,8 @@ int	ft_run_builtin(t_cmd *cmd, char ***envp)
 		return (ft_env(cmd, envp));
 	if (!ft_strcmp(cmd->cmd_args[0], "unset"))
 		return (ft_unset(cmd, envp));
+	// if (!ft_strcmp(cmd->cmd_args[0], "exit"))
+	// 	return (ft_exit(cmd));
 	else if (!ft_strcmp(name, "exit"))
 	{
 		printf("exit\n");
