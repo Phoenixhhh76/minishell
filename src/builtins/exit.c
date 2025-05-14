@@ -12,31 +12,32 @@
 
 #include "../../includes/minishell.h"
 
-int	ft_exit(t_cmd *cmd, t_mini *mini)
-{
-	int	code;
+// int	ft_exit(t_cmd *cmd)
+// {
+// 	int	code;
 
-	printf("exit\n");
-	if (cmd->cmd_args[1])
-	{
-		if (!ft_isdigit(cmd->cmd_args[1]))
-		{
-			ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-			//safe_cleanup(mini, NULL); 
-			exit(255);
-		}
-		if (cmd->cmd_args[2])
-		{
-			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-			return (1); 
-		}
-		code = ft_atoi(cmd->cmd_args[1]);
-		//safe_cleanup(mini, NULL);
-		exit((unsigned char)code);
-	}
-	//safe_cleanup(mini, NULL);
-	exit(mini->last_exit);
-}
+// 	printf("exit\n");
+// 	if (cmd->cmd_args[1])
+// 	{
+// 		if (!ft_isdigit(cmd->cmd_args[1]))
+// 		{
+// 			ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+// 			//safe_cleanup(mini, NULL); 
+// 			exit(255);
+// 		}
+// 		if (cmd->cmd_args[2])
+// 		{
+// 			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+// 			return (1); 
+// 		}
+// 		code = ft_atoi(cmd->cmd_args[1]);
+// 		//safe_cleanup(mini, NULL);
+// 		exit((unsigned char)code);
+// 	}
+// 	//safe_cleanup(mini, NULL);
+// 	//exit(mini->last_exit);
+// 	exit(0);
+// }
 
 
 //long max lomg min

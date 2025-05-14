@@ -107,6 +107,7 @@ t_token	*create_t(char *str, t_quote_type quote_type);
 void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
+
 //token_helper
 int		is_meta_char(char c);
 void	skip_spaces(const char *input, int *i);
@@ -135,6 +136,8 @@ int		ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini);
 void	print_export_env(char **env, char **exp_list);
 char	**clone_and_sort_env(char **env);
 void	print_sorted_env_line(const char *entry);
+int		ft_exit(t_cmd *cmd);
+
 
 //exec
 void	handle_redirects(t_cmd *cmd);
@@ -176,7 +179,6 @@ t_ast	*create_pipe_node(t_token *start, \
 t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //outil
-
 char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
 void	ft_free_char2(char **arr);

@@ -84,7 +84,7 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 		{
 			if (start->quote_type == QUOTE_SINGLE || start->quote_type == QUOTE_DOUBLE)
 			{
-				count++;  // 不分割引號內容
+				count++;
 			}
 			else
 			{
@@ -127,7 +127,7 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	int		size;
 	char	**args;
 
-	size = count_args_advanced(start, end, mini); // ⬅️ 使用精確計算
+	size = count_args_advanced(start, end, mini);
 	args = (char **)ft_calloc(size + 1, sizeof(char *));
 	if (!args)
 		return (NULL);
@@ -265,6 +265,13 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 				free(cmd->infile);
 			cmd->last_redirin = 0;
 			cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+			fd = open(cmd->infile, O_RDONLY);
+			if (fd < 0)
+			{
+				perror(cmd->infile);
+				cmd->flag_error = 1;
+			}
+			close(fd);
 			tmp = tmp->next;
 		}
 		else if (tmp->type == REDIR_OUT && tmp->next)
@@ -272,11 +279,17 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			if (cmd->outfile)
 				free(cmd->outfile);
 			cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
-			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
-			if (fd < 0)
-				exit_error("creation outfile");
-			close(fd);
-			cmd->fd_out = STDOUT_FILENO;
+			if (cmd->flag_error != 1)
+			{
+				fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
+				if (fd < 0)
+				{
+					perror(cmd->outfile);
+					cmd->path_error = 1;
+				}
+				close(fd);
+				cmd->fd_out = STDOUT_FILENO;
+			}
 			tmp = tmp->next;
 		}
 		else if (tmp->type == REDIR_APPEND && tmp->next)
@@ -287,11 +300,16 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			if (cmd->append)
 				free(cmd->append);
 			cmd->append = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
-			fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
-			if (fd < 0)
-				exit_error("append creation outfile");
-			close(fd);
-			cmd->fd_out = STDOUT_FILENO;
+			if (cmd->flag_error != 1)
+			{
+				fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
+				if (fd < 0)
+				{
+					perror(cmd->outfile);
+					cmd->path_error = 1;
+				}
+				cmd->fd_out = STDOUT_FILENO;
+			}
 			tmp = tmp->next;
 		}
 		else if (tmp->type == HEREDOC && tmp->next)
@@ -312,14 +330,11 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		cmd->heredocs = get_heredoc(heredoc_nb, start, end, cmd);
 	}
 	//cmd->cmd_args = collect_args(start, end, mini);//here will have problem about abc=" bonjour ye "
-
 	// check if it's  export command
 	if (start && start->str && ft_strcmp(start->str, "export") == 0)
 		cmd->cmd_args = collect_args_for_export(start, end, mini);
 	else
 		cmd->cmd_args = collect_args(start, end, mini);
-
-
 	if (cmd->cmd_args && cmd->cmd_args[0])
 	{
 		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')

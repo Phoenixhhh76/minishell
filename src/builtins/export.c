@@ -297,4 +297,3 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 
 
 
-
