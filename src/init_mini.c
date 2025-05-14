@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   init_mini.c                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-23 14:56:53 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-23 14:56:53 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/23 14:56:53 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/13 15:23:00 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,4 +39,7 @@ void	init_mini(t_mini *mini, char **av, char **env)
 	mini->ast = NULL;
 	mini->env = copy_env(env);
 	mini->av = av;
+	mini->last_exit = 0;
+	mini->exp_list = NULL;
+
 }

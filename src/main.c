@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 11:48:47 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:11:27 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,7 +77,7 @@ static void	exec_or_builtin(t_mini *mini)
 	if (!mini->ast)
 		return ;
 	check_heredocs(mini->ast, mini);
-	if (!is_there_pipe(mini) && ft_builtin(mini->ast, &mini->env))
+	if (!is_there_pipe(mini) && ft_builtin(mini->ast))
 	{
 		if (mini->ast->cmd->flag_error != 1 && mini->ast->cmd->path_error != 1)
 		{
@@ -85,7 +85,7 @@ static void	exec_or_builtin(t_mini *mini)
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
 				handle_redirects(mini->ast->cmd);
-			mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+			mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
 			dup2(out_fd, STDOUT_FILENO);
 			dup2(in_fd, STDIN_FILENO);
 			close(out_fd);
@@ -96,9 +96,9 @@ static void	exec_or_builtin(t_mini *mini)
 	else
 	{
 		pid = fork();
-		if (ft_builtin(mini->ast, &mini->env))
+		if (ft_builtin(mini->ast))
 		{
-			mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+			mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
 			return ;
 		}
 		if (pid == 0)
@@ -138,6 +138,7 @@ int	main(int ac, char **av, char **envp)
 
 	(void)ac;
 	init_mini(&mini, av, envp);
+	mini.last_exit = 0;
 	ft_setup_signals();
 	while (1)
 	{

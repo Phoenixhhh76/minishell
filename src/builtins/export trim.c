@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/14 13:40:40 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/13 14:12:27 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -100,19 +100,34 @@ But in export, it's different:
 We need removes quotes from the beginning and end of a string, if they exist.
 Also trims leading and trailing whitespace.
 */
-
-static char	*strip_quotes_only(const char *val)
+static char	*strip_quotes_and_trim(const char *val)
 {
+	char	*val_copy;
+	char	*stripped;
+	//char	*trimmed;
 	size_t	len;
 
 	if (!val)
 		return (NULL);
 	len = ft_strlen(val);
-	if (len >= 2 && ((val[0] == '"' && val[len - 1] == '"') || \
-					(val[0] == '\'' && val[len - 1] == '\'')))
-		return ft_substr(val, 1, len - 2); // 去除外層引號，但保留所有空白
+	val_copy = ft_strdup(val);
+	if (!val_copy)
+		return (NULL);
+	if (len >= 2 && ((val_copy[0] == '"' && val_copy[len - 1] == '"') || \
+					(val_copy[0] == '\'' && val_copy[len - 1] == '\'')))
+		stripped = ft_substr(val_copy, 1, len - 2);
 	else
-		return ft_strdup(val); // 沒有包引號就原樣返回
+		stripped = ft_strdup(val_copy);
+	free(val_copy);
+	if (!stripped)
+		return (NULL);
+	// trimmed = ft_strtrim(stripped, " \t");
+	// free(stripped);
+	//printf("[DEBUG] trimmed val addr: %p\n", (void *)trimmed);
+	// if (trimmed)
+	// 	return (trimmed);
+	else
+		return (ft_strdup(""));
 }
 
 static char **split_export_arg(const char *arg)
@@ -148,9 +163,7 @@ static char	*make_joined_assignment(char **var)
 	char	*joined;
 
 	printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
-	//cleaned_val = strip_quotes_and_trim(var[1]);
-	cleaned_val = strip_quotes_only(var[1]);
-
+	cleaned_val = strip_quotes_and_trim(var[1]);
 	if (!cleaned_val)
 		return (NULL);
 
@@ -195,40 +208,6 @@ int	export_err_msg(char *arg, int erno)
 	ft_putstr_fd("': not a valid identifier\n", 2);
 	return (erno);
 }
-bool	in_exp_list(char **exp_list, const char *key)
-{
-	int	i;
-
-	i = 0;
-	while (exp_list && exp_list[i])
-	{
-		if (ft_strcmp(exp_list[i], key) == 0)
-			return (true);
-		i++;
-	}
-	return (false);
-}
-
-void	add_to_exp_list(char ***exp_list, const char *key)
-{
-	int		len = 0;
-	char	**new_list;
-	int		i = 0;
-
-	while (*exp_list && (*exp_list)[len])
-		len++;
-	new_list = ft_calloc(len + 2, sizeof(char *));
-	while (i < len)
-	{
-		new_list[i] = ft_strdup((*exp_list)[i]);
-		i++;
-	}
-	new_list[i] = ft_strdup(key);
-	new_list[i + 1] = NULL;
-	free_double_tab(*exp_list);
-	*exp_list = new_list;
-}
-
 
 int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 {
@@ -238,16 +217,26 @@ int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 	int		env_index;
 
 	env = *mini_env;
-
 	if (!arg || !arg[0] || arg[0] == '=' || !is_valid_var_name(arg))
 	{
-		//mini->last_exit = 1;
+		mini->last_exit = 1;
 		return (export_err_msg(arg, 1));
 	}
 	if (!ft_strchr(arg, '=')) // export abc without value
 	{
-		if (does_var_exist(env, arg) < 0 && !in_exp_list(mini->exp_list, arg))
-			add_to_exp_list(&mini->exp_list, arg); // add in exp_list
+		if (does_var_exist(env, arg) < 0)
+		{
+			// add as empty string
+			char *tmp = ft_strjoin(arg, "=");
+			if (!tmp)
+				return (-1);
+			if (add_var_to_env(env, tmp, mini_env) < 0)
+			{
+				free(tmp);
+				return (-1);
+			}
+			free(tmp);
+		}
 		return (0);
 	}
 	var = split_export_arg(arg);
@@ -275,7 +264,7 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 	//for export without args
 	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
 	{
-		print_export_env(*mini_env, mini->exp_list);
+		print_export_env(*mini_env);
 		return (0);
 	}
 	while (cmd->cmd_args[i])
@@ -284,9 +273,9 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 			status = 1; // error, to check with exit code
 		i++;
 	}
-	mini->last_exit = status;
 	return (status);
 }
+
 
 
 

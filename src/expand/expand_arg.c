@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 15:21:51 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:14:56 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,11 +93,11 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 		(*i)++; // 前進 1 讓 tokenizer 不卡住
 		return (ft_strdup(""));
 	}
-
 	if (str[start] == '?')// $? is for exit code
 	//WEXITSTATUS(status) ????
 	{
 		(*i)++;
+		//printf("DEBUG: expand $? = %d\n", mini->last_exit);
 		return (ft_itoa(mini->last_exit));
 	}
 	if (!str[start] || !(ft_isalpha(str[start]) || str[start] == '_'))

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 09:12:46 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/14 11:06:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,7 @@ static int	get_quote_len(const char *input, int start, char quote)
 		i++;
 	return (i - start);
 }
-
+/*
 static void	set_quote_type(char quote, t_quote_type *qt)
 {
 	if (quote == '"')
@@ -35,8 +35,8 @@ static int	should_strip_quotes(const char *input, int i, const char *current)
 	return (current[0] == '\0'
 		&& (input[i] == '\0' || ft_isspace(input[i])
 			|| is_meta_char(input[i])));
-}
-
+} */
+/*
 char	*extract_quoted(const char *input, int *i,
 						char *current, t_quote_type *qt)
 {
@@ -65,4 +65,32 @@ char	*extract_quoted(const char *input, int *i,
 		*qt = QUOTE_NONE;
 	}
 	return (ft_strjoin_f(current, quoted));
+} */
+char	*extract_quoted(const char *input, int *i,
+						char *current, t_quote_type *qt)
+{
+	char	quote;
+	int		start;
+	int		len;
+	char	*quoted;
+
+	quote = input[(*i)++]; // 先吃掉開頭的引號
+	start = *i;
+	len = get_quote_len(input, start, quote);
+
+	*i += len;
+	if (input[*i] == quote)
+		(*i)++; // 吃掉結尾引號
+
+	// 把內部字串取出來（不含外層 quote）
+	quoted = ft_strndup(&input[start], len);
+
+	// 更新 quote_type：優先保留雙引號，否則保留單引號
+	if (quote == '"' && *qt != QUOTE_DOUBLE)
+		*qt = QUOTE_DOUBLE;
+	else if (quote == '\'' && *qt == QUOTE_NONE)
+		*qt = QUOTE_SINGLE;
+
+	return (ft_strjoin_f(current, quoted));
 }
+
