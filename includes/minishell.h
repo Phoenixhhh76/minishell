@@ -48,7 +48,6 @@ typedef struct s_token
 typedef struct s_cmd
 {
 	char	**cmd_args;
-	//char	**cmd_opts;
 	char	*cmd_path;
 	char	*infile;
 	char	*outfile;
@@ -61,8 +60,9 @@ typedef struct s_cmd
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
+	bool	flag_error;
+	bool	path_error;
 	t_quote_type	*heredocs_quote; // maybe we can change t_quote_type in a shorter name ?
-
 	//int		heredoc_error;//add for exit_error
 	//int		child;
 }	t_cmd;
@@ -105,6 +105,7 @@ t_token	*create_t(char *str, t_quote_type quote_type);
 void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
+
 //token_helper
 int		is_meta_char(char c);
 void	skip_spaces(const char *input, int *i);
@@ -130,6 +131,7 @@ int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
 int		ft_unset(t_cmd *cmd, char ***mini_env);
 int		ft_export(t_cmd *cmd, char ***mini_env);
+int		ft_exit(t_cmd *cmd);
 
 //exec
 void	handle_redirects(t_cmd *cmd);
@@ -171,7 +173,6 @@ t_ast	*create_pipe_node(t_token *start, \
 t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //outil
-
 char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
 void	ft_free_char2(char **arr);

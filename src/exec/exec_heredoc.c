@@ -124,12 +124,14 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 	{
 		while (1)
 		{
+			if (g_signal_pid == 1)
+				return (1);
 			line = readline("> ");
-			if (g_signal_pid == 1 || !line || ft_strcmp(line, cmd->heredocs[i]) == 0)
+			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)
 				break ;
 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
 				return (-1);//error
-			if (cmd->heredocs_quote[i] == QUOTE_NONE) // have to expand a
+			if (cmd->heredocs_quote[i] == QUOTE_NONE)
 			{
 				expanded = expand_heredoc_line(line, mini);
 				//expanded = expand_arg(line, mini, QUOTE_NONE); dosen't work for '$USER'
@@ -144,17 +146,21 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 			}
 			free(line);
 		}
+		printf("LINE no free//signal_pid= %d\n", g_signal_pid);
 		free(line);
 		close(cmd->heredoc_pipe[i][1]);
 		i++;
+		printf("LINE//signal_pid= %d\n", g_signal_pid);
 	}
-	//printf("signal_pid= %d\n", g_signal_pid);
+	printf("END=signal_pid= %d\n", g_signal_pid);
 	return (0);
 }
 
 void	check_heredocs(t_ast *ast, t_mini *mini)// add t_mini *mini
 {
 	if (!ast)
+		return ;
+	if (g_signal_pid == 1)
 		return ;
 	if (ast->ast_token.type == PIPE)
 	{
@@ -164,5 +170,3 @@ void	check_heredocs(t_ast *ast, t_mini *mini)// add t_mini *mini
 	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
 		exec_heredocs(ast->cmd, mini);
 }
-
-

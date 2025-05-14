@@ -16,9 +16,8 @@ pid_t g_signal_pid = 0;
 
 static int	read_and_prepare_line(char **line)
 {
+	g_signal_pid = 0;
 	*line = readline("minishell> ");
-	//signal(SIGINT, signal_handler);
-	//signal(SIGTERM, signal_handler);
 	if (!*line)
 	{
 		write(1, "exit\n", 5);
@@ -38,7 +37,7 @@ static int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	mini->token = tokenize_input(line);
-	print_token_list(mini->token);
+	// print_token_list(mini->token);
 	if (!mini->token || !check_syntax(mini->token))
 	{
 		mini->last_exit = 2;
@@ -50,25 +49,6 @@ static int	check_line(char *line, t_mini *mini)
 	//print_ast(mini->ast, 10);
 	return (1);
 }
-/*
-static void	exec_or_builtin(t_mini *mini)
-{
-	pid_t	pid;
-
-	if (!mini->ast)
-		return ;
-	check_heredocs(mini->ast);
-	if (ft_builtin(mini->ast, &mini->env))
-		return ;
-	pid = fork();
-	if (pid == 0)
-	{
-		exec_ast(mini->ast, mini->env);
-		exit(1);
-	}
-	waitpid(pid, NULL, 0);
-	close_all_heredocs(mini->ast);
-	} */
 
 bool	is_there_pipe(t_mini *mini)
 {
@@ -91,20 +71,27 @@ static void	exec_or_builtin(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
-	int		fd;
+	int		out_fd;
+	int		in_fd;
 
 	if (!mini->ast)
 		return ;
 	check_heredocs(mini->ast, mini);
 	if (!is_there_pipe(mini) && ft_builtin(mini->ast, &mini->env))
 	{
-		fd = dup(STDOUT_FILENO);
-		if (has_redirection(mini->ast->cmd))
-			handle_redirects(mini->ast->cmd);
-		mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-		return ;
+		if (mini->ast->cmd->flag_error != 1 && mini->ast->cmd->path_error != 1)
+		{
+			in_fd = dup(STDIN_FILENO);
+			out_fd = dup(STDOUT_FILENO);
+			if (has_redirection(mini->ast->cmd))
+				handle_redirects(mini->ast->cmd);
+			mini->last_exit = ft_run_builtin(mini->ast->cmd, &mini->env);
+			dup2(out_fd, STDOUT_FILENO);
+			dup2(in_fd, STDIN_FILENO);
+			close(out_fd);
+			close(in_fd);
+			return ;
+		}
 	}
 	else
 	{
