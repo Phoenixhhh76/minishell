@@ -12,33 +12,54 @@
 
 #include "../../includes/minishell.h"
 
-// int	ft_exit(t_cmd *cmd)
-// {
-// 	int	code;
+static bool	ft_isnumeric(char *str)
+{
+	int	i;
 
-// 	printf("exit\n");
-// 	if (cmd->cmd_args[1])
-// 	{
-// 		if (!ft_isdigit(cmd->cmd_args[1]))
-// 		{
-// 			ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-// 			//safe_cleanup(mini, NULL); 
-// 			exit(255);
-// 		}
-// 		if (cmd->cmd_args[2])
-// 		{
-// 			ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-// 			return (1); 
-// 		}
-// 		code = ft_atoi(cmd->cmd_args[1]);
-// 		//safe_cleanup(mini, NULL);
-// 		exit((unsigned char)code);
-// 	}
-// 	//safe_cleanup(mini, NULL);
-// 	//exit(mini->last_exit);
-// 	exit(0);
-// }
+	i = 0;
+	if (!str || !*str)
+		return (false);
+	if (str[i] == '-' || str[i] == '+')
+		i++;
+	while (str[i])
+	{
+		if (!ft_isdigit(str[i]))
+			return (false);
+		i++;
+	}
+	return (true);
+}
 
+int	ft_exit(t_mini *mini, t_cmd *cmd)
+{
+	int	code;
 
-//long max lomg min
-//error code, use %256
+	(void)mini;
+	code = 0;
+	if (cmd->cmd_args[1] && !ft_isnumeric(cmd->cmd_args[1]))
+	{
+		printf("exit\n");
+		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+		safe_exit(mini, 2);
+	}
+	if (cmd->cmd_args[2])
+	{
+		printf("exit\n");
+		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
+		//ft_update_last_exit_value(mini, 1);
+		return (1);
+	}
+	if (ft_isnumeric(cmd->cmd_args[1]))
+	{
+		code = ft_atoi(cmd->cmd_args[1]);
+		if (code < 0)
+			code = 256 + code;
+	}
+	printf("exit\n");
+	safe_exit(mini, (unsigned char)code);
+	return (0);
+	//exit(mini->last_exit);
+}
+
+// long max lomg min
+// error code, use %256

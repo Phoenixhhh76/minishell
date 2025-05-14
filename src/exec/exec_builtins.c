@@ -12,7 +12,22 @@
 
 #include "../../includes/minishell.h"
 //faut penser si on return the (exitno)
-/* modifier for main)sepretate */
+
+bool	ft_is_builtin(char *arg)
+{
+	if (!arg)
+		return (false);
+	if (!ft_strcmp(arg, "echo")
+		|| !ft_strcmp(arg, "cd")
+		|| !ft_strcmp(arg, "exit")
+		|| !ft_strcmp(arg, "pwd")
+		|| !ft_strcmp(arg, "export")
+		|| !ft_strcmp(arg, "unset")
+		|| !ft_strcmp(arg, "env"))
+		return (true);
+	return (false);
+}
+
 bool	ft_builtin(t_ast *ast)
 {
 	if (!ast || ast->ast_token.type != CMD || !ast->cmd)
@@ -32,23 +47,7 @@ bool	ft_builtin(t_ast *ast)
 // 	return (true);
 // }
 
-
-bool	ft_is_builtin(char *arg)
-{
-	if (!arg)
-		return (false);
-	if (!ft_strcmp(arg, "echo")
-		|| !ft_strcmp(arg, "cd")
-		|| !ft_strcmp(arg, "exit")
-		|| !ft_strcmp(arg, "pwd")
-		|| !ft_strcmp(arg, "export")
-		|| !ft_strcmp(arg, "unset")
-		|| !ft_strcmp(arg, "env"))
-		return (true);
-	return (false);
-}
-
-int	ft_run_builtin(t_cmd *cmd, t_mini *mini)
+int	ft_run_builtin( t_mini *mini, t_cmd *cmd)
 {
 	char	*name;
 
@@ -67,27 +66,12 @@ int	ft_run_builtin(t_cmd *cmd, t_mini *mini)
 		return (ft_env(cmd, &mini->env));
 	if (!ft_strcmp(cmd->cmd_args[0], "unset"))
 		return (ft_unset(cmd, &mini->env));
-	else if (!ft_strcmp(name, "exit"))
-	{
-		printf("exit\n");
-		exit(0);
-	}
-	// 	else if (!ft_strcmp(name, "exit"))
+	// else if (!ft_strcmp(name, "exit"))
 	// {
-	// 	int status = 0;
-	// 	if (cmd->cmd_args[1])
-	// 	{
-	// 		if (!ft_isdigit_str(cmd->cmd_args[1]))
-	// 		{
-	// 			fprintf(stderr, "minishell: exit: %s: numeric argument required\n", cmd->cmd_args[1]);
-	// 			status = 2;
-	// 		}
-	// 		else
-	// 			status = ft_atoi(cmd->cmd_args[1]);
-	// 	}
 	// 	printf("exit\n");
-	// 	cleanup_all(mini); // Fonction à définir pour libérer les ressources
-	// 	exit(status);
+	// 	exit(0);
 	// }
-	return (1); // not handled
+	else if (!ft_strcmp(cmd->cmd_args[0], "exit"))
+		return (ft_exit(mini, cmd));
+	return(1); // not handled
 }
