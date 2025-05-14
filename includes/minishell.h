@@ -48,7 +48,6 @@ typedef struct s_token
 typedef struct s_cmd
 {
 	char	**cmd_args;
-	//char	**cmd_opts;
 	char	*cmd_path;
 	char	*infile;
 	char	*outfile;
@@ -61,11 +60,13 @@ typedef struct s_cmd
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
+	bool	flag_error;
+	bool	path_error;
 	t_quote_type	*heredocs_quote; // maybe we can change t_quote_type in a shorter name ?
-
 	//int		heredoc_error;//add for exit_error
 	//int		child;
 }	t_cmd;
+
 
 typedef struct s_ast
 {
@@ -137,7 +138,7 @@ void	print_sorted_env_line(const char *entry);
 
 //exec
 void	handle_redirects(t_cmd *cmd);
-bool	ft_builtin(t_ast *ast, char ***env);
+bool	ft_builtin(t_ast *ast);
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_cmd *cmd, t_mini *mini);
 void	exec_ast(t_ast *node, char **envp);

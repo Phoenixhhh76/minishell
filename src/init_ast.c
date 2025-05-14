@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/13 16:13:06 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:37:34 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -94,10 +94,21 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 					start = start->next;
 					continue;
 				}
-				split = ft_split(expanded, ' ');
-				i = 0;
-				while (split && split[i])
-					count++, i++;
+				// split = ft_split(expanded, ' ');
+				// i = 0;
+				// while (split && split[i])
+				// 	count++;
+				// 	i++;
+				if (expanded[0] != '\0' || start->quote_type != QUOTE_NONE)
+				{
+					split = ft_split(expanded, ' ');
+					i = 0;
+					while (split && split[i])
+					{
+						count++;
+						i++;
+					}
+				}
 				free(expanded);
 				free_split(split);
 			}
@@ -201,7 +212,7 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 		if (tmp->type == CMD || tmp->type == UNKNOWN)
 		{
 			expanded = expand_if_needed(tmp, mini);
-			if (expanded && expanded[0] != '\0')
+			if (expanded && (expanded[0] != '\0' || tmp->quote_type != QUOTE_NONE))
 				count++;
 			free(expanded);
 		}
@@ -218,7 +229,7 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 		if (start->type == CMD || start->type == UNKNOWN)
 		{
 			expanded = expand_if_needed(start, mini);
-			if (expanded && expanded[0] != '\0')
+			if (expanded && (expanded[0] != '\0' || start->quote_type != QUOTE_NONE))
 				args[i++] = expanded; // ✅ 保留空格，不 split，但展開
 			else
 				free(expanded);

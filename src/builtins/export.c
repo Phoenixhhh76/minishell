@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/13 15:15:18 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:40:40 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -238,9 +238,10 @@ int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 	int		env_index;
 
 	env = *mini_env;
+
 	if (!arg || !arg[0] || arg[0] == '=' || !is_valid_var_name(arg))
 	{
-		mini->last_exit = 1;
+		//mini->last_exit = 1;
 		return (export_err_msg(arg, 1));
 	}
 	if (!ft_strchr(arg, '=')) // export abc without value
@@ -283,6 +284,7 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 			status = 1; // error, to check with exit code
 		i++;
 	}
+	mini->last_exit = status;
 	return (status);
 }
 

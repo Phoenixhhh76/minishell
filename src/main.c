@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/13 16:44:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/14 13:11:27 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -16,9 +16,8 @@ pid_t g_signal_pid = 0;
 
 static int	read_and_prepare_line(char **line)
 {
+	g_signal_pid = 0;
 	*line = readline("minishell> ");
-	//signal(SIGINT, signal_handler);
-	//signal(SIGTERM, signal_handler);
 	if (!*line)
 	{
 		write(1, "exit\n", 5);
@@ -50,25 +49,6 @@ static int	check_line(char *line, t_mini *mini)
 	//print_ast(mini->ast, 10);
 	return (1);
 }
-/*
-static void	exec_or_builtin(t_mini *mini)
-{
-	pid_t	pid;
-
-	if (!mini->ast)
-		return ;
-	check_heredocs(mini->ast);
-	if (ft_builtin(mini->ast, &mini->env))
-		return ;
-	pid = fork();
-	if (pid == 0)
-	{
-		exec_ast(mini->ast, mini->env);
-		exit(1);
-	}
-	waitpid(pid, NULL, 0);
-	close_all_heredocs(mini->ast);
-	} */
 
 bool	is_there_pipe(t_mini *mini)
 {
@@ -91,44 +71,36 @@ static void	exec_or_builtin(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
-	int		fd;
+	int		out_fd;
+	int		in_fd;
 
 	if (!mini->ast)
 		return ;
 	check_heredocs(mini->ast, mini);
-	if (!is_there_pipe(mini) && ft_builtin(mini->ast, &mini->env))
+	if (!is_there_pipe(mini) && ft_builtin(mini->ast))
 	{
-		fd = dup(STDOUT_FILENO);
-		if (has_redirection(mini->ast->cmd))
-			handle_redirects(mini->ast->cmd);
-
-// printf("RUN BUILTIN: %s\n", mini->ast->cmd->cmd_args[0]);
-// int ret = ft_run_builtin(mini->ast->cmd, mini);
-// printf("RETURN CODE: %d\n", ret);
-// mini->last_exit = ret;
-
-
-
-		mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
-
-
-// printf("RUN BUILTIN: %s\n", mini->ast->cmd->cmd_args[0]);
-// int ret = ft_run_builtin(mini->ast->cmd, mini);
-// printf("RETURN CODE: %d\n", ret);
-// mini->last_exit = ret;
-
-		dup2(fd, STDOUT_FILENO);
-		close(fd);
-		return ;
+		if (mini->ast->cmd->flag_error != 1 && mini->ast->cmd->path_error != 1)
+		{
+			in_fd = dup(STDIN_FILENO);
+			out_fd = dup(STDOUT_FILENO);
+			if (has_redirection(mini->ast->cmd))
+				handle_redirects(mini->ast->cmd);
+			mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
+			dup2(out_fd, STDOUT_FILENO);
+			dup2(in_fd, STDIN_FILENO);
+			close(out_fd);
+			close(in_fd);
+			return ;
+		}
 	}
 	else
 	{
 		pid = fork();
-		// if (ft_builtin(mini->ast, &mini->env))
-		// {
-		// 	mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
-		// 	return ;
-		// }
+		if (ft_builtin(mini->ast))
+		{
+			mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
+			return ;
+		}
 		if (pid == 0)
 		{
 			signal(SIGINT, SIG_DFL);
@@ -136,23 +108,9 @@ static void	exec_or_builtin(t_mini *mini)
 			exec_ast(mini->ast, mini->env);
 			exit(1); // fallback if execve fails
 		}
-		else if (pid > 0)
-		{
-			waitpid(pid, &status, 0);
-			if (WIFEXITED(status))
-				mini->last_exit = WEXITSTATUS(status);
-			else
-				mini->last_exit = 1;
-		}
-		else
-		{
-			perror("fork");
-			mini->last_exit = 1;
-			//exit(1);
-		}
-		// waitpid(pid, &status, 0);
-		// if (WIFEXITED(status))
-		// 	mini->last_exit = WEXITSTATUS(status);
+		waitpid(pid, &status, 0);
+		if (WIFEXITED(status))
+			mini->last_exit = WEXITSTATUS(status);
 	}
 	// else
 	// 	mini->last_exit = 1;
