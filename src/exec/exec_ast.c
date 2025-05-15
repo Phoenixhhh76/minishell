@@ -101,9 +101,10 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
-		ft_putstr_fd("minishell: node->cmd->cmd_args: numeric argument required\n", 2);
-		printf("minishell: %s: command not found\n", node->cmd->cmd_args);
-		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+		//ft_putstr_fd("minishell: node->cmd->cmd_args: numeric argument required\n", 2);
+		//printf("minishell: %s: command not found\n", node->cmd->cmd_args);
+		//ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+		perror("execve: ");
 		exit(127);//Nina
 	}
 	// if (!node->cmd->cmd_path)
