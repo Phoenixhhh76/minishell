@@ -124,7 +124,7 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 	{
 		while (1)
 		{
-			if (g_signal_pid == 1)
+			if (g_signal_pid == SIGINT)
 				return (1);
 			line = readline("> ");
 			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)

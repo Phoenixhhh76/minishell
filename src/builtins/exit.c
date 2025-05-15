@@ -12,6 +12,63 @@
 
 #include "../../includes/minishell.h"
 
+bool	ft_is_long_limits(const char *nptr)
+{
+	int			i;
+	int			sign;
+	int			digit;
+	long long	nb;
+
+	i = 0;
+	nb = 0;
+	sign = 1;
+	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
+		i++;
+	if (nptr[i] == '+' || nptr[i] == '-')
+	{
+		if (nptr[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+	{
+		digit = nptr[i] - 48;
+		if (sign == 1 && (nb > (LLONG_MAX - digit) / 10))
+			return (false);
+		if (sign == -1 && (-nb < (LLONG_MIN + digit) / 10))
+			return (false);
+		nb = nb * 10 + (nptr[i] - 48);
+		i++;
+	}
+	return (true);
+}
+
+long long	ft_atoll(const char *nptr)
+{
+	int			i;
+	int			sign;
+	long long	nb;
+
+	i = 0;
+	nb = 0;
+	sign = 1;
+	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
+		i++;
+	if (nptr[i] == '+' || nptr[i] == '-')
+	{
+		if (nptr[i] == '-')
+			sign = -1;
+		i++;
+	}
+	while (nptr[i] >= '0' && nptr[i] <= '9')
+	{
+		nb = nb * 10 + (nptr[i] - 48);
+		i++;
+	}
+	return (nb * sign);
+}
+
+
 static bool	ft_isnumeric(char *str)
 {
 	int	i;
@@ -51,15 +108,17 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 	}
 	if (ft_isnumeric(cmd->cmd_args[1]))
 	{
-		code = ft_atoi(cmd->cmd_args[1]);
+		if (!ft_is_long_limits(cmd->cmd_args[1]))
+		{
+			printf("exit\n");
+			ft_putstr_fd("minishell: exit: numeric arguments required\n", 2);
+			safe_exit(mini, 2);
+		}
+		code = ft_atoll(cmd->cmd_args[1]);
 		if (code < 0)
 			code = 256 + code;
 	}
 	printf("exit\n");
 	safe_exit(mini, (unsigned char)code);
 	return (0);
-	//exit(mini->last_exit);
 }
-
-// long max lomg min
-// error code, use %256
