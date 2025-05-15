@@ -18,7 +18,7 @@ void	signal_handler(int sig)
 	//printf("Received SIGINT, %d!\n", sig);
 	if (sig == SIGINT)
 	{
-		g_signal_pid = 1;
+		g_signal_pid = SIGINT;
 		write(STDOUT_FILENO, "\n", 1);
 		rl_on_new_line();
 		rl_replace_line("", 0);
