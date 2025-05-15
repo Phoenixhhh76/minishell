@@ -12,9 +12,29 @@
 
 #include "../includes/minishell.h"
 
+void	free_args(char **args, int count)
+{
+	int	i;
+
+	i = 0;
+	if (!args)
+		return ;
+	while (i < count)
+	{
+		free(args[i]);
+		i++;
+	}
+	free(args);
+}
+
 static int	handle_single(char **args, int i, t_token *tok)
 {
 	args[i++] = ft_strdup(tok->str);
+	if (!args[i])
+	{
+		free_args(args, i);
+		return (-1);
+	}
 	return (i);
 }
 
@@ -141,6 +161,7 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
 			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
 			start = start->next;
+		print_tab(args);
 		start = start->next;
 	}
 	args[i] = NULL;
@@ -153,7 +174,7 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 	int		i;
 	char	*expanded;
 	char	**args;
-	t_token *tmp;
+	t_token	*tmp;
 
 	count = 0;
 	i = 0;
@@ -200,8 +221,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		return (NULL);
 	tmp = start;
 	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
-	//if (!node || !cmd)
-		//ERROR, return (NULL);
+	if (!cmd)
+		return (NULL);
 	cmd->fd_in = -1; //to be determined;
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
@@ -218,7 +239,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 				perror(cmd->infile);
 				cmd->flag_error = 1;
 			}
-			close(fd);
+			else
+				close(fd);
 			tmp = tmp->next;
 		}
 		else if (tmp->type == REDIR_OUT && tmp->next)
@@ -234,7 +256,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 					perror(cmd->outfile);
 					cmd->path_error = 1;
 				}
-				close(fd);
+				else
+					close(fd);
 				cmd->fd_out = STDOUT_FILENO;
 			}
 			tmp = tmp->next;
@@ -255,6 +278,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 					perror(cmd->outfile);
 					cmd->path_error = 1;
 				}
+				else
+					close(fd);
 				cmd->fd_out = STDOUT_FILENO;
 			}
 			tmp = tmp->next;

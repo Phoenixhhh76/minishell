@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	ft_reinit_cmd(t_cmd *cmd)
+void	reset_cmd(t_cmd *cmd)
 {
 	cmd->cmd_args = NULL;
 	cmd->cmd_path = NULL;
@@ -32,8 +32,10 @@ void	ft_reinit_cmd(t_cmd *cmd)
 	cmd->heredocs_quote = NULL;
 }
 
-void	reset_cmd(t_cmd *cmd)
+void	free_cmd(t_cmd *cmd)
 {
+	if (!cmd)
+		return ;
 	if (cmd->cmd_args)
 		free_double_tab(cmd->cmd_args);
 	if (cmd->cmd_path)
@@ -52,25 +54,48 @@ void	reset_cmd(t_cmd *cmd)
 		free_double_tab(cmd->heredocs);
 	if (cmd->heredoc_pipe)
 		ft_free_tab_int(cmd->heredoc_pipe, cmd->heredoc_nb);
-	ft_reinit_cmd(cmd);
+	if (cmd->heredocs_quote)
+		free(cmd->heredocs_quote);
+	reset_cmd(cmd);
+	free(cmd);
 }
 
 void	free_ast(t_ast *ast)
 {
 	t_ast	*tmp;
 
-	tmp = ast;
-	while (ast)
+	tmp = NULL;
+	if (!ast)
+		return ;
+	while (tmp)
 	{
 		tmp = ast;
-		free_token_list(&tmp->ast_token);
-		if (tmp->cmd)
-			reset_cmd(tmp->cmd);
+		free_cmd(tmp->cmd);
+		free_ast(tmp->left);
+		free_ast(tmp->right);
+			free_token_list(&tmp->ast_token);
 		tmp->fd[0] = -1;
 		tmp->fd[1] = -1;
+		free(tmp);
 		tmp = tmp->next;
 	}
 	free(tmp);
+}
+void	safe_cleanup(t_mini *mini, char *line)
+{
+	if (line)
+		free(line);
+	if (mini->token)
+	{
+		free_token_list(mini->token);
+		mini->token = NULL;
+	}
+	if (mini->ast)
+	{
+		free_ast(mini->ast);
+		mini->ast = NULL;
+	}
+	g_signal_pid = 0;
 }
 
 void	safe_exit(t_mini *mini, int code)

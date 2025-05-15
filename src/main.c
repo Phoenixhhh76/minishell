@@ -14,7 +14,7 @@
 
 pid_t g_signal_pid = 0;
 
-static int	read_and_prepare_line(char **line)
+int	read_and_prepare_line(char **line)
 {
 	g_signal_pid = 0;
 	*line = readline("minishell> ");
@@ -29,7 +29,7 @@ static int	read_and_prepare_line(char **line)
 	return (0);
 }
 
-static int	check_line(char *line, t_mini *mini)
+int	check_line(char *line, t_mini *mini)
 {
 	if (check_unclosed_quotes(line))
 	{
@@ -43,7 +43,7 @@ static int	check_line(char *line, t_mini *mini)
 		mini->last_exit = 2;
 		free_token_list(mini->token);
 		mini->token = NULL;
-		return (0);
+		return (2);
 	}
 	init_ast(mini);
 	//print_ast(mini->ast, 10);
@@ -67,7 +67,7 @@ bool	has_redirection(t_cmd *cmd)
 	return (false);
 }
 
-static void	exec_or_builtin(t_mini *mini)
+void	exec_or_builtin(t_mini *mini)
 {
 	pid_t	pid;
 	int		status;
@@ -96,6 +96,11 @@ static void	exec_or_builtin(t_mini *mini)
 	else
 	{
 		pid = fork();
+		if (pid < 0)
+		{
+			perror("fork");
+			mini->last_exit = 1;
+		}
 		if (pid == 0)
 		{
 			signal(SIGINT, SIG_DFL);
@@ -111,20 +116,6 @@ static void	exec_or_builtin(t_mini *mini)
 	// 	mini->last_exit = 1;
 	close_all_heredocs(mini->ast);
 }
-
-static void	safe_cleanup(t_mini *mini, char *line)
-{
-	free_token_list(mini->token);
-	mini->token = NULL;
-	// free_ast(mini->ast); // ← TODO if implemented
-	free(line);
-	g_signal_pid = 0;
-}
-/* have to choose a good name */
-static int	read_and_prepare_line(char **line);
-static int	check_line(char *line, t_mini *mini);
-static void	exec_or_builtin(t_mini *mini);
-static void	safe_cleanup(t_mini *mini, char *line);
 
 int	main(int ac, char **av, char **envp)
 {
@@ -145,6 +136,8 @@ int	main(int ac, char **av, char **envp)
 		}
 		safe_cleanup(&mini, line);
 	}
+	free_double_tab(mini.env);
+	free_double_tab(mini.exp_list);
 	rl_clear_history();
 	return (0);
 }

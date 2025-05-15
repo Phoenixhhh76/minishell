@@ -93,25 +93,11 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	if (node->cmd->flag_error == 1 || node->cmd->path_error == 1)
 		return ;
 	handle_redirects(node->cmd);
-	// if (ft_is_builtin(node->cmd->cmd_args[0]))
-	// {
-	// 	ft_run_builtin(node->cmd, &envp);
-	// 	exit(0);
-	// }
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
-		//ft_putstr_fd("minishell: node->cmd->cmd_args: numeric argument required\n", 2);
-		//printf("minishell: %s: command not found\n", node->cmd->cmd_args);
-		//ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-		perror("execve: ");
-		exit(127);//Nina
+		err_msg(node->cmd->cmd_args[0], ":", " command not found", 127);
 	}
-	// if (!node->cmd->cmd_path)
-	// {
-	// 	perror("command not found");
-	// 	exit(127);//to be determined
-	// }
 }
 
 void	exec_ast(t_mini *mini, t_ast *node, char **envp)

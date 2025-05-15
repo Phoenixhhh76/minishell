@@ -125,7 +125,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 int		does_var_exist(char **env, const char *var);
 int		find_equal_sign(t_cmd *cmd);
 
-int		ft_echo(t_cmd *cmd); //change void to int for return 0
+int		ft_echo(t_cmd *cmd);
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
@@ -173,7 +173,7 @@ char	*append_char(char *result, char c);
 t_token	*find_next_pipe(t_token *start, t_token *end);
 t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
 t_ast	*create_pipe_node(t_token *start, \
-t_token *pipe_pos, t_token *end, t_mini *mini);
+		t_token *pipe_pos, t_token *end, t_mini *mini);
 
 //utils
 char	*ft_strndup(const char *s, size_t n);
@@ -190,6 +190,8 @@ void	exit_error(const char *msg);
 
 //clean
 void	safe_exit(t_mini *mini, int code);
+void	safe_cleanup(t_mini *mini, char *line);
+void	free_ast(t_ast *ast);
 
 //tests, to be erased
 void	print_tab(char **tab);
