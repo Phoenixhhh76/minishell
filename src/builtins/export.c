@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/14 13:40:40 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:18:40 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -78,28 +78,6 @@ int	add_var_to_env(char **env, char *cmd, char ***mini_env)
 	*mini_env = new_env;
 	return (0);
 }
-/*
-static char	*strip_quotes_and_trim(const char *val)
-In classic situations,
-like echo "  bonjour he  " | cat -e -> we have to keep all spaces in quotes.
-But in export, it's different:
-	minishell> export hola=" bonjour he "
-	Token [export]  quote_type 0
-	Token [hola=" bonjour he "]  quote_type 0
-	[split_export_arg] var[0]=[hola], var[1]=[" bonjour he "]
-	[DEBUG] var[1] addr: 0xb26fc9b896f0
-	[DEBUG] trimmed val addr: 0xb26fc9b8a290
-	export debug: var[0]=[hola], var[1]=[" bonjour he "]
-	export debug: cleaned_val=[bonjour he]
-	export debug: joined=[hola=bonjour he]
-	export assigned: [hola=bonjour he]
-	minishell> echo $hola
-	Token [echo]  quote_type 0
-	Token [$hola]  quote_type 0
-	bonjour he   ------->no space in quotes,
-We need removes quotes from the beginning and end of a string, if they exist.
-Also trims leading and trailing whitespace.
-*/
 
 static char	*strip_quotes_only(const char *val)
 {
@@ -110,9 +88,9 @@ static char	*strip_quotes_only(const char *val)
 	len = ft_strlen(val);
 	if (len >= 2 && ((val[0] == '"' && val[len - 1] == '"') || \
 					(val[0] == '\'' && val[len - 1] == '\'')))
-		return ft_substr(val, 1, len - 2); // 去除外層引號，但保留所有空白
+		return (ft_substr(val, 1, len - 2));
 	else
-		return ft_strdup(val); // 沒有包引號就原樣返回
+		return (ft_strdup(val));
 }
 
 static char **split_export_arg(const char *arg)
@@ -133,7 +111,7 @@ static char **split_export_arg(const char *arg)
 	if (!out)
 		return (free(name), NULL);
 	out[0] = name;
-	out[1] = ft_strdup(equal + 1); // ✅ 無論值是空字串還是內容都處理
+	out[1] = ft_strdup(equal + 1);
 	if (!out[0] || !out[1])
 	{
 		free_double_tab(out);
@@ -147,22 +125,22 @@ static char	*make_joined_assignment(char **var)
 	char	*cleaned_val;
 	char	*joined;
 
-	printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
+	//printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
 	//cleaned_val = strip_quotes_and_trim(var[1]);
 	cleaned_val = strip_quotes_only(var[1]);
 
 	if (!cleaned_val)
 		return (NULL);
 
-	printf("export debug: var[0]=[%s], var[1]=[%s]\n", var[0], var[1] ? var[1] : "(null)");
-	printf("export debug: cleaned_val=[%s]\n", cleaned_val);
+	//printf("export debug: var[0]=[%s], var[1]=[%s]\n", var[0], var[1] ? var[1] : "(null)");
+	//printf("export debug: cleaned_val=[%s]\n", cleaned_val);
 
 	joined = ft_strjoin(var[0], "=");
 	if (!joined)
 		return (free(cleaned_val), NULL);
 	joined = ft_strjoin_f(joined, cleaned_val);
 	free(cleaned_val);
-	printf("export debug: joined=[%s]\n", joined);
+	//printf("export debug: joined=[%s]\n", joined);
 	return (joined);
 }
 
@@ -211,10 +189,12 @@ bool	in_exp_list(char **exp_list, const char *key)
 
 void	add_to_exp_list(char ***exp_list, const char *key)
 {
-	int		len = 0;
+	int		len;
 	char	**new_list;
-	int		i = 0;
+	int		i;
 
+	len = 0;
+	i = 0;
 	while (*exp_list && (*exp_list)[len])
 		len++;
 	new_list = ft_calloc(len + 2, sizeof(char *));
@@ -229,6 +209,32 @@ void	add_to_exp_list(char ***exp_list, const char *key)
 	*exp_list = new_list;
 }
 
+void	remove_from_exp_list(char ***exp_list, const char *key)
+{
+	int		i;
+	int		j;
+	int		len;
+	char	**new_list;
+
+	i = 0;
+	j = 0;
+	len = 0;
+	while (*exp_list && (*exp_list)[len])
+		len++;
+	new_list = ft_calloc(len, sizeof(char *));
+	if (!new_list)
+		return ;
+	while ((*exp_list)[i])
+	{
+		if (ft_strcmp((*exp_list)[i], key) != 0)
+			new_list[j++] = ft_strdup((*exp_list)[i]);
+		i++;
+	}
+	new_list[j] = NULL;
+	free_double_tab(*exp_list);
+	*exp_list = new_list;
+}
+
 
 int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 {
@@ -238,21 +244,24 @@ int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 	int		env_index;
 
 	env = *mini_env;
-
 	if (!arg || !arg[0] || arg[0] == '=' || !is_valid_var_name(arg))
-	{
-		//mini->last_exit = 1;
 		return (export_err_msg(arg, 1));
-	}
-	if (!ft_strchr(arg, '=')) // export abc without value
+	if (!ft_strchr(arg, '='))
 	{
 		if (does_var_exist(env, arg) < 0 && !in_exp_list(mini->exp_list, arg))
 			add_to_exp_list(&mini->exp_list, arg); // add in exp_list
 		return (0);
 	}
+	// else
+	// {
+	// 	if (does_var_exist(env, arg) >= 0 && in_exp_list(mini->exp_list, arg))
+	// 		remove_from_exp_list(&mini->exp_list, arg); // remove from exp_list
+	// }
 	var = split_export_arg(arg);
 	if (!var || !var[0] || var[0][0] == '\0')
 		return (free_double_tab(var), -1);
+	if (in_exp_list(mini->exp_list, var[0]))
+		remove_from_exp_list(&mini->exp_list, var[0]);
 	joined = make_joined_assignment(var);
 	if (!joined)
 		return (free_double_tab(var), -1);
@@ -272,7 +281,6 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 
 	i = 1;
 	status = 0;
-	//for export without args
 	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
 	{
 		print_export_env(*mini_env, mini->exp_list);
@@ -281,7 +289,7 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 	while (cmd->cmd_args[i])
 	{
 		if (handle_single_export(cmd->cmd_args[i], mini_env, mini) < 0)
-			status = 1; // error, to check with exit code
+			status = 1;
 		i++;
 	}
 	mini->last_exit = status;

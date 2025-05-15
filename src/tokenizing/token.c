@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/15 09:16:44 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:05:48 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -95,11 +95,23 @@ void	finalize_token(char *current, t_quote_type qt, t_token **tokens)
 
 void	check_and_handle_meta(const char *input, int *i, t_token **tokens)
 {
+	int		new_i;
 	if (is_meta_char(input[*i]))
-		*i = handle_meta(input, *i, tokens);
+	{
+		new_i = handle_meta(input, *i, tokens);
+		if (new_i == -1)
+		{
+			free_token_list(*tokens);
+			*tokens = NULL;
+			*i = ft_strlen(input);
+			return ;
+		}
+		*i = new_i;
+	}
 	else if (input[*i])
 		(*i)++;
 }
+
 
 t_token	*tokenize_input(const char *input)
 {
