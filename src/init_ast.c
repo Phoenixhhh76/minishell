@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/15 09:50:29 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/15 10:39:54 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -298,45 +298,3 @@ void	init_ast(t_mini *mini)
 {
 	mini->ast = parse_pipeline(mini->token, NULL, mini);
 }
-
-/*
-static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
-{
-	int		i;
-	int		size;
-	char	**args;
-
-	(void)mini;
-	i = 0;
-	size = count_args(start, end);
-	args = (char **)ft_calloc(size + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-		{
-			if (start->quote_type == QUOTE_SINGLE)
-			{
-				args[i++] = ft_strdup(start->str);
-			}
-			else
-			{
-				char *expanded = expand_arg(start->str, mini);
-				if (start->quote_type == QUOTE_DOUBLE)
-					args[i++] = expanded;
-				else // QUOTE_NONE
-				{
-					char **split = ft_split(expanded, ' ');
-					for (int j = 0; split && split[j]; j++)
-						args[i++] = ft_strdup(split[j]);
-					free(expanded);
-					free_split(split);
-				}
-			}
-		}
-		start = start->next;
-	}
-	args[i] = NULL;
-	return (args);
-} */

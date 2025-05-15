@@ -26,7 +26,7 @@ void	exec_pipe_node(t_ast *node, char **envp)
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
 		exec_ast(node->left, envp);
-		exit(1);
+		exit(1);//Nina
 	}
 	right_pid = fork();
 	if (right_pid == 0)
@@ -35,7 +35,7 @@ void	exec_pipe_node(t_ast *node, char **envp)
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
 		exec_ast(node->right, envp);
-		exit(1);
+		exit(1);//Nina
 	}
 	close(node->fd[0]);
 	close(node->fd[1]);
@@ -102,7 +102,7 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	{
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		perror("execve");
-		exit(1);
+		exit(1);//Nina
 	}
 	// if (!node->cmd->cmd_path)
 	// {

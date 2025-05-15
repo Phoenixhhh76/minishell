@@ -12,16 +12,34 @@
 
 #include "../../includes/minishell.h"
 
-void	ft_free_char2(char **arr)
+void	ft_free_tab_int(int **tab, int size)
 {
 	int	i;
 
-	if (!arr)
+	if (!tab)
 		return ;
 	i = 0;
-	while (arr[i])
-		free(arr[i++]);
-	free(arr);
+	while (i < size)
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
+}
+
+void	free_double_tab(char **tab)
+{
+	int	i;
+
+	if (!tab)
+		return ;
+	i = 0;
+	while (tab[i])
+	{
+		free(tab[i]);
+		i++;
+	}
+	free(tab);
 }
 
 /* for exit_error */
