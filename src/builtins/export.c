@@ -161,7 +161,7 @@ static char	*make_joined_assignment(char **var)
 		if (add_var_to_env(env, joined, mini_env) < 0)
 			return (-1);
 	}
-	printf("export assigned: [%s]\n", joined);
+	//printf("export assigned: [%s]\n", joined);
 	return (0);
 }
 

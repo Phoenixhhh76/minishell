@@ -96,16 +96,11 @@ static void	exec_or_builtin(t_mini *mini)
 	else
 	{
 		pid = fork();
-		if (ft_builtin(mini->ast))
-		{
-			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
-			return ;
-		}
 		if (pid == 0)
 		{
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
-			exec_ast(mini->ast, mini->env);
+			exec_ast(mini, mini->ast, mini->env);
 			exit(1); // fallback if execve fails//Nina
 		}
 		waitpid(pid, &status, 0);

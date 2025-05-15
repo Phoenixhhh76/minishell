@@ -91,7 +91,6 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 {
 	int	code;
 
-	(void)mini;
 	code = 0;
 	if (cmd->cmd_args[1] && !ft_isnumeric(cmd->cmd_args[1]))
 	{

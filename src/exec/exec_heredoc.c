@@ -146,13 +146,10 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 			}
 			free(line);
 		}
-		printf("LINE no free//signal_pid= %d\n", g_signal_pid);
 		free(line);
 		close(cmd->heredoc_pipe[i][1]);
 		i++;
-		printf("LINE//signal_pid= %d\n", g_signal_pid);
 	}
-	printf("END=signal_pid= %d\n", g_signal_pid);
 	return (0);
 }
 
