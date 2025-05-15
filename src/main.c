@@ -85,7 +85,7 @@ static void	exec_or_builtin(t_mini *mini)
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
 				handle_redirects(mini->ast->cmd);
-			mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
+			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			dup2(out_fd, STDOUT_FILENO);
 			dup2(in_fd, STDIN_FILENO);
 			close(out_fd);
@@ -98,7 +98,7 @@ static void	exec_or_builtin(t_mini *mini)
 		pid = fork();
 		if (ft_builtin(mini->ast))
 		{
-			mini->last_exit = ft_run_builtin(mini->ast->cmd, mini);
+			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			return ;
 		}
 		if (pid == 0)
@@ -106,7 +106,7 @@ static void	exec_or_builtin(t_mini *mini)
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini->ast, mini->env);
-			exit(1); // fallback if execve fails
+			exit(1); // fallback if execve fails//Nina
 		}
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))

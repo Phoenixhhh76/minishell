@@ -42,7 +42,7 @@ void exit_error(const char *msg)
 {
 	perror(msg);
 	//need to care about memory leak
-	exit(1);
+	exit(1);//Nina
 }
 int	syntax_err_msg(char *str1, char *str2, int erno)
 {

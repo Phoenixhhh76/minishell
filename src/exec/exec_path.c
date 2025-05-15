@@ -72,13 +72,13 @@ char	*resolve_cmd_path(char *cmd, char **envp)
 		full_path = ft_strjoin_with(paths[i], cmd, '/');
 		if (access(full_path, X_OK) == 0)
 		{
-			ft_free_char2(paths);
+			free_double_tab(paths);
 			return (full_path);
 		}
 		free(full_path);
 		i++;
 	}
-	ft_free_char2(paths);
+	free_double_tab(paths);
 	return (NULL);
 }
 

@@ -52,16 +52,16 @@ typedef struct s_cmd
 	char	*infile;
 	char	*outfile;
 	char	*append;
-	int		fd_in;
-	int		fd_out;
+	int		fd_in;//
+	int		fd_out;//
 	int		*pipe;
 	int		*pids;
-	bool	last_redirin;
+	bool	last_redirin;//
 	char	**heredocs;
-	int		heredoc_nb;
+	int		heredoc_nb;//
 	int		**heredoc_pipe;
-	bool	flag_error;
-	bool	path_error;
+	bool	flag_error;//
+	bool	path_error;//
 	t_quote_type	*heredocs_quote; // maybe we can change t_quote_type in a shorter name ?
 	//int		heredoc_error;//add for exit_error
 	//int		child;
@@ -87,7 +87,6 @@ typedef struct s_mini
 	char	**av;
 	int	 	last_exit; // last exit code for $?
 	//int		ac;
-	//int		heredoc; add in s_cmd
 	//???		histoire(readlin add history);
 }	t_mini;
 
@@ -125,7 +124,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 //builtins
 int		does_var_exist(char **env, const char *var);
 int		find_equal_sign(t_cmd *cmd);
-void	free_double_tab(char **tab);
 
 int		ft_echo(t_cmd *cmd); //change void to int for return 0
 int		ft_pwd(void);
@@ -136,14 +134,14 @@ int		ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini);
 void	print_export_env(char **env, char **exp_list);
 char	**clone_and_sort_env(char **env);
 void	print_sorted_env_line(const char *entry);
-int		ft_exit(t_cmd *cmd);
+int		ft_exit(t_mini *mini, t_cmd *cmd);
 
 
 //exec
 void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast);
 bool	ft_is_builtin(char *arg);
-int		ft_run_builtin(t_cmd *cmd, t_mini *mini);
+int		ft_run_builtin(t_mini *mini, t_cmd *cmd);
 void	exec_ast(t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 //char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
@@ -156,7 +154,7 @@ int		exec_heredocs(t_cmd *cmd, t_mini *mini);
 int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 
-//expande
+//expand
 //char	*expand_arg(const char *str, t_mini *mini);
 char	*expand_arg(const char *str, t_mini *mini, t_quote_type quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
@@ -169,7 +167,6 @@ char	*handle_exit_code(char *result, int *i, t_mini *mini);
 char	*handle_pid(char *result, int *i);
 char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
 
-// 處理單一普通字元追加到結果字串
 char	*append_char(char *result, char c);
 
 //parsing
@@ -178,10 +175,11 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
 t_ast	*create_pipe_node(t_token *start, \
 t_token *pipe_pos, t_token *end, t_mini *mini);
 
-//outil
+//utils
 char	*ft_strndup(const char *s, size_t n);
 int		ft_isspace(char c);
-void	ft_free_char2(char **arr);
+void	free_double_tab(char **arr);
+void	ft_free_tab_int(int **tab, int size);
 void	free_strs(char *str, char **strs);
 void	free_split(char **split);
 void	close_fds(t_cmd *cmd);
@@ -189,6 +187,9 @@ void	exit_error_pipe(int error_status, t_cmd *cmd);
 int		err_msg(char *str1, char *str2, char *str3, int erno);
 int		syntax_err_msg(char *str1, char *str2, int erno);
 void	exit_error(const char *msg);
+
+//clean
+void	safe_exit(t_mini *mini, int code);
 
 //tests, to be erased
 void	print_tab(char **tab);

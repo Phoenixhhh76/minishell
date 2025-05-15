@@ -27,27 +27,3 @@ int	does_var_exist(char **env, const char *var)
 	}
 	return (-1);
 }
-
-/* void	free_double_tab(char **tab)
-{
-	int	i;
-
-	i = 0;
-	while (tab[i])
-	{
-		free(tab[i]);
-		i++;
-	}
-	free(tab);
-} */
-void free_double_tab(char **tab)
-{
-	int i;
-
-	if (!tab)
-		return;
-	i = 0;
-	while (tab[i])
-		free(tab[i++]);
-	free(tab);
-}
