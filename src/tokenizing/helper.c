@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:41:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 09:18:06 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/15 17:12:56 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -39,6 +39,13 @@ int	handle_meta(const char *input, int i, t_token **tokens)
 {
 	int	len;
 
+	if ((input[i] == '|' && input[i + 1] == '|') || \
+	(input[i] == '<' && input[i + 1] == '<' && input[i + 2] == '<') || \
+	(input[i] == '>' && input[i + 1] == '>' && input[i + 2] == '>'))
+	{
+		syntax_err_msg("unexpected token ", ft_strndup(&input[i], 2), 2);
+		return (-1);
+	}
 	if (input[i] == input[i + 1])
 		len = 2;
 	else
