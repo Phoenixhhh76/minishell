@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/14 13:37:34 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:50:29 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -31,8 +31,11 @@ static int	add_split(char **args, int i, char *expanded)
 	free_split(split);
 	return (i);
 }
-
-
+/*
+the condition strchr ", make sure if we have a string like
+$HOLA="  bonjour he ",have space at the beginning and end
+Token [wesh"$HOLA"]  quote_type 0, we won't split it, we keep "  bonjour he "
+ */
 static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 {
 	char	*expanded;
@@ -40,12 +43,30 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	expanded = expand_if_needed(tok, mini);
 	if (!expanded)
 		return (i);
-	if (tok->quote_type == QUOTE_DOUBLE)
+	if (tok->quote_type == QUOTE_DOUBLE || ft_strchr(tok->str, '"'))
+	{
 		args[i++] = expanded;
+	}
 	else
+	{
 		i = add_split(args, i, expanded);
+	}
 	return (i);
 }
+
+// static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
+// {
+// 	char	*expanded;
+
+// 	expanded = expand_if_needed(tok, mini);
+// 	if (!expanded)
+// 		return (i);
+// 	if (tok->quote_type == QUOTE_DOUBLE)
+// 		args[i++] = expanded;
+// 	else
+// 		i = add_split(args, i, expanded);
+// 	return (i);
+// }
 
 static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 {
@@ -53,35 +74,20 @@ static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
 }
-/*
-static int	count_args(t_token *start, t_token *end)
+
+static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 {
-	int	count;
+	int		count;
+	char	*expanded;
+	char	**split;
+	int		i;
 
 	count = 0;
 	while (start && start != end)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
-			count++;
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
-			|| start->type == REDIR_APPEND || \
-			start->type == HEREDOC) && start->next)
-			start = start->next;
-		start = start->next;
-	}
-	return (count);
-} */
-static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
-{
-	int		count = 0;
-	char	*expanded;
-	char	**split;
-	int		i;
-
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
 		{
+			split = NULL;
 			if (start->quote_type == QUOTE_SINGLE || start->quote_type == QUOTE_DOUBLE)
 			{
 				count++;
@@ -92,13 +98,8 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 				if (!expanded)
 				{
 					start = start->next;
-					continue;
+					continue ;
 				}
-				// split = ft_split(expanded, ' ');
-				// i = 0;
-				// while (split && split[i])
-				// 	count++;
-				// 	i++;
 				if (expanded[0] != '\0' || start->quote_type != QUOTE_NONE)
 				{
 					split = ft_split(expanded, ' ');
@@ -110,10 +111,11 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 					}
 				}
 				free(expanded);
-				free_split(split);
+				if (split)
+					free_split(split);
 			}
 		}
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
+		else if ((start->type == REDIR_IN || start->type == REDIR_OUT || \
 			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
 			start = start->next;
 		start = start->next;
@@ -145,68 +147,17 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	return (args);
 }
 
-/*
-static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
-{
-	int		i;
-	int		size;
-	char	**args;
-
-	size = count_args(start, end);
-	args = (char **)ft_calloc(size + 1, sizeof(char *));
-	if (!args)
-		return (NULL);
-	i = 0;
-	while (start && start != end)
-	{
-		if (start->type == CMD || start->type == UNKNOWN)
-			i = process_token(args, i, start, mini);
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
-			|| start->type == REDIR_APPEND || \
-			start->type == HEREDOC) && start->next)
-			start = start->next;
-		start = start->next;
-	}
-	args[i] = NULL;
-	return (args);
-} */
-
-// static char	**collect_args_for_export(t_token *start, t_token *end)
-// {
-// 	int		count = 0;
-// 	int		i = 0;
-// 	char	**args;
-// 	t_token *tmp = start;
-
-// 	while (tmp && tmp != end)
-// 	{
-// 		if (tmp->type == CMD || tmp->type == UNKNOWN)
-// 			count++;
-// 		tmp = tmp->next;
-// 	}
-
-// 	args = (char **)ft_calloc(count + 1, sizeof(char *));
-// 	if (!args)
-// 		return (NULL);
-
-// 	while (start && start != end)
-// 	{
-// 		if (start->type == CMD || start->type == UNKNOWN)
-// 			args[i++] = ft_strdup(start->str); // 不展開，不 split
-// 		start = start->next;
-// 	}
-// 	args[i] = NULL;
-// 	return (args);
-// }
 static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini)
 {
-	int		count = 0;
-	int		i = 0;
+	int		count;
+	int		i;
 	char	*expanded;
 	char	**args;
-	t_token *tmp = start;
+	t_token *tmp;
 
-	// 第一次遍歷：計算 token 數量
+	count = 0;
+	i = 0;
+	tmp = start;
 	while (tmp && tmp != end)
 	{
 		if (tmp->type == CMD || tmp->type == UNKNOWN)
@@ -218,19 +169,16 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 		}
 		tmp = tmp->next;
 	}
-
 	args = (char **)ft_calloc(count + 1, sizeof(char *));
 	if (!args)
 		return (NULL);
-
-	// 第二次遍歷：填值
 	while (start && start != end)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 		{
 			expanded = expand_if_needed(start, mini);
 			if (expanded && (expanded[0] != '\0' || start->quote_type != QUOTE_NONE))
-				args[i++] = expanded; // ✅ 保留空格，不 split，但展開
+				args[i++] = expanded;
 			else
 				free(expanded);
 		}
@@ -239,7 +187,6 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 	args[i] = NULL;
 	return (args);
 }
-
 
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 {
@@ -329,8 +276,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		cmd->heredoc_pipe = create_heredoc_pipe(heredoc_nb);
 		cmd->heredocs = get_heredoc(heredoc_nb, start, end, cmd);
 	}
-	//cmd->cmd_args = collect_args(start, end, mini);//here will have problem about abc=" bonjour ye "
-	// check if it's  export command
 	if (start && start->str && ft_strcmp(start->str, "export") == 0)
 		cmd->cmd_args = collect_args_for_export(start, end, mini);
 	else
