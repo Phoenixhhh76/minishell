@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/14 10:41:06 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/15 09:16:44 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	init_token_loop_vars(char **current, t_quote_type *qt)
 		exit_error("malloc failed in init_token_loop_vars");
 	*qt = QUOTE_NONE;
 }
-/* no good for echo wesh"$USER" | cat -e
+//no good for echo wesh"$HOLA" | cat -e  if hola= "  b c " but we keep it for now
 void	fill_current_token(const char *input,
 				int *i, char **current, t_quote_type *qt)
 {
@@ -31,7 +31,7 @@ void	fill_current_token(const char *input,
 			*current = extract_plain(input, i, *current);
 	}
 }
-minishell> echo wesh"$USER" | cat -e
+/* minishell> echo wesh"$USER" | cat -e
 Token [echo]  quote_type 0
 Token [wesh"$USER"]  quote_type 0
 Token [|]  quote_type 0
@@ -52,7 +52,7 @@ bash-5.1$ export HOLA=" bonjour he "
 bash-5.1$ echo wesh"$HOLA" | cat -e
 wesh  bonjour    he   $
 
-*/
+ */
 
 /*
 this function is used to fill the current token with the input string
@@ -62,7 +62,7 @@ if it is a quote, it will call the extract_quoted function
 if it is not a quote, it will call the extract_plain function
 if the current character is a space or a meta character, it will break the loop
 */
-void	fill_current_token(const char *input,
+/* void	fill_current_token(const char *input,
 				int *i, char **current, t_quote_type *qt)
 {
 	t_quote_type	local_qt;
@@ -82,7 +82,7 @@ void	fill_current_token(const char *input,
 		else
 			*current = extract_plain(input, i, *current);
 	}
-}
+} */
 
 
 void	finalize_token(char *current, t_quote_type qt, t_token **tokens)
