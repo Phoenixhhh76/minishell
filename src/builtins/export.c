@@ -147,22 +147,22 @@ static char	*make_joined_assignment(char **var)
 	char	*cleaned_val;
 	char	*joined;
 
-	printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
+	//printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
 	//cleaned_val = strip_quotes_and_trim(var[1]);
 	cleaned_val = strip_quotes_only(var[1]);
 
 	if (!cleaned_val)
 		return (NULL);
 
-	printf("export debug: var[0]=[%s], var[1]=[%s]\n", var[0], var[1] ? var[1] : "(null)");
-	printf("export debug: cleaned_val=[%s]\n", cleaned_val);
+	//printf("export debug: var[0]=[%s], var[1]=[%s]\n", var[0], var[1] ? var[1] : "(null)");
+	//printf("export debug: cleaned_val=[%s]\n", cleaned_val);
 
 	joined = ft_strjoin(var[0], "=");
 	if (!joined)
 		return (free(cleaned_val), NULL);
 	joined = ft_strjoin_f(joined, cleaned_val);
 	free(cleaned_val);
-	printf("export debug: joined=[%s]\n", joined);
+	//printf("export debug: joined=[%s]\n", joined);
 	return (joined);
 }
 
@@ -183,7 +183,7 @@ static char	*make_joined_assignment(char **var)
 		if (add_var_to_env(env, joined, mini_env) < 0)
 			return (-1);
 	}
-	printf("export assigned: [%s]\n", joined);
+	//printf("export assigned: [%s]\n", joined);
 	return (0);
 }
 

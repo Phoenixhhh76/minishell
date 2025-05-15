@@ -142,7 +142,7 @@ void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast);
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_mini *mini, t_cmd *cmd);
-void	exec_ast(t_ast *node, char **envp);
+void	exec_ast(t_mini *mini, t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 //char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);

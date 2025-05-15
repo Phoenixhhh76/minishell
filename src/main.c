@@ -37,7 +37,7 @@ static int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	mini->token = tokenize_input(line);
-	 print_token_list(mini->token);
+	//print_token_list(mini->token);
 	if (!mini->token || !check_syntax(mini->token))
 	{
 		mini->last_exit = 2;
@@ -96,16 +96,11 @@ static void	exec_or_builtin(t_mini *mini)
 	else
 	{
 		pid = fork();
-		if (ft_builtin(mini->ast))
-		{
-			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
-			return ;
-		}
 		if (pid == 0)
 		{
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
-			exec_ast(mini->ast, mini->env);
+			exec_ast(mini, mini->ast, mini->env);
 			exit(1); // fallback if execve fails//Nina
 		}
 		waitpid(pid, &status, 0);

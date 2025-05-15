@@ -12,7 +12,7 @@
 
 #include "../../includes/minishell.h"
 
-void	exec_pipe_node(t_ast *node, char **envp)
+void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 {
 	pid_t	left_pid;
 	pid_t	right_pid;
@@ -25,7 +25,7 @@ void	exec_pipe_node(t_ast *node, char **envp)
 		close(node->fd[0]);
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
-		exec_ast(node->left, envp);
+		exec_ast(mini, node->left, envp);
 		exit(1);//Nina
 	}
 	right_pid = fork();
@@ -34,7 +34,7 @@ void	exec_pipe_node(t_ast *node, char **envp)
 		close(node->fd[1]);
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
-		exec_ast(node->right, envp);
+		exec_ast(mini, node->right, envp);
 		exit(1);//Nina
 	}
 	close(node->fd[0]);
@@ -101,8 +101,10 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
-		perror("execve");
-		exit(1);//Nina
+		ft_putstr_fd("minishell: node->cmd->cmd_args: numeric argument required\n", 2);
+		printf("minishell: %s: command not found\n", node->cmd->cmd_args);
+		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+		exit(127);//Nina
 	}
 	// if (!node->cmd->cmd_path)
 	// {
@@ -111,12 +113,17 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	// }
 }
 
-void	exec_ast(t_ast *node, char **envp)
+void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 {
 	if (!node)
 		return ;
 	if (node->ast_token.type == PIPE)
-		exec_pipe_node(node, envp);
+		exec_pipe_node(mini, node, envp);
 	else if (node->ast_token.type == CMD)
-		exec_cmd_node(node, envp);
+	{
+		if (ft_builtin(node))
+			ft_run_builtin(mini, node->cmd);
+		else
+			exec_cmd_node(node, envp);
+	}
 }
