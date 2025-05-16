@@ -52,16 +52,16 @@ typedef struct s_cmd
 	char	*infile;
 	char	*outfile;
 	char	*append;
-	int		fd_in;
-	int		fd_out;
+	int		fd_in;//
+	int		fd_out;//
 	int		*pipe;
 	int		*pids;
-	bool	last_redirin;
+	bool	last_redirin;//
 	char	**heredocs;
-	int		heredoc_nb;
+	int		heredoc_nb;//
 	int		**heredoc_pipe;
-	bool	flag_error;
-	bool	path_error;
+	bool	flag_error;//
+	bool	path_error;//
 	t_quote	*heredocs_quote; // maybe we can change t_quote in a shorter name ?
 	//int		heredoc_error;//add for exit_error
 	//int		child;
@@ -139,7 +139,6 @@ int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
 int		ft_unset(t_cmd *cmd, char ***mini_env);
-//builtins export
 int		ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini);
 void	print_export_env(char **env, char **exp_list);
 char	**clone_and_sort_env(char **env);
@@ -154,19 +153,25 @@ bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_mini *mini, t_cmd *cmd);
 void	exec_ast(t_mini *mini, t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
+//char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini);
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);
+//void	check_heredocs(t_ast *node);
 void	check_heredocs(t_ast *ast, t_mini *mini);
 int		create_heredocs(t_cmd *cmd);
+//int		exec_heredocs(t_cmd *cmd);
 int		exec_heredocs(t_cmd *cmd, t_mini *mini);
 int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 
 //expand
+//char	*expand_arg(const char *str, t_mini *mini);
 char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
-
+char	*ft_strjoin_f(char *s1, char *s2);
+char	*ft_strjoin_ff(char *s1, char *s2);
 char	*get_env_value(const char *key, char **env);
 char	*expand_heredoc_line(const char *str, t_mini *mini);
+//char	*expand_var(const char *str, int *i, t_mini *mini);
 char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
 char	*handle_exit_code(char *result, int *i, t_mini *mini);
 char	*handle_pid(char *result, int *i);
@@ -182,16 +187,12 @@ t_ast	*create_pipe_node(t_token *start, \
 
 //utils
 char	*ft_strndup(const char *s, size_t n);
-char	*append_char(char *result, char c);
 int		ft_isspace(char c);
 void	free_double_tab(char **arr);
 void	ft_free_tab_int(int **tab, int size);
 void	free_strs(char *str, char **strs);
 void	free_split(char **split);
-char	*ft_strjoin_f(char *s1, char *s2);
-char	*ft_strjoin_ff(char *s1, char *s2);
 void	close_fds(t_cmd *cmd);
-//utils error.c
 void	exit_error_pipe(int error_status, t_cmd *cmd);
 int		err_msg(char *str1, char *str2, char *str3, int erno);
 int		syntax_err_msg(char *str1, char *str2, int erno);

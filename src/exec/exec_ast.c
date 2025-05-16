@@ -14,6 +14,7 @@
 
 void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 {
+	int		status;
 	pid_t	left_pid;
 	pid_t	right_pid;
 
@@ -31,7 +32,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
 		exec_ast(mini, node->left, envp);
-		exit(1);//Nina
+		exit(0);//Nina
 	}
 	right_pid = fork();
 	if (right_pid < 0)
@@ -45,12 +46,14 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
 		exec_ast(mini, node->right, envp);
-		exit(1);//Nina
+		exit(0);//Nina
 	}
 	close(node->fd[0]);
 	close(node->fd[1]);
+	waitpid(right_pid, &status, 0);
 	waitpid(left_pid, NULL, 0);
-	waitpid(right_pid, NULL, 0);
+	//dprintf(2, "status = %i\n", status);
+	exit(status / 256);
 }
 
 void	handle_redirects(t_cmd *cmd)
@@ -108,6 +111,7 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
+		exit(mini->last_exit);
 	}
 }
 
