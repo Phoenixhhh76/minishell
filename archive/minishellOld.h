@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 11:39:45 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/18 19:45:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:12:23 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,15 +32,15 @@ typedef enum e_node_type
 {
 	CMD,
 	PIPE,
-	REDIR_OUT,
-	REDIR_IN,
-	REDIR_APPEND,
-	HEREDOC,
-}	t_node_type;
+	R_OUT,
+	R_IN,
+	R_A,
+	HD,
+}	t_node;
 
 typedef struct s_token
 {
-	t_node_type		type;
+	t_node		type;
 	char			*str;
 	struct s_token	*next;
 }	t_token;

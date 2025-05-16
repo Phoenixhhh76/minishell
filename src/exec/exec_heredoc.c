@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 13:06:45 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/09 12:50:25 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:15:58 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_mini *mini)
 		return (NULL); //error calloc
 	while (tmp && tmp != end)
 	{
-		if (tmp->type == HEREDOC && tmp->next)
+		if (tmp->type == HD && tmp->next)
 		{
 			//tab_heredocs[i] = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			//Limiter we don't need to expand
@@ -51,12 +51,12 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd)
 	tab_heredocs = (char **)ft_calloc(nb + 1, sizeof(char *));
 	if (!tab_heredocs)
 		return (NULL);
-	cmd->heredocs_quote = (t_quote_type *)ft_calloc(nb, sizeof(t_quote_type));
+	cmd->heredocs_quote = (t_quote *)ft_calloc(nb, sizeof(t_quote));
 	if (!cmd->heredocs_quote)
 		return (NULL);
 	while (tmp && tmp != end)
 	{
-		if (tmp->type == HEREDOC && tmp->next)
+		if (tmp->type == HD && tmp->next)
 		{
 			tab_heredocs[i] = ft_strdup(tmp->next->str);
 			cmd->heredocs_quote[i] = tmp->next->quote_type;
@@ -131,10 +131,10 @@ int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand functi
 				break ;
 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
 				return (-1);//error
-			if (cmd->heredocs_quote[i] == QUOTE_NONE)
+			if (cmd->heredocs_quote[i] == Q_NONE)
 			{
 				expanded = expand_heredoc_line(line, mini);
-				//expanded = expand_arg(line, mini, QUOTE_NONE); dosen't work for '$USER'
+				//expanded = expand_arg(line, mini, Q_NONE); dosen't work for '$USER'
 				write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
 				write(cmd->heredoc_pipe[i][1], "\n", 1);
 				free(expanded);

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_ast.c                                         :+:      :+:    :+:   */
+/*   init_ast_no_export.c                               :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 10:55:28 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,7 +41,7 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	if (!expanded)
 		return (i);
 
-	if (tok->quote_type == QUOTE_DOUBLE)
+	if (tok->quote_type == Q_D)
 		args[i++] = expanded;
 	else
 		i = add_split(args, i, expanded);
@@ -50,7 +50,7 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 
 static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 {
-	if (tok->quote_type == QUOTE_SINGLE)
+	if (tok->quote_type == Q_S)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
 }
@@ -64,9 +64,9 @@ static int	count_args(t_token *start, t_token *end)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			count++;
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
-			|| start->type == REDIR_APPEND || \
-			start->type == HEREDOC) && start->next)
+		else if ((start->type == R_IN || start->type == R_OUT \
+			|| start->type == R_A || \
+			start->type == HD) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -88,9 +88,9 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			i = process_token(args, i, start, mini);
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT \
-			|| start->type == REDIR_APPEND || \
-			start->type == HEREDOC) && start->next)
+		else if ((start->type == R_IN || start->type == R_OUT \
+			|| start->type == R_A || \
+			start->type == HD) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -116,7 +116,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
 	{
-		if (tmp->type == REDIR_IN && tmp->next)
+		if (tmp->type == R_IN && tmp->next)
 		{
 			if (cmd->infile)
 				free(cmd->infile);
@@ -124,7 +124,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_OUT && tmp->next)
+		else if (tmp->type == R_OUT && tmp->next)
 		{
 			if (cmd->outfile)
 				free(cmd->outfile);
@@ -136,7 +136,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_APPEND && tmp->next)
+		else if (tmp->type == R_A && tmp->next)
 		{
 			if (cmd->outfile)
 				free(cmd->outfile);
@@ -151,7 +151,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == HEREDOC && tmp->next)
+		else if (tmp->type == HD && tmp->next)
 		{
 			if (cmd->infile)
 				free(cmd->infile);
@@ -205,16 +205,16 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 		{
-			if (start->quote_type == QUOTE_SINGLE)
+			if (start->quote_type == Q_S)
 			{
 				args[i++] = ft_strdup(start->str);
 			}
 			else
 			{
 				char *expanded = expand_arg(start->str, mini);
-				if (start->quote_type == QUOTE_DOUBLE)
+				if (start->quote_type == Q_D)
 					args[i++] = expanded;
-				else // QUOTE_NONE
+				else // E
 				{
 					char **split = ft_split(expanded, ' ');
 					for (int j = 0; split && split[j]; j++)

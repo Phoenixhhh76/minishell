@@ -6,28 +6,28 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 12:37:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/07 14:37:58 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:13:40 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-t_node_type	get_token_type(const char *str)
+t_node	get_token_type(const char *str)
 {
 	if (!strcmp(str, "|"))
 		return (PIPE);
 	if (!strcmp(str, ">"))
-		return (REDIR_OUT);
+		return (R_OUT);
 	if (!strcmp(str, "<"))
-		return (REDIR_IN);
+		return (R_IN);
 	if (!strcmp(str, ">>"))
-		return (REDIR_APPEND);
+		return (R_A);
 	if (!strcmp(str, "<<"))
-		return (HEREDOC);
+		return (HD);
 	return (CMD);
 }
 
-t_token	*create_t(char *str, t_quote_type quote_type)
+t_token	*create_t(char *str, t_quote quote_type)
 {
 	t_token	*new;
 

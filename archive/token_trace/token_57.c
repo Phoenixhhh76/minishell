@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 12:33:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 12:29:16 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ static int	process_redirection(const char *input, int i, t_token **tokens)
 	len = 1;
 	if (input[i] == input[i + 1])
 		len = 2;
-	append_t(tokens, create_t(ft_strndup(&input[i], len), QUOTE_NONE));
+	append_t(tokens, create_t(ft_strndup(&input[i], len), Q_NONE));
 	return (i + len);
 }
 
@@ -33,7 +33,7 @@ static int	process_token(const char *input, int i, t_token **tokens)
 		return (process_redirection(input, i, tokens));
 	else if (input[i] == '|')
 	{
-		append_t(tokens, create_t(ft_strndup(&input[i], 1), QUOTE_NONE));
+		append_t(tokens, create_t(ft_strndup(&input[i], 1), Q_NONE));
 		return (i + 1);
 	}
 	else if (input[i] == '"' || input[i] == '\'')
@@ -45,7 +45,7 @@ static int	process_token(const char *input, int i, t_token **tokens)
 		content = ft_strndup(input + start, i - start);
 		if (input[i] == quote)
 			i++;
-		append_t(tokens, create_t(content, quote == '"' ? QUOTE_DOUBLE : QUOTE_SINGLE));
+		append_t(tokens, create_t(content, quote == '"' ? Q_D : Q_S));
 		return (i);
 	}
 	else
@@ -53,7 +53,7 @@ static int	process_token(const char *input, int i, t_token **tokens)
 		start = i;
 		while (input[i] && !ft_isspace(input[i]) && input[i] != '|' && input[i] != '<' && input[i] != '>')
 			i++;
-		append_t(tokens, create_t(ft_strndup(&input[start], i - start), QUOTE_NONE));
+		append_t(tokens, create_t(ft_strndup(&input[start], i - start), Q_NONE));
 		return (i);
 	}
 }
@@ -62,7 +62,7 @@ static int	process_token(const char *input, int i, t_token **tokens)
 //for ""empty, but not work for """"echo hola""", permission denied
 t_token	*tokenize_input(const char *input)
 {
-	t_quote_type qt;
+	t_quote qt;
 	t_token	*tokens;
 	int		i;
 
@@ -81,9 +81,9 @@ t_token	*tokenize_input(const char *input)
 			(input[i] == '\'' && input[i + 1] == '\'' && input[i + 2] == ' '))
 		{
 			if (input[i] == '"')
-				qt = QUOTE_DOUBLE;
+				qt = Q_D;
 			else
-				qt = QUOTE_SINGLE;
+				qt = Q_S;
 			i += 2;
 			append_t(&tokens, create_t(ft_strdup(""), qt));
 			continue;

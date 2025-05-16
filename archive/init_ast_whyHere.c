@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_ast.c                                         :+:      :+:    :+:   */
+/*   init_ast_whyHere.c                                 :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/15 14:48:52 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/04/18 12:20:57 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:10:58 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -65,24 +65,24 @@ t_cmd	*build_command(t_ast *ast, t_token *start, t_token *end)
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
 	{
-		if (tmp->type == REDIR_IN && tmp->next)
+		if (tmp->type == R_IN && tmp->next)
 		{
 			cmd->infile = ft_strdup(tmp->next->str);
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_OUT && tmp->next)
+		else if (tmp->type == R_OUT && tmp->next)
 		{
 			cmd->outfile = ft_strdup(tmp->next->str);
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_APPEND && tmp->next)
+		else if (tmp->type == R_A && tmp->next)
 		{
 			cmd->outfile = ft_strdup(tmp->next->str);
 			cmd->fd_out = STDPIT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard
+		else if (tmp->type == HD && tmp->next) // à gérer plus tard
 		{
 			cmd->infile = ft_strdup(tmp->next->str);//need a tempfile
 			tmp = tmp->next;

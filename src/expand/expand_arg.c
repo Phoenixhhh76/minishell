@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/15 09:13:55 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:16:31 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -15,7 +15,7 @@
 /* for "'$USER'" */
 char	*expand_if_needed(t_token *token, t_mini *mini)
 {
-	if (token->quote_type == QUOTE_SINGLE)
+	if (token->quote_type == Q_S)
 		return (ft_strdup(token->str));
 	return (expand_arg(token->str, mini, token->quote_type));
 
@@ -93,7 +93,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	return (val);
 }
 
-char	*expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
+char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type)
 {
 	char	*result;
 	int		i;
@@ -114,7 +114,7 @@ char	*expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 	}
 	while (str[i])
 	{
-		if (str[i] == '\'' && quote_type == QUOTE_NONE)
+		if (str[i] == '\'' && quote_type == Q_NONE)
 		{
 			start = ++i;
 			while (str[i] && str[i] != '\'')

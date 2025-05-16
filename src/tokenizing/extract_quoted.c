@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/14 17:13:53 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -22,12 +22,12 @@ static int	get_quote_len(const char *input, int start, char quote)
 	return (i - start);
 }
 
-static void	set_quote_type(char quote, t_quote_type *qt)
+static void	set_quote_type(char quote, t_quote *qt)
 {
 	if (quote == '"')
-		*qt = QUOTE_DOUBLE;
+		*qt = Q_D;
 	else if (quote == '\'')
-		*qt = QUOTE_SINGLE;
+		*qt = Q_S;
 }
 
 /*
@@ -42,7 +42,7 @@ static int	should_strip_quotes(const char *input, int i, const char *current)
 }
 
 char	*extract_quoted(const char *input, int *i,
-						char *current, t_quote_type *qt)
+						char *current, t_quote *qt)
 {
 	char	quote;
 	int		start;
@@ -66,9 +66,7 @@ char	*extract_quoted(const char *input, int *i,
 	else
 	{
 		quoted = ft_strndup(&input[start - 1], len + 2);
-		*qt = QUOTE_NONE;
+		*qt = Q_NONE;
 	}
 	return (ft_strjoin_f(current, quoted));
 }
-
-

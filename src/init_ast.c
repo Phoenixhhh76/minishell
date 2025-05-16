@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/15 10:39:54 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,7 +43,7 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	expanded = expand_if_needed(tok, mini);
 	if (!expanded)
 		return (i);
-	if (tok->quote_type == QUOTE_DOUBLE || ft_strchr(tok->str, '"'))
+	if (tok->quote_type == Q_D || ft_strchr(tok->str, '"'))
 	{
 		args[i++] = expanded;
 	}
@@ -54,23 +54,9 @@ static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	return (i);
 }
 
-// static int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
-// {
-// 	char	*expanded;
-
-// 	expanded = expand_if_needed(tok, mini);
-// 	if (!expanded)
-// 		return (i);
-// 	if (tok->quote_type == QUOTE_DOUBLE)
-// 		args[i++] = expanded;
-// 	else
-// 		i = add_split(args, i, expanded);
-// 	return (i);
-// }
-
 static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 {
-	if (tok->quote_type == QUOTE_SINGLE)
+	if (tok->quote_type == Q_S)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
 }
@@ -88,7 +74,7 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 		if (start->type == CMD || start->type == UNKNOWN)
 		{
 			split = NULL;
-			if (start->quote_type == QUOTE_SINGLE || start->quote_type == QUOTE_DOUBLE)
+			if (start->quote_type == Q_S || start->quote_type == Q_D)
 			{
 				count++;
 			}
@@ -100,7 +86,7 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 					start = start->next;
 					continue ;
 				}
-				if (expanded[0] != '\0' || start->quote_type != QUOTE_NONE)
+				if (expanded[0] != '\0' || start->quote_type != Q_NONE)
 				{
 					split = ft_split(expanded, ' ');
 					i = 0;
@@ -115,8 +101,8 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 					free_split(split);
 			}
 		}
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT || \
-			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
+		else if ((start->type == R_IN || start->type == R_OUT || \
+			start->type == R_A || start->type == HD) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -138,8 +124,8 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
 			i = process_token(args, i, start, mini);
-		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
-			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
+		else if ((start->type == R_IN || start->type == R_OUT || \
+			start->type == R_A || start->type == HD) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -153,7 +139,7 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 	int		i;
 	char	*expanded;
 	char	**args;
-	t_token *tmp;
+	t_token	*tmp;
 
 	count = 0;
 	i = 0;
@@ -163,7 +149,7 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 		if (tmp->type == CMD || tmp->type == UNKNOWN)
 		{
 			expanded = expand_if_needed(tmp, mini);
-			if (expanded && (expanded[0] != '\0' || tmp->quote_type != QUOTE_NONE))
+			if (expanded && (expanded[0] != '\0' || tmp->quote_type != Q_NONE))
 				count++;
 			free(expanded);
 		}
@@ -177,7 +163,7 @@ static char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini
 		if (start->type == CMD || start->type == UNKNOWN)
 		{
 			expanded = expand_if_needed(start, mini);
-			if (expanded && (expanded[0] != '\0' || start->quote_type != QUOTE_NONE))
+			if (expanded && (expanded[0] != '\0' || start->quote_type != Q_NONE))
 				args[i++] = expanded;
 			else
 				free(expanded);
@@ -206,7 +192,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
 	{
-		if (tmp->type == REDIR_IN && tmp->next)
+		if (tmp->type == R_IN && tmp->next)
 		{
 			if (cmd->infile)
 				free(cmd->infile);
@@ -221,7 +207,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			close(fd);
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_OUT && tmp->next)
+		else if (tmp->type == R_OUT && tmp->next)
 		{
 			if (cmd->outfile)
 				free(cmd->outfile);
@@ -239,7 +225,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			}
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_APPEND && tmp->next)
+		else if (tmp->type == R_A && tmp->next)
 		{
 			if (cmd->outfile)
 				free(cmd->outfile);
@@ -259,7 +245,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 			}
 			tmp = tmp->next;
 		}
-		else if (tmp->type == HEREDOC && tmp->next)
+		else if (tmp->type == HD && tmp->next)
 		{
 			if (cmd->infile)
 				free(cmd->infile);

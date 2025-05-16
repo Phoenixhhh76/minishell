@@ -20,24 +20,24 @@ typedef enum e_node_type
 {
 	CMD,
 	PIPE,
-	REDIR_OUT,
-	REDIR_IN,
-	REDIR_APPEND,
-	HEREDOC,
+	R_OUT,
+	R_IN,
+	R_A,
+	HD,
 	UNKNOWN = -1
-}	t_node_type;
+}	t_node;
 
 typedef enum e_quote_type {
-	QUOTE_NONE = 0,
-	QUOTE_SINGLE,
-	QUOTE_DOUBLE
-}	t_quote_type;
+	Q_NONE = 0,
+	Q_S,
+	Q_D
+}	t_quote;
 
 typedef struct s_token
 {
-	t_node_type		type;
+	t_node		type;
 	char			*str;
-	t_quote_type	quote_type;
+	t_quote	quote_type;
 	struct s_token	*next;
 }	t_token;
 
@@ -91,7 +91,7 @@ char	**copy_env(char **env);
 void	init_token(t_mini *mini);
 t_token	*tokenize_input(const char *input);
 void	free_token_list(t_token *token);
-t_token	*create_t(char *str, t_quote_type quote_type);
+t_token	*create_t(char *str, t_quote quote_type);
 void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
@@ -102,7 +102,7 @@ bool	check_syntax(t_token *tokens);
 // char	*extract_plain(const char *input, int *i, char *current);
 // int		handle_meta(const char *input, int i, t_token **tokens);
 //extract_quoted.c
-// char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt);
+// char	*extract_quoted(const char *input, int *i, char *current, t_quote *qt);
 
 
 
@@ -138,7 +138,7 @@ void	close_all_heredocs(t_ast *ast);
 
 //expande
 //char	*expand_arg(const char *str, t_mini *mini);
-char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type);
+char *expand_arg(const char *str, t_mini *mini, t_quote quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
 char	*ft_strjoin_f(char *s1, char *s2);
 
