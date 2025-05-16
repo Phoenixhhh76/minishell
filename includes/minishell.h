@@ -119,6 +119,15 @@ char	*extract_quoted(const char *input, int *i, \
 
 //init_ast
 void	init_ast(t_mini *mini);
+
+void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini);
+void	handle_redir_out(t_token *tmp, t_cmd *cmd, t_mini *mini);
+void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini);
+void	handle_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
+
+char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
+char	**collect_args(t_token *start, t_token *end, t_mini *mini);
+
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
