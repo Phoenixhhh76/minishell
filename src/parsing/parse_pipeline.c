@@ -131,7 +131,8 @@ t_ast	*create_pipe_node(t_token *start,
 	if (!right_ast)
 	{
 		err_msg("syntax error ", "near unexpected token ", "pipe", 2);
-		free_ast(ast->left);
+		if (ast->left)
+			free_ast(ast->left);
 		free(ast);
 		return (NULL);
 	}

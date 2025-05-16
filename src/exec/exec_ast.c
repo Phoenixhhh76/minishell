@@ -20,6 +20,11 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 	if (pipe(node->fd) == -1)
 		exit_error("pipe");
 	left_pid = fork();
+	if (left_pid < 0)
+	{
+		perror("left_pid fork");
+		mini->last_exit = 1;
+	}
 	if (left_pid == 0)
 	{
 		close(node->fd[0]);
@@ -29,6 +34,11 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		exit(1);//Nina
 	}
 	right_pid = fork();
+	if (right_pid < 0)
+	{
+		perror("right_pid fork");
+		mini->last_exit = 1;
+	}
 	if (right_pid == 0)
 	{
 		close(node->fd[1]);
@@ -85,7 +95,7 @@ void	handle_redirects(t_cmd *cmd)
 	}
 }
 
-void	exec_cmd_node(t_ast *node, char **envp)
+void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 {
 
 	if (!node->cmd)
@@ -96,7 +106,8 @@ void	exec_cmd_node(t_ast *node, char **envp)
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
-		err_msg(node->cmd->cmd_args[0], ":", " command not found", 127);
+		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
+			" command not found", 127);
 	}
 }
 
@@ -111,6 +122,6 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 		if (ft_builtin(node))
 			ft_run_builtin(mini, node->cmd);
 		else
-			exec_cmd_node(node, envp);
+			exec_cmd_node(mini, node, envp);
 	}
 }

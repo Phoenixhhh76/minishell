@@ -106,7 +106,7 @@ void	exec_or_builtin(t_mini *mini)
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
-			exit(1); // fallback if execve fails//Nina
+			exit(mini->last_exit); // fallback if execve fails//Nina
 		}
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))

@@ -12,29 +12,9 @@
 
 #include "../includes/minishell.h"
 
-void	free_args(char **args, int count)
-{
-	int	i;
-
-	i = 0;
-	if (!args)
-		return ;
-	while (i < count)
-	{
-		free(args[i]);
-		i++;
-	}
-	free(args);
-}
-
 static int	handle_single(char **args, int i, t_token *tok)
 {
 	args[i++] = ft_strdup(tok->str);
-	if (!args[i])
-	{
-		free_args(args, i);
-		return (-1);
-	}
 	return (i);
 }
 
@@ -48,7 +28,7 @@ static int	add_split(char **args, int i, char *expanded)
 	while (split && split[j])
 		args[i++] = ft_strdup(split[j++]);
 	free(expanded);
-	free_split(split);
+	free_double_tab(split);
 	return (i);
 }
 /*
@@ -132,7 +112,7 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 				}
 				free(expanded);
 				if (split)
-					free_split(split);
+					free_double_tab(split);
 			}
 		}
 		else if ((start->type == REDIR_IN || start->type == REDIR_OUT || \
@@ -161,7 +141,6 @@ static char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 		else if ((start->type == REDIR_IN || start->type == REDIR_OUT ||
 			start->type == REDIR_APPEND || start->type == HEREDOC) && start->next)
 			start = start->next;
-		print_tab(args);
 		start = start->next;
 	}
 	args[i] = NULL;
