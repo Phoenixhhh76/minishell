@@ -37,7 +37,7 @@ int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	mini->token = tokenize_input(line);
-	print_token_list(mini->token);
+	//print_token_list(mini->token);
 	if (!mini->token || !check_syntax(mini->token))
 	{
 		mini->last_exit = 2;

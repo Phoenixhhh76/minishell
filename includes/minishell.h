@@ -52,16 +52,16 @@ typedef struct s_cmd
 	char	*infile;
 	char	*outfile;
 	char	*append;
-	int		fd_in;//
-	int		fd_out;//
+	int		fd_in;
+	int		fd_out;
 	int		*pipe;
 	int		*pids;
-	bool	last_redirin;//
+	bool	last_redirin;
 	char	**heredocs;
-	int		heredoc_nb;//
+	int		heredoc_nb;
 	int		**heredoc_pipe;
-	bool	flag_error;//
-	bool	path_error;//
+	bool	flag_error;
+	bool	path_error;
 	t_quote	*heredocs_quote; // maybe we can change t_quote in a shorter name ?
 	//int		heredoc_error;//add for exit_error
 	//int		child;
@@ -196,6 +196,7 @@ void	exit_error_pipe(int error_status, t_cmd *cmd);
 int		err_msg(char *str1, char *str2, char *str3, int erno);
 int		syntax_err_msg(char *str1, char *str2, int erno);
 void	exit_error(const char *msg);
+int		export_err_msg(char *arg, int erno);
 
 //clean
 void	safe_exit(t_mini *mini, int code);
