@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:50:55 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/23 14:51:50 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:42:53 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,15 @@ int	ft_isspace(char c)
 		|| c == '\f' || c == '\r' || c == ' ')
 		return (1);
 	return (0);
+}
+
+char	*append_char(char *result, char c)
+{
+	char	buf[2];
+
+	buf[0] = c;
+	buf[1] = '\0';
+	return (ft_strjoin_ff(result, ft_strdup(buf)));
 }
 /*
 char	*ft_strdup(const char *s1)

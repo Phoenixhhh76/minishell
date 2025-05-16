@@ -173,6 +173,7 @@ t_ast	*create_pipe_node(t_token *start, \
 
 //utils
 char	*ft_strndup(const char *s, size_t n);
+char	*append_char(char *result, char c);
 int		ft_isspace(char c);
 void	free_double_tab(char **arr);
 void	ft_free_tab_int(int **tab, int size);
