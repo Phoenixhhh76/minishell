@@ -41,6 +41,11 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
 	ast->fd[0] = -1;
 	ast->fd[1] = -1;
 	ast->cmd = build_command(start, end, mini);
+	if (!ast->cmd)
+	{
+		free(ast);
+		return (NULL);
+	}
 	return (ast);
 }
 
@@ -90,6 +95,8 @@ t_ast	*create_pipe_node(t_token *start,
 	if (!right_ast)
 	{
 		err_msg("syntax error ", "near unexpected token ", "pipe", 2);
+		if (ast->left)
+			free_ast(ast->left);
 		free(ast);
 		return (NULL);
 	}

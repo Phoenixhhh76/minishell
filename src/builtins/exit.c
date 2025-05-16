@@ -87,18 +87,29 @@ static bool	ft_isnumeric(char *str)
 	return (true);
 }
 
+int	args_count(char **args)
+{
+	int	i;
+
+	i = 0;
+	while (args[i])
+		i++;
+	return (i);
+}
+
 int	ft_exit(t_mini *mini, t_cmd *cmd)
 {
 	int	code;
 
 	code = 0;
+	//print_cmd(cmd);
 	if (cmd->cmd_args[1] && !ft_isnumeric(cmd->cmd_args[1]))
 	{
 		printf("exit\n");
 		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
 		safe_exit(mini, 2);
 	}
-	if (cmd->cmd_args[2])
+	if (args_count(cmd->cmd_args) > 2)
 	{
 		printf("exit\n");
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
