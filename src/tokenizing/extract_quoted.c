@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:30:41 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,5 +68,5 @@ char	*extract_quoted(const char *input, int *i,
 		quoted = ft_strndup(&input[start - 1], len + 2);
 		*qt = Q_NONE;
 	}
-	return (ft_strjoin_f(current, quoted));
+	return (ft_strjoin_ff(current, quoted));
 }

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:53:15 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/25 10:06:53 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 15:51:55 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -63,4 +63,46 @@ void	free_strs(char *str, char **strs)
 		free(strs);
 		strs = NULL;
 	}
+}
+
+char	*ft_strjoin_f(char *s1, char *s2)
+{
+	char	*joined;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+	{
+		free(s1);
+		return (NULL);
+	}
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	return (joined);
+}
+
+char	*ft_strjoin_ff(char *s1, char *s2)
+{
+	char	*joined;
+	char	*tmp;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+	{
+		tmp = ft_strdup(s2);
+		free(s2);
+		return (tmp);
+	}
+	if (!s2)
+	{
+		free(s1);
+		return (NULL);
+	}
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (joined);
 }

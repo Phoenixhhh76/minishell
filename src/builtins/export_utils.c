@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:33:03 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/13 15:16:49 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:05:06 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ static void	sort_env(char **env)
 	}
 }
 
-void	print_export_env(char **env, char ** exp_list)
+void	print_export_env(char **env, char **exp_list)
 {
 	int		i;
 	char	**sorted;
@@ -58,8 +58,6 @@ void	print_export_env(char **env, char ** exp_list)
 		}
 		free_double_tab(sorted);
 	}
-
-	// Part 2: print exp_list (no value)
 	i = 0;
 	while (exp_list && exp_list[i])
 	{
@@ -89,7 +87,7 @@ char	**clone_and_sort_env(char **env)
 		i++;
 	}
 	sorted[i] = NULL;
-	sort_env(sorted); //bubble sort
+	sort_env(sorted);
 	return (sorted);
 }
 

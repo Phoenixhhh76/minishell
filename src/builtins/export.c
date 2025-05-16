@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/15 17:18:40 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:08:42 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,8 +41,6 @@ bool	is_valid_var_name(char *var)
 		return (false);
 	if (begins_with_digits(var))
 		return (false);
-	// if (!ft_strchr(var, '='))
-	// 	return (false);
 	while (var[i] && var[i] != '=')
 	{
 		if (is_authorized_character(var[i]) == false)
@@ -126,15 +124,11 @@ static char	*make_joined_assignment(char **var)
 	char	*joined;
 
 	//printf("[DEBUG] var[1] addr: %p\n", (void *)var[1]); // ✅ Debug memory
-	//cleaned_val = strip_quotes_and_trim(var[1]);
 	cleaned_val = strip_quotes_only(var[1]);
-
 	if (!cleaned_val)
 		return (NULL);
-
 	//printf("export debug: var[0]=[%s], var[1]=[%s]\n", var[0], var[1] ? var[1] : "(null)");
 	//printf("export debug: cleaned_val=[%s]\n", cleaned_val);
-
 	joined = ft_strjoin(var[0], "=");
 	if (!joined)
 		return (free(cleaned_val), NULL);
@@ -165,14 +159,6 @@ static char	*make_joined_assignment(char **var)
 	return (0);
 }
 
-int	export_err_msg(char *arg, int erno)
-{
-	ft_putstr_fd("minishell: ", 2);
-	ft_putstr_fd("export: `", 2);
-	ft_putstr_fd(arg, 2);
-	ft_putstr_fd("': not a valid identifier\n", 2);
-	return (erno);
-}
 bool	in_exp_list(char **exp_list, const char *key)
 {
 	int	i;
@@ -252,11 +238,6 @@ int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 			add_to_exp_list(&mini->exp_list, arg); // add in exp_list
 		return (0);
 	}
-	// else
-	// {
-	// 	if (does_var_exist(env, arg) >= 0 && in_exp_list(mini->exp_list, arg))
-	// 		remove_from_exp_list(&mini->exp_list, arg); // remove from exp_list
-	// }
 	var = split_export_arg(arg);
 	if (!var || !var[0] || var[0][0] == '\0')
 		return (free_double_tab(var), -1);
