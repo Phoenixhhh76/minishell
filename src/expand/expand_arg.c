@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 16:38:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:58:05 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 }
 
 /* for case special: start from "$""" */
-static	char *handle_special_case(const char *str)
+static char	*handle_special_case(const char *str)
 {
 	int		j;
 	char	*after;
@@ -102,7 +102,7 @@ static char	*handle_single_quote(const char *str, int *i)
 	return (segment);
 }
 
-static char *handle_double_quote(const char *str, int *i, t_mini *mini)
+static char	*handle_double_quote(const char *str, int *i, t_mini *mini)
 {
 	int	start;
 	char	*result;
@@ -121,7 +121,7 @@ static char *handle_double_quote(const char *str, int *i, t_mini *mini)
 	return (result);
 }
 
-char *expand_arg(const char *str, t_mini *mini, t_quote quote_type)
+char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type)
 {
 	char	*result;
 	int		i;
