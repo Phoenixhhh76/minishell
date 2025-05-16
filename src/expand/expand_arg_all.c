@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_arg.c                                       :+:      :+:    :+:   */
+/*   expand_arg copy.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 15:59:22 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 14:09:53 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,6 +20,49 @@ char	*expand_if_needed(t_token *token, t_mini *mini)
 	return (expand_arg(token->str, mini, token->quote_type));
 
 }
+
+char	*ft_strjoin_f(char *s1, char *s2)
+{
+	char	*joined;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+		return (ft_strdup(s2));
+	if (!s2)
+	{
+		free(s1);
+		return (NULL);
+	}
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	return (joined);
+}
+
+char	*ft_strjoin_ff(char *s1, char *s2)
+{
+	char	*joined;
+	char	*tmp;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+	{
+		tmp = ft_strdup(s2);
+		free(s2);
+		return (tmp);
+	}
+	if (!s2)
+	{
+		free(s1);
+		return (NULL);
+	}
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
+	return (joined);
+}
+
 /*
 find the value of the environment variable key in env
 if not found, return an empty string
@@ -54,7 +97,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 
 	if (!str[*i])
 		return (ft_strdup(""));
-	start = ++(*i);
+	start = ++(*i); // skip $
 	if (str[start] == '"' || str[start] == '\'')
 	{
 		(*i)++;
@@ -75,42 +118,25 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 	return (val);
 }
 
-/* for case special: start from "$""" */
-static	char *handle_special_case(const char *str)
-{
-	int		j;
-	char	*after;
-
-	j = 4;
-	while (str[j] == '"')
-		j++;
-	after = ft_strdup(&str[j]);
-	return (ft_strjoin_ff(ft_strdup("$"), after));
-}
-
-
-
-
-
 char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type)
 {
 	char	*result;
 	int		i;
 	int		start;
-	// int		j;
-	// char	*after;
+	int		j;
+	char	*after;
 
 	i = 0;
 	result = ft_strdup("");
-
-	// if (str[0] == '"' && str[1] == '$' && str[2] == '"' && str[3] == '"')
-	// {
-	// 	j = 4;
-	// 	while (str[j] == '"')
-	// 		j++;
-	// 	after = ft_strdup(&str[j]);
-	// 	return (ft_strjoin_ff(ft_strdup("$"), after));
-	// }
+	// for case special: start from "$"""
+	if (str[0] == '"' && str[1] == '$' && str[2] == '"' && str[3] == '"')
+	{
+		j = 4;
+		while (str[j] == '"')
+			j++;
+		after = ft_strdup(&str[j]);
+		return (ft_strjoin(ft_strdup("$"), after));
+	}
 	while (str[i])
 	{
 		if (str[i] == '\'' && quote_type == Q_NONE)
