@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_ast.c                                         :+:      :+:    :+:   */
+/*   init_ast _all.c                                    :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 12:23:25 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 12:07:07 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ static int	add_split(char **args, int i, char *expanded)
 	while (split && split[j])
 		args[i++] = ft_strdup(split[j++]);
 	free(expanded);
-	free_double_tab(split);
+	free_split(split);
 	return (i);
 }
 /*
@@ -60,59 +60,10 @@ static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
 }
-
+/*
 static int	should_count_or_add(t_token *tok, t_mini *mini, char ***args, int *i)
-{
-	char	*expanded;
-
-	if (tok->quote_type == Q_S || tok->quote_type == Q_D)
-	{
-		if (args)
-			(*args)[(*i)++] = ft_strdup(tok->str);
-		return (1);
-	}
-	expanded = expand_if_needed(tok, mini);
-	if (!expanded || (expanded[0] == '\0' && tok->quote_type == Q_NONE))
-		return (free(expanded), 0);
-	if (args)
-		(*args)[(*i)++] = expanded;
-	else
-		free(expanded);
-	return (1);
-}
-
 static int	count_expanded_split(char *expanded)
-{
-	char	**split;
-	int		count = 0;
-	int		i = 0;
-
-	split = ft_split(expanded, ' ');
-	while (split && split[i])
-	{
-		count++;
-		i++;
-	}
-	free_split(split);
-	return (count);
-}
-
 static int	count_token_args(t_token *tok, t_mini *mini)
-{
-	char	*expanded;
-	int		count = 0;
-
-	if (tok->quote_type == Q_S || tok->quote_type == Q_D)
-		return (1);
-	expanded = expand_if_needed(tok, mini);
-	if (!expanded)
-		return (0);
-	if (expanded[0] != '\0' || tok->quote_type != Q_NONE)
-		count = count_expanded_split(expanded);
-	free(expanded);
-	return (count);
-}
-
 static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 {
 	int	count = 0;
@@ -123,6 +74,56 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 			count += count_token_args(start, mini);
 		else if ((start->type == R_IN || start->type == R_OUT || \
 				start->type == R_A || start->type == HD) && start->next)
+			start = start->next;
+		start = start->next;
+	}
+	return (count);
+}
+
+*/
+
+static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
+{
+	int		count;
+	char	*expanded;
+	char	**split;
+	int		i;
+
+	count = 0;
+	while (start && start != end)
+	{
+		if (start->type == CMD || start->type == UNKNOWN)
+		{
+			split = NULL;
+			if (start->quote_type == Q_S || start->quote_type == Q_D)
+			{
+				count++;
+			}
+			else
+			{
+				expanded = expand_if_needed(start, mini);
+				if (!expanded)
+				{
+					start = start->next;
+					continue ;
+				}
+				if (expanded[0] != '\0' || start->quote_type != Q_NONE)
+				{
+					split = ft_split(expanded, ' ');
+					i = 0;
+					while (split && split[i])
+					{
+						count++;
+						i++;
+					}
+				}
+				free(expanded);
+				if (split)
+					free_split(split);
+			}
+		}
+		else if ((start->type == R_IN || start->type == R_OUT || \
+			start->type == R_A || start->type == HD) && start->next)
 			start = start->next;
 		start = start->next;
 	}
@@ -206,8 +207,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		return (NULL);
 	tmp = start;
 	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
-	if (!cmd)
-		return (NULL);
+	//if (!node || !cmd)
+		//ERROR, return (NULL);
 	cmd->fd_in = -1; //to be determined;
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
@@ -224,8 +225,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 				perror(cmd->infile);
 				cmd->flag_error = 1;
 			}
-			else
-				close(fd);
+			close(fd);
 			tmp = tmp->next;
 		}
 		else if (tmp->type == R_OUT && tmp->next)
@@ -241,8 +241,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 					perror(cmd->outfile);
 					cmd->path_error = 1;
 				}
-				else
-					close(fd);
+				close(fd);
 				cmd->fd_out = STDOUT_FILENO;
 			}
 			tmp = tmp->next;
@@ -263,8 +262,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 					perror(cmd->outfile);
 					cmd->path_error = 1;
 				}
-				else
-					close(fd);
 				cmd->fd_out = STDOUT_FILENO;
 			}
 			tmp = tmp->next;
