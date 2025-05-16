@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:47:30 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 13:41:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 16:43:03 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -47,8 +47,6 @@ char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini)
 		return (ft_strjoin_ff(result, ft_strdup("$")));
 	if (str[*i + 1] == '?')
 		return (handle_exit_code(result, i, mini));
-	// if (str[*i + 1] == '$')
-	// 	return (handle_pid(result, i));
 	if (ft_isalpha(str[*i + 1]) || str[*i + 1] == '_')
 		return (handle_variable(str, i, result, mini));
 	(*i)++;
@@ -65,17 +63,6 @@ char	*handle_exit_code(char *result, int *i, t_mini *mini)
 	(*i) += 2;
 	return (ft_strjoin_ff(result, exit_str));
 }
-
-// char	*handle_pid(char *result, int *i)
-// {
-// 	char	*pid_str;
-
-// 	pid_str = ft_itoa(getpid());
-// 	if (!pid_str)
-// 		return (NULL);
-// 	(*i) += 2;
-// 	return (ft_strjoin_f(result, pid_str));
-// }
 
 char	*handle_variable(const char *str, int *i, char *result, t_mini *mini)
 {
@@ -94,15 +81,6 @@ char	*handle_variable(const char *str, int *i, char *result, t_mini *mini)
 	if (!val)
 		val = ft_strdup("");
 	return (ft_strjoin_ff(result, val));
-}
-
-char	*append_char(char *result, char c)
-{
-	char	buf[2];
-
-	buf[0] = c;
-	buf[1] = '\0';
-	return (ft_strjoin_ff(result, ft_strdup(buf)));
 }
 
 char	*expand_heredoc_line(const char *str, t_mini *mini)
