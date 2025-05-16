@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 14:20:37 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/16 17:28:02 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 18:07:02 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,28 +59,6 @@ void	free_cmd(t_cmd *cmd)
 	reset_cmd(cmd);
 	free(cmd);
 }
-
-// void	free_ast(t_ast *ast)
-// {
-// 	t_ast	*tmp;
-
-// 	tmp = NULL;
-// 	if (!ast)
-// 		return ;
-// 	while (tmp)
-// 	{
-// 		tmp = ast;
-// 		free_cmd(tmp->cmd);
-// 		free_ast(tmp->left);
-// 		free_ast(tmp->right);
-// 		free_token_list(&tmp->ast_token);
-// 		tmp->fd[0] = -1;
-// 		tmp->fd[1] = -1;
-// 		free(tmp);
-// 		tmp = tmp->next;
-// 	}
-// 	free(tmp);
-// }
 
 void	free_ast(t_ast *ast)
 {
