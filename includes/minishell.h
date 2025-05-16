@@ -52,16 +52,16 @@ typedef struct s_cmd
 	char	*infile;
 	char	*outfile;
 	char	*append;
-	int		fd_in;//
-	int		fd_out;//
+	int		fd_in;
+	int		fd_out;
 	int		*pipe;
 	int		*pids;
-	bool	last_redirin;//
+	bool	last_redirin;
 	char	**heredocs;
-	int		heredoc_nb;//
+	int		heredoc_nb;
 	int		**heredoc_pipe;
-	bool	flag_error;//
-	bool	path_error;//
+	bool	flag_error;
+	bool	path_error;
 	t_quote	*heredocs_quote; // maybe we can change t_quote in a shorter name ?
 	//int		heredoc_error;//add for exit_error
 	//int		child;
