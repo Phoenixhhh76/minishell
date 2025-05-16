@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:14:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/04/30 17:16:52 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 10:35:49 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,42 +43,6 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
 	ast->cmd = build_command(start, end, mini);
 	return (ast);
 }
-/* more than 25 lines, seperate in function below
-
-t_ast	*create_pipe_node(t_token *start, t_token *pipe_pos, t_token *end, t_mini *mini)
-{
-	t_ast	*ast;
-	t_ast	*right_ast;
-
-	if (!start || start == pipe_pos || !pipe_pos->next || pipe_pos->next == end)
-	{
-		fprintf(stderr, "syntax error near unexpected pipe\n");
-		return (NULL);
-	}
-	ast = ft_calloc(1, sizeof(t_ast));
-	if (!ast)
-		return (NULL);
-	ast->ast_token.type = PIPE;
-	ast->ast_token.str = ft_strdup("|");
-	ast->fd[0] = -1;
-	ast->fd[1] = -1;
-	ast->left = parse_pipeline(start, pipe_pos, mini);
-	if (!ast->left)
-	{
-		fprintf(stderr, "syntax error: empty command before pipe\n");
-		free(ast);
-		return (NULL);
-	}
-	right_ast = parse_pipeline(pipe_pos->next, end, mini);
-	if (!right_ast)
-	{
-		fprintf(stderr, "syntax error: invalid command after pipe\n");
-		free(ast);
-		return (NULL);
-	}
-	ast->right = parse_pipeline(pipe_pos->next, end, mini);
-	return (ast);
-} */
 
 static int	validate_pipe_pos(t_token *start, t_token *pipe_pos, t_token *end)
 {

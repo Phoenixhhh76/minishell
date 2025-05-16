@@ -55,20 +55,20 @@ void	print_cmd(t_cmd *cmd)
 	}
 }
 
-void	print_token_type(t_node_type type)
+void	print_token_type(t_node type)
 {
 	if (type == CMD)
 		printf("Node: type = CMD\n");
 	else if (type == PIPE)
 		printf("Node: type = PIPE\n");
-	else if (type == REDIR_IN)
-		printf("Node: type = REDIR_IN\n");
-	else if (type == REDIR_OUT)
-		printf("Node: type = REDIR_OUT\n");
-	else if (type == REDIR_APPEND)
-		printf("Node: type = REDIR_APPEND\n");
-	else if (type == HEREDOC)
-		printf("Node: type = HEREDOC\n");
+	else if (type == R_IN)
+		printf("Node: type = R_IN\n");
+	else if (type == R_OUT)
+		printf("Node: type = R_OUT\n");
+	else if (type == R_A)
+		printf("Node: type = R_A\n");
+	else if (type == HD)
+		printf("Node: type = HD\n");
 	else if (type == UNKNOWN)
 		printf("Node: type = UNKNOWN\n");
 	else

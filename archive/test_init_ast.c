@@ -38,18 +38,18 @@ void	*ft_memset(void *s, int c, size_t len)
 	return (s);
 }
 
-static t_node_type	get_token_type(const char *str)
+static t_node	get_token_type(const char *str)
 {
 	if (!strcmp(str, "|"))
 		return (PIPE);
 	if (!strcmp(str, ">"))
-		return (REDIR_OUT);
+		return (R_OUT);
 	if (!strcmp(str, "<"))
-		return (REDIR_IN);
+		return (R_IN);
 	if (!strcmp(str, ">>"))
-		return (REDIR_APPEND);
+		return (R_A);
 	if (!strcmp(str, "<<"))
-		return (HEREDOC);
+		return (HD);
 	return (CMD);
 }
 
@@ -286,24 +286,24 @@ t_cmd	*build_command(t_token *start, t_token *end)
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
 	{
-		if (tmp->type == REDIR_IN && tmp->next)
+		if (tmp->type == R_IN && tmp->next)
 		{
 			cmd->infile = ft_strdup(tmp->next->str);
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_OUT && tmp->next)
+		else if (tmp->type == R_OUT && tmp->next)
 		{
 			cmd->outfile = ft_strdup(tmp->next->str);
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == REDIR_APPEND && tmp->next)
+		else if (tmp->type == R_A && tmp->next)
 		{
 			cmd->outfile = ft_strdup(tmp->next->str);
 			cmd->fd_out = STDOUT_FILENO;
 			tmp = tmp->next;
 		}
-		else if (tmp->type == HEREDOC && tmp->next) // à gérer plus tard
+		else if (tmp->type == HD && tmp->next) // à gérer plus tard
 		{
 			cmd->infile = ft_strdup(tmp->next->str);//need a tempfile
 			tmp = tmp->next;

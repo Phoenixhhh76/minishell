@@ -6,19 +6,19 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 11:06:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 09:20:51 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:12:46 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-bool	is_redirection(t_node_type type)
+bool	is_redirection(t_node type)
 {
-	return (type == REDIR_IN || type == REDIR_OUT
-		|| type == REDIR_APPEND || type == HEREDOC);
+	return (type == R_IN || type == R_OUT
+		|| type == R_A || type == HD);
 }
 
-bool	is_meta_token(t_node_type type)
+bool	is_meta_token(t_node type)
 {
 	return (type == PIPE || is_redirection(type));
 }
@@ -29,7 +29,7 @@ bool	check_syntax(t_token *tokens)
 
 	cur = tokens;
 	if (!cur)
-		return (true);// empty line is valide
+		return (true);
 	if (cur->type == PIPE)
 		return (syntax_err_msg("unexpected token ", "pipe", 2), false);
 	if (is_redirection(cur->type) && \
@@ -78,4 +78,3 @@ int	check_unclosed_quotes(const char *line)
 	}
 	return (0);
 }
-

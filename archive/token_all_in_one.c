@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/09 10:03:44 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -33,12 +33,12 @@ static int	get_quote_len(const char *input, int start, char quote)
 	return (i - start);
 }
 
-static void	set_quote_type(char quote, t_quote_type *qt)
+static void	set_quote_type(char quote, t_quote *qt)
 {
 	if (quote == '"')
-		*qt = QUOTE_DOUBLE;
+		*qt = Q_D;
 	else if (quote == '\'')
-		*qt = QUOTE_SINGLE;
+		*qt = Q_S;
 }
 
 static int	should_strip_quotes(const char *input, int i, const char *current)
@@ -48,7 +48,7 @@ static int	should_strip_quotes(const char *input, int i, const char *current)
 }
 
 char	*extract_quoted(const char *input, int *i,
-						char *current, t_quote_type *qt)
+						char *current, t_quote *qt)
 {
 	char	quote;
 	int		start;
@@ -72,7 +72,7 @@ char	*extract_quoted(const char *input, int *i,
 	else
 	{
 		quoted = ft_strndup(&input[start - 1], len + 2);
-		*qt = QUOTE_NONE;
+		*qt = Q_NONE;
 	}
 	return (ft_strjoin_f(current, quoted));
 }
@@ -90,19 +90,19 @@ static char	*extract_plain(const char *input, int *i, char *current)
 static int	handle_meta(const char *input, int i, t_token **tokens)
 {
 	int len = (input[i] == input[i + 1]) ? 2 : 1;
-	append_t(tokens, create_t(ft_strndup(&input[i], len), QUOTE_NONE));
+	append_t(tokens, create_t(ft_strndup(&input[i], len), Q_NONE));
 	return (i + len);
 }
 
-void	init_token_loop_vars(char **current, t_quote_type *qt)
+void	init_token_loop_vars(char **current, t_quote *qt)
 {
 	*current = ft_strdup("");
 	if (!*current)
 		exit_error("malloc failed in init_token_loop_vars");
-	*qt = QUOTE_NONE;
+	*qt = Q_NONE;
 }
 
-void	fill_current_token(const char *input, int *i, char **current, t_quote_type *qt)
+void	fill_current_token(const char *input, int *i, char **current, t_quote *qt)
 {
 	while (input[*i] && !ft_isspace(input[*i]) && !is_meta_char(input[*i]))
 	{
@@ -113,9 +113,9 @@ void	fill_current_token(const char *input, int *i, char **current, t_quote_type 
 	}
 }
 
-void	finalize_token(char *current, t_quote_type qt, t_token **tokens)
+void	finalize_token(char *current, t_quote qt, t_token **tokens)
 {
-	if (current[0] || qt != QUOTE_NONE)
+	if (current[0] || qt != Q_NONE)
 		append_t(tokens, create_t(current, qt));
 	else
 		free(current);
@@ -133,7 +133,7 @@ t_token	*tokenize_input(const char *input)
 {
 	t_token			*tokens;
 	char			*current;
-	t_quote_type	qt;
+	t_quote	qt;
 	int				i;
 
 	tokens = NULL;
@@ -177,7 +177,7 @@ abcdphoenixefgh
 
 */
 /* seperate in several small function */
-// static char	*extract_quoted(const char *input, int *i, char *current, t_quote_type *qt)
+// static char	*extract_quoted(const char *input, int *i, char *current, t_quote *qt)
 // {
 // 	char quote = input[(*i)++];
 // 	int start = *i;
@@ -193,15 +193,15 @@ abcdphoenixefgh
 // 		// quote 是獨立整段包裹 → 拿掉 quote，設定 quote_type
 // 		quoted = ft_strndup(&input[start], len);
 // 		if (quote == '"')
-// 			*qt = QUOTE_DOUBLE;
+// 			*qt = Q_D;
 // 		else if (quote == '\'')
-// 			*qt = QUOTE_SINGLE;
+// 			*qt = Q_S;
 // 	}
 // 	else
 // 	{
 // 		// quote 是中間的一部分 → 保留原始 quote，整段屬於 unquoted 結構
 // 		quoted = ft_strndup(&input[start - 1], len + 2);
-// 		*qt = QUOTE_NONE;
+// 		*qt = Q_NONE;
 // 	}
 // 	return ft_strjoin_f(current, quoted);
 // }

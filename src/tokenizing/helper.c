@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:41:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/15 17:12:56 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:15:58 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,6 +35,10 @@ char	*extract_plain(const char *input, int *i, char *current)
 	return (ft_strjoin_f(current, ft_strndup(&input[start], *i - start)));
 }
 
+/*
+check if the meta character is ||, <<< or >>> : syntax error
+if it is not, >> << we append the token to the list
+ */
 int	handle_meta(const char *input, int i, t_token **tokens)
 {
 	int	len;
@@ -50,6 +54,6 @@ int	handle_meta(const char *input, int i, t_token **tokens)
 		len = 2;
 	else
 		len = 1;
-	append_t(tokens, create_t(ft_strndup(&input[i], len), QUOTE_NONE));
+	append_t(tokens, create_t(ft_strndup(&input[i], len), Q_NONE));
 	return (i + len);
 }

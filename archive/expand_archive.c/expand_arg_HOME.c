@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   expand_arg.c                                       :+:      :+:    :+:   */
+/*   expand_arg_HOME.c                                  :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 11:20:26 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 11:20:33 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:16:31 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,14 +68,14 @@ static void append_plain(const char *str, int *i, char **res)
 	*res = ft_strjoin_f(*res, ft_strndup(str + start, *i - start));
 }
 
-char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
+char *expand_arg(const char *str, t_mini *mini, t_quote quote_type)
 {
 	char *res = ft_strdup("");
 	int i = 0;
 
 	while (str[i])
 	{
-		if (str[i] == '$' && quote_type != QUOTE_SINGLE)
+		if (str[i] == '$' && quote_type != Q_S)
 			handle_dollar(str, &i, &res, mini);
 		else
 			append_plain(str, &i, &res);
@@ -85,7 +85,7 @@ char *expand_arg(const char *str, t_mini *mini, t_quote_type quote_type)
 
 char *expand_if_needed(t_token *token, t_mini *mini)
 {
-	if (token->quote_type == QUOTE_SINGLE)
+	if (token->quote_type == Q_S)
 		return (ft_strdup(token->str));
 	return expand_arg(token->str, mini, token->quote_type);
 }
