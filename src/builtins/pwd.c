@@ -21,5 +21,6 @@ int	ft_pwd(void)
 	if (!cwd)
 		return (-1);
 	printf("%s\n", cwd);
+	free(cwd);
 	return (0);
 }

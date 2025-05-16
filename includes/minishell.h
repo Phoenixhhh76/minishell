@@ -39,9 +39,9 @@ typedef enum e_quote_type {
 
 typedef struct s_token
 {
-	t_node		type;
+	t_node			type;
 	char			*str;
-	t_quote	quote_type;
+	t_quote			quote_type;
 	struct s_token	*next;
 }	t_token;
 
@@ -52,19 +52,17 @@ typedef struct s_cmd
 	char	*infile;
 	char	*outfile;
 	char	*append;
-	int		fd_in;//
-	int		fd_out;//
+	int		fd_in;
+	int		fd_out;
 	int		*pipe;
 	int		*pids;
-	bool	last_redirin;//
+	bool	last_redirin;
 	char	**heredocs;
-	int		heredoc_nb;//
+	int		heredoc_nb;
 	int		**heredoc_pipe;
-	bool	flag_error;//
-	bool	path_error;//
-	t_quote	*heredocs_quote; // maybe we can change t_quote in a shorter name ?
-	//int		heredoc_error;//add for exit_error
-	//int		child;
+	bool	flag_error;
+	bool	path_error;
+	t_quote	*heredocs_quote;
 }	t_cmd;
 
 
@@ -83,11 +81,9 @@ typedef struct s_mini
 	t_ast	*ast;
 	t_token	*token;
 	char	**env;
-	char	**exp_list; // for export without args, not in env
+	char	**exp_list;
 	char	**av;
-	int	 	last_exit; // last exit code for $?
-	//int		ac;
-	//???		histoire(readlin add history);
+	int		last_exit;
 }	t_mini;
 
 //init_mini
