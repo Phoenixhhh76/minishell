@@ -28,7 +28,7 @@ static int	add_split(char **args, int i, char *expanded)
 	while (split && split[j])
 		args[i++] = ft_strdup(split[j++]);
 	free(expanded);
-	free_split(split);
+	free_double_tab(split);
 	return (i);
 }
 /*
@@ -98,7 +98,7 @@ static int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 				}
 				free(expanded);
 				if (split)
-					free_split(split);
+					free_double_tab(split);
 			}
 		}
 		else if ((start->type == R_IN || start->type == R_OUT || \
@@ -186,8 +186,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		return (NULL);
 	tmp = start;
 	cmd = (t_cmd *)ft_calloc(1, sizeof(t_cmd));
-	//if (!node || !cmd)
-		//ERROR, return (NULL);
+	if (!cmd)
+		return (NULL);
 	cmd->fd_in = -1; //to be determined;
 	cmd->fd_out = -1; //to be determined;
 	while (tmp && tmp != end)
@@ -204,7 +204,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 				perror(cmd->infile);
 				cmd->flag_error = 1;
 			}
-			close(fd);
+			else
+				close(fd);
 			tmp = tmp->next;
 		}
 		else if (tmp->type == R_OUT && tmp->next)
@@ -220,7 +221,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 					perror(cmd->outfile);
 					cmd->path_error = 1;
 				}
-				close(fd);
+				else
+					close(fd);
 				cmd->fd_out = STDOUT_FILENO;
 			}
 			tmp = tmp->next;
@@ -241,6 +243,8 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 					perror(cmd->outfile);
 					cmd->path_error = 1;
 				}
+				else
+					close(fd);
 				cmd->fd_out = STDOUT_FILENO;
 			}
 			tmp = tmp->next;
