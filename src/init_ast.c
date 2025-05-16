@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 12:23:25 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 13:59:37 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ static int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
 }
-
+/*
 static int	should_count_or_add(t_token *tok, t_mini *mini, char ***args, int *i)
 {
 	char	*expanded;
@@ -79,7 +79,7 @@ static int	should_count_or_add(t_token *tok, t_mini *mini, char ***args, int *i)
 	else
 		free(expanded);
 	return (1);
-}
+} */
 
 static int	count_expanded_split(char *expanded)
 {
@@ -93,7 +93,7 @@ static int	count_expanded_split(char *expanded)
 		count++;
 		i++;
 	}
-	free_split(split);
+	free_double_tab(split);
 	return (count);
 }
 
