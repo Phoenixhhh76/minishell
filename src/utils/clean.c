@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   clean.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-14 14:20:37 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-05-14 14:20:37 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/05/14 14:20:37 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/16 17:28:02 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,27 +60,43 @@ void	free_cmd(t_cmd *cmd)
 	free(cmd);
 }
 
+// void	free_ast(t_ast *ast)
+// {
+// 	t_ast	*tmp;
+
+// 	tmp = NULL;
+// 	if (!ast)
+// 		return ;
+// 	while (tmp)
+// 	{
+// 		tmp = ast;
+// 		free_cmd(tmp->cmd);
+// 		free_ast(tmp->left);
+// 		free_ast(tmp->right);
+// 		free_token_list(&tmp->ast_token);
+// 		tmp->fd[0] = -1;
+// 		tmp->fd[1] = -1;
+// 		free(tmp);
+// 		tmp = tmp->next;
+// 	}
+// 	free(tmp);
+// }
+
 void	free_ast(t_ast *ast)
 {
-	t_ast	*tmp;
-
-	tmp = NULL;
 	if (!ast)
 		return ;
-	while (tmp)
-	{
-		tmp = ast;
-		free_cmd(tmp->cmd);
-		free_ast(tmp->left);
-		free_ast(tmp->right);
-			free_token_list(&tmp->ast_token);
-		tmp->fd[0] = -1;
-		tmp->fd[1] = -1;
-		free(tmp);
-		tmp = tmp->next;
-	}
-	free(tmp);
+	if (ast->left)
+		free_ast(ast->left);
+	if (ast->right)
+		free_ast(ast->right);
+	if (ast->cmd)
+		free_cmd(ast->cmd);
+	if (ast->ast_token.str)
+		free(ast->ast_token.str);
+	free(ast);
 }
+
 void	safe_cleanup(t_mini *mini, char *line)
 {
 	if (line)
@@ -104,8 +120,8 @@ void	safe_exit(t_mini *mini, int code)
 		free_double_tab(mini->env);
 	if (mini->exp_list)
 		free_double_tab(mini->exp_list);
-	// if (mini->ast)
-	// 	free_ast(mini->ast);
+	if (mini->ast)
+	 	free_ast(mini->ast);
 	if (mini->token)
 		free_token_list(mini->token);
 	rl_clear_history();

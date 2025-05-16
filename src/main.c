@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 15:09:14 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 17:40:40 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -139,5 +139,7 @@ int	main(int ac, char **av, char **envp)
 	free_double_tab(mini.env);
 	free_double_tab(mini.exp_list);
 	rl_clear_history();
+	// if (mini.ast)
+	// 	free_ast(mini.ast);
 	return (0);
 }
