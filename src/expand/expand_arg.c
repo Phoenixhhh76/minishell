@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:16:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 13:39:34 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,6 +36,30 @@ char	*ft_strjoin_f(char *s1, char *s2)
 	}
 	joined = ft_strjoin(s1, s2);
 	free(s1);
+	return (joined);
+}
+
+char	*ft_strjoin_ff(char *s1, char *s2)
+{
+	char	*joined;
+	char	*tmp;
+
+	if (!s1 && !s2)
+		return (NULL);
+	if (!s1)
+	{
+		tmp = ft_strdup(s2);
+		free(s2);
+		return (tmp);
+	}
+	if (!s2)
+	{
+		free(s1);
+		return (NULL);
+	}
+	joined = ft_strjoin(s1, s2);
+	free(s1);
+	free(s2);
 	return (joined);
 }
 /*
@@ -119,7 +143,7 @@ char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type)
 			start = ++i;
 			while (str[i] && str[i] != '\'')
 				i++;
-			result = ft_strjoin_f(result, ft_strndup(str + start, i - start));
+			result = ft_strjoin_ff(result, ft_strndup(str + start, i - start));
 			if (str[i] == '\'')
 				i++;
 		}
@@ -129,17 +153,17 @@ char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type)
 			while (str[i] && str[i] != '"')
 			{
 				if (str[i] == '$')
-					result = ft_strjoin_f(result, expand_var(str, &i, mini));
+					result = ft_strjoin_ff(result, expand_var(str, &i, mini));
 				else
-					result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
+					result = ft_strjoin_ff(result, ft_strndup(str + i++, 1));
 			}
 			if (str[i] == '"')
 				i++;
 		}
 		else if (str[i] == '$')
-			result = ft_strjoin_f(result, expand_var(str, &i, mini));
+			result = ft_strjoin_ff(result, expand_var(str, &i, mini));
 		else
-			result = ft_strjoin_f(result, ft_strndup(str + i++, 1));
+			result = ft_strjoin_ff(result, ft_strndup(str + i++, 1));
 	}
 	return (result);
 }

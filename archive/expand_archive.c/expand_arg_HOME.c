@@ -6,18 +6,12 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 11:20:26 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:16:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 13:42:44 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-char *ft_strjoin_f(char *s1, char *s2)
-{
-	char *joined = ft_strjoin(s1, s2);
-	free(s1);
-	return (joined);
-}
 
 char *get_env_value(const char *key, char **env)
 {
