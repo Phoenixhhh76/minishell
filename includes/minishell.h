@@ -159,6 +159,7 @@ void	close_all_heredocs(t_ast *ast);
 char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
 char	*ft_strjoin_f(char *s1, char *s2);
+char	*ft_strjoin_ff(char *s1, char *s2);`
 char	*get_env_value(const char *key, char **env);
 char	*expand_heredoc_line(const char *str, t_mini *mini);
 //char	*expand_var(const char *str, int *i, t_mini *mini);

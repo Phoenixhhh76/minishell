@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:41:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:15:58 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 13:40:05 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ char	*extract_plain(const char *input, int *i, char *current)
 		input[*i] != '"' && input[*i] != '\'' && \
 		!is_meta_char(input[*i]))
 		(*i)++;
-	return (ft_strjoin_f(current, ft_strndup(&input[start], *i - start)));
+	return (ft_strjoin_ff(current, ft_strndup(&input[start], *i - start)));
 }
 
 /*

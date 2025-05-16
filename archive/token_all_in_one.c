@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:17:13 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 13:35:20 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -84,7 +84,7 @@ static char	*extract_plain(const char *input, int *i, char *current)
 	while (input[*i] && !ft_isspace(input[*i]) && input[*i] != '"' &&
 		input[*i] != '\'' && !is_meta_char(input[*i]))
 		(*i)++;
-	return ft_strjoin_f(current, ft_strndup(&input[start], *i - start));
+	return ft_strjoin_ff(current, ft_strndup(&input[start], *i - start));
 }
 
 static int	handle_meta(const char *input, int i, t_token **tokens)
