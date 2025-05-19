@@ -84,6 +84,7 @@ typedef struct s_mini
 	char	**env;
 	char	**exp_list;
 	char	**av;
+	bool	stop_hd;
 	int		last_exit;
 }	t_mini;
 

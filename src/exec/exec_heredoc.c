@@ -181,7 +181,7 @@ int	fork_heredoc(t_cmd *cmd, char *delimiter, int i)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		signal(SIGINT, heredoc_sigint_handler);
+		signal(SIGINT, SIG_DFL);
 		signal(SIGQUIT, SIG_IGN);
 		close(pipefd[0]);
 		while (1)
@@ -206,14 +206,6 @@ int	fork_heredoc(t_cmd *cmd, char *delimiter, int i)
 		close(pipefd[1]);
 		waitpid(pid, &status, 0);
 		signal(SIGINT, SIG_DFL);
-		// close(pipefd[1]);
-		// waitpid(pid, &status, 0);
-		// if (WIFSIGNALED(status))
-		// {
-		// 	cmd->flag_hd = 1;
-		// 	close(pipefd[0]);
-		// 	return (1);
-		// }
 		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
 		{
 			g_signal_pid = 1;

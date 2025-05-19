@@ -112,6 +112,7 @@ void	safe_cleanup(t_mini *mini, char *line)
 		free_ast(mini->ast);
 		mini->ast = NULL;
 	}
+	mini->stop_hd = 0;
 	g_signal_pid = 0;
 }
 

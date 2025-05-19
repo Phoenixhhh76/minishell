@@ -60,8 +60,13 @@ void	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 		cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
 		while (i < cmd->heredoc_nb)
 		{
-			if (cmd->flag_hd == 1 || g_signal_pid == 1)
+			if (mini->stop_hd == 1)
 				return ;
+			if (cmd->flag_hd == 1 || g_signal_pid == 1)
+			{
+				mini->stop_hd = 1;
+				return ;
+			}
 			if (fork_heredoc(cmd, cmd->heredocs[i], i))
 				return ;
 			i++;
