@@ -23,32 +23,6 @@ t_token	*find_next_pipe(t_token *start, t_token *end)
 	return (NULL);
 }
 
-t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
-{
-	t_token	*pipe_pos;
-	t_ast	*ast;
-
-	if (start == end)
-		return (NULL);
-	pipe_pos = find_next_pipe(start, end);
-	if (pipe_pos)
-		return (create_pipe_node(start, pipe_pos, end, mini));
-	ast = ft_calloc(1, sizeof(t_ast));
-	if (!ast)
-		return (NULL);
-	ast->ast_token.type = CMD;
-	ast->ast_token.str = ft_strdup("CMD");
-	ast->fd[0] = -1;
-	ast->fd[1] = -1;
-	ast->cmd = build_command(start, end, mini);
-	if (!ast->cmd)
-	{
-		free(ast);
-		return (NULL);
-	}
-	return (ast);
-}
-
 static int	validate_pipe_pos(t_token *start, t_token *pipe_pos, t_token *end)
 {
 	if (!start || start == pipe_pos || !pipe_pos->next || pipe_pos->next == end)
@@ -101,5 +75,31 @@ t_ast	*create_pipe_node(t_token *start,
 		return (NULL);
 	}
 	ast->right = right_ast;
+	return (ast);
+}
+
+t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
+{
+	t_token	*pipe_pos;
+	t_ast	*ast;
+
+	if (start == end)
+		return (NULL);
+	pipe_pos = find_next_pipe(start, end);
+	if (pipe_pos)
+		return (create_pipe_node(start, pipe_pos, end, mini));
+	ast = ft_calloc(1, sizeof(t_ast));
+	if (!ast)
+		return (NULL);
+	ast->ast_token.type = CMD;
+	ast->ast_token.str = ft_strdup("CMD");
+	ast->fd[0] = -1;
+	ast->fd[1] = -1;
+	ast->cmd = build_command(start, end, mini);
+	if (!ast->cmd)
+	{
+		free(ast);
+		return (NULL);
+	}
 	return (ast);
 }

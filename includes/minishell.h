@@ -60,7 +60,8 @@ typedef struct s_cmd
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
-	bool	flag_error;
+	bool	flag_hd;
+	bool	in_error;
 	bool	path_error;
 	t_quote	*heredocs_quote;
 }	t_cmd;
@@ -93,6 +94,7 @@ char	**copy_env(char **env);
 //signals
 void	signal_handler(int sig);
 void	ft_setup_signals(void);
+void	heredoc_sigint_handler(int sig);
 
 //tokenizing
 void	init_token(t_mini *mini);
@@ -154,6 +156,7 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);
 //void	check_heredocs(t_ast *node);
 void	check_heredocs(t_ast *ast, t_mini *mini);
 int		create_heredocs(t_cmd *cmd);
+int		fork_heredoc(t_cmd *cmd, char *delimiter, int i);
 //int		exec_heredocs(t_cmd *cmd);
 int		exec_heredocs(t_cmd *cmd, t_mini *mini);
 int		**create_heredoc_pipe(int heredoc_nb);
