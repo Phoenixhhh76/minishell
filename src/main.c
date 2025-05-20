@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 17:40:40 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 14:59:39 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -132,7 +132,10 @@ int	main(int ac, char **av, char **envp)
 		if (read_and_prepare_line(&line))
 			break ;
 		if (check_line(line, &mini) && g_signal_pid != 1)
+		{
+			//printf("[debug] g_signal_pid = %d\n", g_signal_pid);
 			exec_or_builtin(&mini);
+		}
 		safe_cleanup(&mini, line);
 	}
 	free_double_tab(mini.env);
