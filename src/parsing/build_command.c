@@ -32,7 +32,7 @@ void	set_args_and_path(t_cmd *cmd, t_token *start, \
 	}
 }
 
-void	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
+int	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 {
 	t_token	*tmp;
 	int		i;
@@ -65,13 +65,14 @@ void	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 				|| g_signal_pid == 1)
 			{
 				mini->stop_hd = 1;
-				return ;
+				return (130);
 			}
 			if (fork_heredocs(mini, cmd, cmd->heredocs[i], i))
-				return ;
+				return (mini->last_exit);
 			i++;
 		}
 	}
+	return (mini->last_exit);
 }
 
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
@@ -85,7 +86,7 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 		return (NULL);//check error
 	cmd->fd_in = -1;
 	cmd->fd_out = -1;
-	parse_tokens(start, end, cmd, mini);
+	mini->last_exit = parse_tokens(start, end, cmd, mini);
 	set_args_and_path(cmd, start, end, mini);
 	return (cmd);
 }
