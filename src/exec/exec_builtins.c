@@ -56,11 +56,6 @@ int	ft_run_builtin( t_mini *mini, t_cmd *cmd)
 		return (ft_env(cmd, &mini->env));
 	if (!ft_strcmp(cmd->cmd_args[0], "unset"))
 		return (ft_unset(cmd, &mini->env));
-	// else if (!ft_strcmp(name, "exit"))
-	// {
-	// 	printf("exit\n");
-	// 	exit(0);
-	// }
 	else if (!ft_strcmp(cmd->cmd_args[0], "exit"))
 		return (ft_exit(mini, cmd));
 	return(1); // not handled

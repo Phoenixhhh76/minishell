@@ -133,13 +133,10 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 		close(pipefd[0]);
 		while (1)
 		{
-			//printf("entered loop heredoc\n");
 			line = readline("> ");
 			if (g_signal_pid == 1)
-			{
-			//	printf("if (g_signal_pid == 1)\n");
-				safe_exit(mini, 0);
-			}
+
+				safe_exit(mini, 130);
 			if (!line || ft_strcmp(line, delimiter) == 0)
 				break ;
 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])

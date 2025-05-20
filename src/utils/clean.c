@@ -101,44 +101,9 @@ void	safe_exit(t_mini *mini, int code)
 	if (mini->exp_list)
 		free_double_tab(mini->exp_list);
 	if (mini->ast)
-	 	free_ast(mini->ast);
+		free_ast(mini->ast);
 	if (mini->token)
 		free_token_list(mini->token);
 	rl_clear_history();
-	// if (write)
-	// 	ft_fprintf(1, "exit\n");
 	exit(code);
 }
-
-// int	err_msg(char *str1, char *str2, char *str3, int erno)
-// {
-// 	ft_putstr_fd("minishell: ", 2);
-// 	ft_putstr_fd(str1, 2);
-// 	ft_putstr_fd(str2, 2);
-// 	ft_putendl_fd(str3, 2);
-// 	return (erno);
-// }
-
-// void	ft_close_fds(t_mini *mini)
-// {
-// 	if (mini->pipe_fd[0] != -1)
-// 		close(mini->pipe_fd[0]);
-// 	if (mini->pipe_fd[1] != -1)
-// 		close(mini->pipe_fd[1]);
-// 	mini->pipe_fd[0] = -1;
-// 	mini->pipe_fd[1] = -1;
-// }
-
-// static void	ft_conditional_free(void *ptr, void (*func)(void *))
-// {
-// 	if (ptr)
-// 		func(ptr);
-// }
-
-// void	ft_exit_error(t_mini *mini, char *str, int code)
-// {
-// 	ft_fprintf(ERR_OUT, "%s\n", str);
-// 	ft_exit_clean(mini, code, false);
-// }
-
-//reset --> free + initialize to 0 to prevent invalid free
