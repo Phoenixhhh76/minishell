@@ -156,7 +156,7 @@ char	*resolve_cmd_path(char *cmd, char **envp); //add
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);
 void	check_heredocs(t_ast *ast, t_mini *mini);
 int		create_heredocs(t_cmd *cmd);
-int		fork_heredoc(t_cmd *cmd, char *delimiter, int i);
+int		fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i);
 int		exec_heredocs(t_cmd *cmd, t_mini *mini);
 int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);

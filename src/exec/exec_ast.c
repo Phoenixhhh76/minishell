@@ -114,22 +114,23 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 {
 
 	if (!node->cmd)
-		return ;
+		safe_exit(mini, mini->last_exit);
 	if (node->cmd->in_error == 1 || node->cmd->path_error == 1)
-		return ;
+		safe_exit(mini, mini->last_exit);
 	handle_redirects(node->cmd);
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
+		//printf("flag_hd at exit= %d\n", node->cmd->flag_hd);
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
-		if (node->cmd->flag_hd == 1)
-		{
-			mini->last_exit = 130;
-			return ;
-		}
-		safe_exit(mini, mini->last_exit);
+		// if (node->cmd->flag_hd == 1)
+		// {
+		// 	mini->last_exit = 130;
+		// 	return ;
+		// }
 	}
+	safe_exit(mini, mini->last_exit);
 }
 
 void	exec_ast(t_mini *mini, t_ast *node, char **envp)
@@ -140,7 +141,7 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 		exec_pipe_node(mini, node, envp);
 	else if (node->ast_token.type == CMD)
 	{
-		if (node->cmd->flag_hd)
+		if (g_signal_pid == 1 || node->cmd->flag_hd)
 		{
 			mini->last_exit = 130;
 			return ;

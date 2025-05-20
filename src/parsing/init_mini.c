@@ -39,6 +39,7 @@ void	init_mini(t_mini *mini, char **av, char **env)
 	mini->ast = NULL;
 	mini->env = copy_env(env);
 	mini->av = av;
+	mini->stop_hd = 0;
 	mini->last_exit = 0;
 	mini->exp_list = NULL;
 

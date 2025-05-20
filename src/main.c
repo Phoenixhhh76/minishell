@@ -103,6 +103,7 @@ void	exec_or_builtin(t_mini *mini)
 		}
 		if (pid == 0)
 		{
+			//printf("inside child\n");
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
@@ -130,7 +131,7 @@ int	main(int ac, char **av, char **envp)
 	{
 		if (read_and_prepare_line(&line))
 			break ;
-		if (check_line(line, &mini))
+		if (check_line(line, &mini) && g_signal_pid != 1)
 			exec_or_builtin(&mini);
 		safe_cleanup(&mini, line);
 	}
