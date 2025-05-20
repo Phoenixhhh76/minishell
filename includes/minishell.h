@@ -126,7 +126,16 @@ void	handle_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
 
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
 char	**collect_args(t_token *start, t_token *end, t_mini *mini);
-
+int		count_args_advanced(t_token *start, t_token *end, t_mini *mini);
+int		count_token_args(t_token *tok, t_mini *mini);
+int		count_expanded_split(char *expanded);
+int		count_export_args(t_token *start, t_token *end, t_mini *mini);
+void	fill_export_args(char **args, \
+					t_token *start, t_token *end, t_mini *mini);
+int		process_token(char **args, int i, t_token *tok, t_mini *mini);
+int		handle_single(char **args, int i, t_token *tok);
+int		handle_expanded(char **args, int i, t_token *tok, t_mini *mini);
+int		add_split(char **args, int i, char *expanded);
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
@@ -138,12 +147,29 @@ int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
 int		ft_unset(t_cmd *cmd, char ***mini_env);
+//builtins_utils
+int		does_var_exist(char **env, const char *var);
+bool	is_authorized_character(char c);
+bool	is_valid_var_name(char *var);
+int		add_var_to_env(char **env, char *cmd, char ***mini_env);
+bool	in_exp_list(char **exp_list, const char *key);
 //builtins export
 int		ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini);
 void	print_export_env(char **env, char **exp_list);
 char	**clone_and_sort_env(char **env);
 void	print_sorted_env_line(const char *entry);
 int		ft_exit(t_mini *mini, t_cmd *cmd);
+int		handle_single_export(char *arg, char ***mini_env, t_mini *mini);
+void	should_store_unassigned_var(char *arg, char **env, t_mini *mini);
+int		handle_var_with_equal(char *arg, \
+					char **env, char ***mini_env, t_mini *mini);
+char	*strip_quotes_only(const char *val);
+char	**split_export_arg(const char *arg);
+char	*make_joined_assignment(char **var);
+int		handle_var_assignment(char **env, \
+					char *joined, char ***mini_env, int index);
+void	add_to_exp_list(char ***exp_list, const char *key);
+void	remove_from_exp_list(char ***exp_list, const char *key);
 
 
 //exec
@@ -164,14 +190,15 @@ void	close_all_heredocs(t_ast *ast);
 //expand
 char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
-
+char	*handle_single_quote(const char *str, int *i);
+char	*handle_double_quote(const char *str, int *i, t_mini *mini);
 char	*get_env_value(const char *key, char **env);
+char	*expand_var(const char *str, int *i, t_mini *mini);
 char	*expand_heredoc_line(const char *str, t_mini *mini);
 char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
 char	*handle_exit_code(char *result, int *i, t_mini *mini);
 char	*handle_pid(char *result, int *i);
 char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
-
 char	*append_char(char *result, char c);
 
 //parsing
@@ -184,6 +211,7 @@ t_ast	*create_pipe_node(t_token *start, \
 char	*ft_strndup(const char *s, size_t n);
 char	*append_char(char *result, char c);
 int		ft_isspace(char c);
+int		begins_with_digits(char *str);
 void	free_double_tab(char **arr);
 void	ft_free_tab_int(int **tab, int size);
 void	free_strs(char *str, char **strs);

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 12:47:30 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 16:43:03 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 10:57:14 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -105,4 +105,3 @@ char	*expand_heredoc_line(const char *str, t_mini *mini)
 	}
 	return (result);
 }
-

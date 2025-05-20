@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 16:58:05 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 11:57:03 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,8 +18,8 @@ char	*expand_if_needed(t_token *token, t_mini *mini)
 	if (token->quote_type == Q_S)
 		return (ft_strdup(token->str));
 	return (expand_arg(token->str, mini, token->quote_type));
-
 }
+
 /*
 find the value of the environment variable key in env
 if not found, return an empty string
@@ -46,7 +46,7 @@ if in the expand_arg function, we find a $, we move the index i to the next char
 if after $ is not a valid variable name, we return "$"
 if we can't find the variable name, we return an empty string.
 */
-static char	*expand_var(const char *str, int *i, t_mini *mini)
+char	*expand_var(const char *str, int *i, t_mini *mini)
 {
 	int		start;
 	char	*var;
@@ -76,7 +76,7 @@ static char	*expand_var(const char *str, int *i, t_mini *mini)
 }
 
 /* for case special: start from "$""" */
-static char	*handle_special_case(const char *str)
+char	*handle_special_case(const char *str)
 {
 	int		j;
 	char	*after;
@@ -86,39 +86,6 @@ static char	*handle_special_case(const char *str)
 		j++;
 	after = ft_strdup(&str[j]);
 	return (ft_strjoin_ff(ft_strdup("$"), after));
-}
-
-static char	*handle_single_quote(const char *str, int *i)
-{
-	int	start;
-	char	*segment;
-
-	start = ++(*i);
-	while (str[*i] && str[*i] != '\'')
-		(*i)++;
-	segment = ft_strndup(str + start, *i - start);
-	if (str[*i] == '\'')
-		(*i)++;
-	return (segment);
-}
-
-static char	*handle_double_quote(const char *str, int *i, t_mini *mini)
-{
-	int	start;
-	char	*result;
-
-	start = ++(*i);
-	result = ft_strdup("");
-	while (str[*i] && str[*i] != '"')
-	{
-		if (str[*i] == '$')
-			result = ft_strjoin_ff(result, expand_var(str, i, mini));
-		else
-			result = ft_strjoin_ff(result, ft_strndup(str + (*i)++, 1));
-	}
-	if (str[*i] == '"')
-		(*i)++;
-	return (result);
 }
 
 char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type)
