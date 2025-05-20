@@ -121,6 +121,8 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 	int		pipefd[2];
 
 	line = NULL;
+	cmd->flag_hd = 0;
+	g_signal_pid = 0;
 	if (pipe(pipefd) == -1)
 		return (perror("pipe"), 1);
 	pid = fork();
@@ -136,12 +138,11 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 			line = readline("> ");
 			if (cmd->flag_hd == 1 || g_signal_pid == 2)
 				safe_exit(mini, 130);
-			// if (!line)
-			// {
-			// 	//ft_putstr_fd("minishell: warning: here-document delimited \
-			// 		by end-of-file (wanted `%s')\n", STDERR_FILENO);
-			// 	break ;
-			// }
+			if (!line)
+			{
+				err_msg("minichell: warning: here-document delimited by end-of-file (wanted `", delimiter, "')", 0);
+				break ;
+			}
 			if (!line || ft_strcmp(line, delimiter) == 0)
 				break ;
 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
