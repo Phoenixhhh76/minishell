@@ -45,7 +45,7 @@ int	check_line(char *line, t_mini *mini)
 		mini->token = NULL;
 		return (2);
 	}
-	init_ast(mini);
+	mini->ast = parse_pipeline(mini->token, NULL, mini);
 	//print_ast(mini->ast, 10);
 	return (1);
 }
@@ -102,11 +102,10 @@ void	exec_or_builtin(t_mini *mini)
 		}
 		if (pid == 0)
 		{
-			//printf("inside child\n");
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
-			exit(mini->last_exit); // fallback if execve fails//Nina
+			exit(mini->last_exit);
 		}
 		waitpid(pid, &status, 0);
 		if (WIFEXITED(status))
@@ -131,10 +130,7 @@ int	main(int ac, char **av, char **envp)
 		if (read_and_prepare_line(&line))
 			break ;
 		if (!mini.stop_hd && check_line(line, &mini))
-		{
-			//printf("[debug] g_signal_pid = %d\n", g_signal_pid);
 			exec_or_builtin(&mini);
-		}
 		safe_cleanup(&mini, line);
 	}
 	free_double_tab(mini.env);

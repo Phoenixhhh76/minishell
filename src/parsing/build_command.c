@@ -60,15 +60,21 @@ int	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 		cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
 		while (i < cmd->heredoc_nb)
 		{
-			//printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n", cmd->flag_hd, mini->stop_hd, g_signal_pid);
+		//	printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n", \
+		//		cmd->flag_hd, mini->stop_hd, g_signal_pid);
 			if (mini->stop_hd == 1 || cmd->flag_hd == 1 \
-				|| g_signal_pid == 1)
+				|| g_signal_pid == 2)
 			{
 				mini->stop_hd = 1;
+				mini->last_exit = 130;
 				return (130);
 			}
 			if (fork_heredocs(mini, cmd, cmd->heredocs[i], i))
+			{
+				if (mini->last_exit == 130)
+					return (130);
 				return (mini->last_exit);
+			}
 			i++;
 		}
 	}

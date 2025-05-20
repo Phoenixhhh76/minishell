@@ -32,7 +32,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
 		exec_ast(mini, node->left, envp);
-		safe_exit(mini, 0);//Nina
+		safe_exit(mini, mini->last_exit);//Nina
 	}
 	right_pid = fork();
 	if (right_pid < 0)
@@ -46,7 +46,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
 		exec_ast(mini, node->right, envp);
-		safe_exit(mini, 0);//Nina
+		safe_exit(mini, mini->last_exit);//Nina
 	}
 	close(node->fd[0]);
 	close(node->fd[1]);
@@ -123,11 +123,11 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
-		// if (node->cmd->flag_hd == 1)
-		// {
-		// 	mini->last_exit = 130;
-		// 	return ;
-		// }
+		if (g_signal_pid == 2 || node->cmd->flag_hd == 1)
+		{
+			mini->last_exit = 130;
+			return ;
+		}
 	}
 	safe_exit(mini, mini->last_exit);
 }
@@ -140,7 +140,7 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 		exec_pipe_node(mini, node, envp);
 	else if (node->ast_token.type == CMD)
 	{
-		if (g_signal_pid == 1 || node->cmd->flag_hd)
+		if (g_signal_pid == 2 || node->cmd->flag_hd)
 		{
 			mini->last_exit = 130;
 			return ;
