@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:56:53 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/13 15:23:00 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 11:55:06 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -41,5 +41,4 @@ void	init_mini(t_mini *mini, char **av, char **env)
 	mini->av = av;
 	mini->last_exit = 0;
 	mini->exp_list = NULL;
-
 }

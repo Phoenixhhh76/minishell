@@ -126,7 +126,16 @@ void	handle_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
 
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
 char	**collect_args(t_token *start, t_token *end, t_mini *mini);
-
+int		count_args_advanced(t_token *start, t_token *end, t_mini *mini);
+int		count_token_args(t_token *tok, t_mini *mini);
+int		count_expanded_split(char *expanded);
+int		count_export_args(t_token *start, t_token *end, t_mini *mini);
+void	fill_export_args(char **args, \
+					t_token *start, t_token *end, t_mini *mini);
+int		process_token(char **args, int i, t_token *tok, t_mini *mini);
+int		handle_single(char **args, int i, t_token *tok);
+int		handle_expanded(char **args, int i, t_token *tok, t_mini *mini);
+int		add_split(char **args, int i, char *expanded);
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
@@ -164,14 +173,15 @@ void	close_all_heredocs(t_ast *ast);
 //expand
 char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
 char	*expand_if_needed(t_token *token, t_mini *mini);
-
+char	*handle_single_quote(const char *str, int *i);
+char	*handle_double_quote(const char *str, int *i, t_mini *mini);
 char	*get_env_value(const char *key, char **env);
+char	*expand_var(const char *str, int *i, t_mini *mini);
 char	*expand_heredoc_line(const char *str, t_mini *mini);
 char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
 char	*handle_exit_code(char *result, int *i, t_mini *mini);
 char	*handle_pid(char *result, int *i);
 char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
-
 char	*append_char(char *result, char c);
 
 //parsing

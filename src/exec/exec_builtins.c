@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 10:32:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/14 13:05:46 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 11:58:01 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -36,16 +36,6 @@ bool	ft_builtin(t_ast *ast)
 		return (false);
 	return (true);
 }
-/* original version for main-Origing */
-// bool	ft_builtin(t_ast *ast, char ***env)
-// {
-// 	if (!ast || ast->ast_token.type != CMD || !ast->cmd)
-// 		return (false);
-// 	if (!ft_is_builtin(ast->cmd->cmd_args[0]))
-// 		return (false);
-// 	ft_run_builtin(ast->cmd, env);
-// 	return (true);
-// }
 
 int	ft_run_builtin( t_mini *mini, t_cmd *cmd)
 {
