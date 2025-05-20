@@ -120,7 +120,6 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 	handle_redirects(node->cmd);
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
-		//printf("flag_hd at exit= %d\n", node->cmd->flag_hd);
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
