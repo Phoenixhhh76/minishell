@@ -66,7 +66,7 @@ char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini)
 	return (args);
 }
 
-void	init_ast(t_mini *mini)
-{
-	mini->ast = parse_pipeline(mini->token, NULL, mini);
-}
+// void	init_ast(t_mini *mini)
+// {
+// 	mini->ast = parse_pipeline(mini->token, NULL, mini);
+// }
