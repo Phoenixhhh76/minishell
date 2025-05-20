@@ -112,6 +112,74 @@ void	close_all_heredocs(t_ast *ast)
 	}
 }
 
+int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
+{
+	pid_t	pid;
+	char	*line;
+	char	*expanded;
+	int		status;
+	int		pipefd[2];
+
+	line = NULL;
+	if (pipe(pipefd) == -1)
+		return (perror("pipe"), 1);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
+	if (pid == 0)
+	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
+		close(pipefd[0]);
+		while (1)
+		{
+			//printf("entered loop heredoc\n");
+			line = readline("> ");
+			if (g_signal_pid == 1)
+			{
+			//	printf("if (g_signal_pid == 1)\n");
+				safe_exit(mini, 0);
+			}
+			if (!line || ft_strcmp(line, delimiter) == 0)
+				break ;
+			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
+				safe_exit(mini, 0);
+			if (cmd->heredocs_quote[i] == Q_NONE)
+			{
+				expanded = expand_heredoc_line(line, mini);
+				write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
+				write(cmd->heredoc_pipe[i][1], "\n", 1);
+				free(expanded);
+			}
+			write(pipefd[1], line, ft_strlen(line));
+			write(pipefd[1], "\n", 1);
+			free(line);
+		}
+		if (line)
+			free(line);
+		close(pipefd[1]);
+		safe_exit(mini, 0);
+	}
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		close(pipefd[1]);
+		waitpid(pid, &status, 0);
+		signal(SIGINT, SIG_DFL);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		{
+			g_signal_pid = 1;
+			cmd->flag_hd = 1;
+			close(pipefd[0]);
+			write(STDOUT_FILENO, "\n", 1);
+			return (130);
+		}
+		cmd->heredoc_pipe[i][0] = pipefd[0];
+		cmd->heredoc_pipe[i][1] = -1;
+	}
+	return (0);
+}
+
 // int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand function
 // {
 // 	int		i;
@@ -165,57 +233,3 @@ void	close_all_heredocs(t_ast *ast)
 // 	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
 // 		exec_heredocs(ast->cmd, mini);
 // }
-
-int	fork_heredoc(t_cmd *cmd, char *delimiter, int i)
-{
-	pid_t	pid;
-	char	*line;
-	int		status;
-	int		pipefd[2];
-
-	line = NULL;
-	if (pipe(pipefd) == -1)
-		return (perror("pipe"), 1);
-	pid = fork();
-	if (pid == -1)
-		return (perror("fork"), 1);
-	if (pid == 0)
-	{
-		signal(SIGINT, SIG_DFL);
-		signal(SIGQUIT, SIG_IGN);
-		close(pipefd[0]);
-		while (1)
-		{
-			line = readline("> ");
-			if (g_signal_pid == 1)
-				exit(0);
-			if (!line || ft_strcmp(line, delimiter) == 0)
-				break ;
-			write(pipefd[1], line, ft_strlen(line));
-			write(pipefd[1], "\n", 1);
-			free(line);
-		}
-		if (line)
-			free(line);
-		close(pipefd[1]);
-		exit(0);
-	}
-	else
-	{
-		signal(SIGINT, SIG_IGN);
-		close(pipefd[1]);
-		waitpid(pid, &status, 0);
-		signal(SIGINT, SIG_DFL);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
-		{
-			g_signal_pid = 1;
-			cmd->flag_hd = 1;
-			close(pipefd[0]);
-			write(STDOUT_FILENO, "\n", 1);
-			return (130);
-		}
-		cmd->heredoc_pipe[i][0] = pipefd[0];
-		cmd->heredoc_pipe[i][1] = -1;
-	}
-	return (0);
-}
