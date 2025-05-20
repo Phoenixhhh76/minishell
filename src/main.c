@@ -124,9 +124,10 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	init_mini(&mini, av, envp);
 	mini.last_exit = 0;
-	ft_setup_signals();
+//	ft_setup_signals();
 	while (1)
 	{
+		ft_setup_signals();
 		if (read_and_prepare_line(&line))
 			break ;
 		if (!mini.stop_hd && check_line(line, &mini))
