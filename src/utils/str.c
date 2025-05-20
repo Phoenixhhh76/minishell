@@ -6,21 +6,11 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:50:55 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 16:42:53 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 12:16:31 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
-/* size_t	ft_strlen(const char *s)
-{
-	size_t	i;
-
-	i = 0;
-	while (s[i])
-		i++;
-	return (i);
-} */
 
 char	*ft_strndup(const char *s, size_t n)
 {
@@ -56,21 +46,13 @@ char	*append_char(char *result, char c)
 	buf[1] = '\0';
 	return (ft_strjoin_ff(result, ft_strdup(buf)));
 }
-/*
-char	*ft_strdup(const char *s1)
-{
-	char	*new;
-	size_t	i;
 
-	new = malloc(sizeof(char) * (ft_strlen(s1) + 1));
-	if (!new)
-		return (NULL);
+int	begins_with_digits(char *str)
+{
+	int	i;
+
 	i = 0;
-	while (s1[i])
-	{
-		new[i] = s1[i];
+	while (ft_isdigit(str[i]))
 		i++;
-	}
-	new[i] = '\0';
-	return (new);
-} */
+	return (i);
+}

@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   exit.c                                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-06 13:46:24 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-05-06 13:46:24 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/05/06 13:46:24 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/20 12:35:40 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,7 +68,6 @@ long long	ft_atoll(const char *nptr)
 	return (nb * sign);
 }
 
-
 static bool	ft_isnumeric(char *str)
 {
 	int	i;
@@ -123,7 +122,7 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 		if (!ft_is_long_limits(cmd->cmd_args[1]))
 		{
 			if (isatty(STDIN_FILENO))
-			printf("exit\n");
+				printf("exit\n");
 			ft_putstr_fd("minishell: exit: numeric arguments required\n", 2);
 			safe_exit(mini, 2);
 		}
@@ -132,7 +131,7 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 			code = 256 + code;
 	}
 	if (isatty(STDIN_FILENO))
-			printf("exit\n");
+		printf("exit\n");
 	safe_exit(mini, (unsigned char)code);
 	return (0);
 }
