@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 12:34:23 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 14:48:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,10 +93,11 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 	}
 	while (cmd->cmd_args[i])
 	{
-		if (handle_single_export(cmd->cmd_args[i], mini_env, mini) < 0)
-			status = 1;
+		if (handle_single_export(cmd->cmd_args[i], mini_env, mini) != 0)
+		status = 1;
 		i++;
 	}
 	mini->last_exit = status;
 	return (status);
 }
+
