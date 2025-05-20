@@ -111,8 +111,6 @@ void	exec_or_builtin(t_mini *mini)
 		if (WIFEXITED(status))
 			mini->last_exit = WEXITSTATUS(status);
 	}
-	// else
-	// 	mini->last_exit = 1;
 	close_all_heredocs(mini->ast);
 }
 
@@ -124,13 +122,13 @@ int	main(int ac, char **av, char **envp)
 	(void)ac;
 	init_mini(&mini, av, envp);
 	mini.last_exit = 0;
-//	ft_setup_signals();
+	static_struct(&mini);
 	while (1)
 	{
 		ft_setup_signals();
 		if (read_and_prepare_line(&line))
 			break ;
-		if (!mini.stop_hd && check_line(line, &mini))
+		if (check_line(line, &mini) && !mini.stop_hd)
 			exec_or_builtin(&mini);
 		safe_cleanup(&mini, line);
 	}

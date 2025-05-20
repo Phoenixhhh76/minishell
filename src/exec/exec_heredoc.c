@@ -112,6 +112,15 @@ void	close_all_heredocs(t_ast *ast)
 	}
 }
 
+t_mini	*static_struct(t_mini *mini)
+{
+	static t_mini	*tmp = NULL;
+
+	if (mini)
+		tmp = mini;
+	return (tmp);
+}
+
 int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 {
 	pid_t	pid;
@@ -130,7 +139,8 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		signal(SIGINT, SIG_DFL);
+		//dprintf(2, "%d\n", getpid());
+		signal(SIGINT, heredoc_sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
 		close(pipefd[0]);
 		while (1)
@@ -140,7 +150,9 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 				safe_exit(mini, 130);
 			if (!line)
 			{
-				err_msg("minichell: warning: here-document delimited by end-of-file (wanted `", delimiter, "')", 0);
+				ft_putstr_fd("minichell: warning: ", 2);
+				ft_putstr_fd("here-document delimited by end-of-file ", 2);
+				err_msg("(wanted `", delimiter, "')", 0);
 				break ;
 			}
 			if (!line || ft_strcmp(line, delimiter) == 0)
@@ -169,12 +181,13 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 		close(pipefd[1]);
 		waitpid(pid, &status, 0);
 		signal(SIGINT, SIG_DFL);
-		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		if (status / 256 == 130/*WIFSIGNALED(status) && WTERMSIG(status) == SIGINT*/)
 		{
-			g_signal_pid = status;
 			cmd->flag_hd = 1;
+			mini->stop_hd = 1;
+			mini->last_exit = 130;
 			close(pipefd[0]);
-			write(STDOUT_FILENO, "\n", 1);
+			//safe_exit(mini, 130);
 			return (130);
 		}
 		cmd->heredoc_pipe[i][0] = pipefd[0];
@@ -182,57 +195,3 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 	}
 	return (0);
 }
-
-// int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand function
-// {
-// 	int		i;
-// 	char	*line;
-// 	char	*expanded;
-
-// 	i = 0;
-// 	while (i < cmd->heredoc_nb)
-// 	{
-// 		while (1)
-// 		{
-// 			// if (g_signal_pid == SIGINT)
-// 			// 	return (1);
-// 			line = readline("> ");
-// 			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)
-// 				break ;
-// 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
-// 				return (-1);//error
-// 			if (cmd->heredocs_quote[i] == Q_NONE)
-// 			{
-// 				expanded = expand_heredoc_line(line, mini);
-// 				write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
-// 				write(cmd->heredoc_pipe[i][1], "\n", 1);
-// 				free(expanded);
-// 			}
-// 			else
-// 			{
-// 				write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
-// 				write(cmd->heredoc_pipe[i][1], "\n", 1);
-// 			}
-// 			free(line);
-// 		}
-// 		free(line);
-// 		close(cmd->heredoc_pipe[i][1]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
-
-// void	check_heredocs(t_ast *ast, t_mini *mini)// add t_mini *mini
-// {
-// 	if (!ast)
-// 		return ;
-// 	// if (g_signal_pid == 2)
-// 	// 	return ;
-// 	if (ast->ast_token.type == PIPE)
-// 	{
-// 		check_heredocs(ast->left, mini);
-// 		check_heredocs(ast->right, mini);
-// 	}
-// 	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
-// 		exec_heredocs(ast->cmd, mini);
-// }

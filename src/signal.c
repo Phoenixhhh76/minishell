@@ -16,7 +16,8 @@ void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
 	write(1, "\n", 1);
-	exit(130);
+	g_signal_pid = 2;
+	safe_exit(static_struct(NULL), 130);
 }
 
 
