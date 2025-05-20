@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:15:58 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 12:38:05 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -72,7 +72,7 @@ t_token	*tokenize_input(const char *input)
 {
 	t_token			*tokens;
 	char			*current;
-	t_quote	qt;
+	t_quote			qt;
 	int				i;
 
 	tokens = NULL;
