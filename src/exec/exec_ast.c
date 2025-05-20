@@ -32,7 +32,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
 		exec_ast(mini, node->left, envp);
-		exit(0);//Nina
+		safe_exit(mini, 0);//Nina
 	}
 	right_pid = fork();
 	if (right_pid < 0)
@@ -46,14 +46,14 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
 		exec_ast(mini, node->right, envp);
-		exit(0);//Nina
+		safe_exit(mini, 0);//Nina
 	}
 	close(node->fd[0]);
 	close(node->fd[1]);
 	waitpid(right_pid, &status, 0);
 	waitpid(left_pid, NULL, 0);
 	//dprintf(2, "status = %i\n", status);
-	exit(status / 256);
+	safe_exit(mini, status / 256);
 }
 
 void	handle_redirects(t_cmd *cmd)
@@ -71,13 +71,25 @@ void	handle_redirects(t_cmd *cmd)
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
-	else if (cmd->heredoc_nb > 0)
+	// else if (cmd->heredoc_nb > 0)
+	// {
+	// 	dup2(cmd->heredoc_pipe[cmd->heredoc_nb - 1][0], STDIN_FILENO);
+	// 	while (i < cmd->heredoc_nb)
+	// 	{
+	// 		close(cmd->heredoc_pipe[i][0]);
+	// 		close(cmd->heredoc_pipe[i][1]);
+	// 		i++;
+	// 	}
+	// }
+	else if (cmd->heredoc_nb > 0 && !cmd->flag_hd)
 	{
 		dup2(cmd->heredoc_pipe[cmd->heredoc_nb - 1][0], STDIN_FILENO);
 		while (i < cmd->heredoc_nb)
 		{
-			close(cmd->heredoc_pipe[i][0]);
-			close(cmd->heredoc_pipe[i][1]);
+			if (cmd->heredoc_pipe[i][0] > 0)
+				close(cmd->heredoc_pipe[i][0]);
+			if (cmd->heredoc_pipe[i][1] > 0)
+				close(cmd->heredoc_pipe[i][1]);
 			i++;
 		}
 	}
@@ -103,7 +115,7 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 
 	if (!node->cmd)
 		return ;
-	if (node->cmd->flag_error == 1 || node->cmd->path_error == 1)
+	if (node->cmd->in_error == 1 || node->cmd->path_error == 1)
 		return ;
 	handle_redirects(node->cmd);
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
@@ -111,7 +123,12 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
-		exit(mini->last_exit);
+		if (node->cmd->flag_hd == 1)
+		{
+			mini->last_exit = 130;
+			return ;
+		}
+		safe_exit(mini, mini->last_exit);
 	}
 }
 
@@ -123,6 +140,11 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 		exec_pipe_node(mini, node, envp);
 	else if (node->ast_token.type == CMD)
 	{
+		if (node->cmd->flag_hd)
+		{
+			mini->last_exit = 130;
+			return ;
+		}
 		if (ft_builtin(node))
 			ft_run_builtin(mini, node->cmd);
 		else

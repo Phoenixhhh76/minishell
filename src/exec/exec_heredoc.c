@@ -50,7 +50,7 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd)
 	tmp = start;
 	tab_heredocs = (char **)ft_calloc(nb + 1, sizeof(char *));
 	if (!tab_heredocs)
-		return (NULL);
+		return (NULL);//calloc_error
 	cmd->heredocs_quote = (t_quote *)ft_calloc(nb, sizeof(t_quote));
 	if (!cmd->heredocs_quote)
 		return (NULL);
@@ -75,7 +75,7 @@ int	**create_heredoc_pipe(int heredoc_nb)
 	int	**tab_pipe;
 
 	i = 0;
-	tab_pipe = (int **)ft_calloc(heredoc_nb, sizeof(int *));
+	tab_pipe = (int **)ft_calloc(heredoc_nb, sizeof(int [2]));
 	if (!tab_pipe)
 		return (NULL); //error calloc
 	while (i < heredoc_nb)
@@ -112,58 +112,110 @@ void	close_all_heredocs(t_ast *ast)
 	}
 }
 
-/* We have to get quote_type of limiter to see if we expand $ in heredoc */
-int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand function
-{
-	int		i;
-	char	*line;
-	char	*expanded;
+// int	exec_heredocs(t_cmd *cmd, t_mini *mini) //add t_mini *mini for expand function
+// {
+// 	int		i;
+// 	char	*line;
+// 	char	*expanded;
 
-	i = 0;
-	while (i < cmd->heredoc_nb)
+// 	i = 0;
+// 	while (i < cmd->heredoc_nb)
+// 	{
+// 		while (1)
+// 		{
+// 			// if (g_signal_pid == SIGINT)
+// 			// 	return (1);
+// 			line = readline("> ");
+// 			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)
+// 				break ;
+// 			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
+// 				return (-1);//error
+// 			if (cmd->heredocs_quote[i] == Q_NONE)
+// 			{
+// 				expanded = expand_heredoc_line(line, mini);
+// 				write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
+// 				write(cmd->heredoc_pipe[i][1], "\n", 1);
+// 				free(expanded);
+// 			}
+// 			else
+// 			{
+// 				write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
+// 				write(cmd->heredoc_pipe[i][1], "\n", 1);
+// 			}
+// 			free(line);
+// 		}
+// 		free(line);
+// 		close(cmd->heredoc_pipe[i][1]);
+// 		i++;
+// 	}
+// 	return (0);
+// }
+
+// void	check_heredocs(t_ast *ast, t_mini *mini)// add t_mini *mini
+// {
+// 	if (!ast)
+// 		return ;
+// 	// if (g_signal_pid == 1)
+// 	// 	return ;
+// 	if (ast->ast_token.type == PIPE)
+// 	{
+// 		check_heredocs(ast->left, mini);
+// 		check_heredocs(ast->right, mini);
+// 	}
+// 	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
+// 		exec_heredocs(ast->cmd, mini);
+// }
+
+int	fork_heredoc(t_cmd *cmd, char *delimiter, int i)
+{
+	pid_t	pid;
+	char	*line;
+	int		status;
+	int		pipefd[2];
+
+	line = NULL;
+	if (pipe(pipefd) == -1)
+		return (perror("pipe"), 1);
+	pid = fork();
+	if (pid == -1)
+		return (perror("fork"), 1);
+	if (pid == 0)
 	{
+		signal(SIGINT, SIG_DFL);
+		signal(SIGQUIT, SIG_IGN);
+		close(pipefd[0]);
 		while (1)
 		{
-			if (g_signal_pid == SIGINT)
-				return (1);
 			line = readline("> ");
-			if (!line || ft_strcmp(line, cmd->heredocs[i]) == 0)
+			if (g_signal_pid == 1)
+				exit(0);
+			if (!line || ft_strcmp(line, delimiter) == 0)
 				break ;
-			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
-				return (-1);//error
-			if (cmd->heredocs_quote[i] == Q_NONE)
-			{
-				expanded = expand_heredoc_line(line, mini);
-				//expanded = expand_arg(line, mini, Q_NONE); dosen't work for '$USER'
-				write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
-				write(cmd->heredoc_pipe[i][1], "\n", 1);
-				free(expanded);
-			}
-			else
-			{
-				write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
-				write(cmd->heredoc_pipe[i][1], "\n", 1);
-			}
+			write(pipefd[1], line, ft_strlen(line));
+			write(pipefd[1], "\n", 1);
 			free(line);
 		}
-		free(line);
-		close(cmd->heredoc_pipe[i][1]);
-		i++;
+		if (line)
+			free(line);
+		close(pipefd[1]);
+		exit(0);
+	}
+	else
+	{
+		signal(SIGINT, SIG_IGN);
+		close(pipefd[1]);
+		waitpid(pid, &status, 0);
+		signal(SIGINT, SIG_DFL);
+		if (WIFSIGNALED(status) && WTERMSIG(status) == SIGINT)
+		{
+			g_signal_pid = 1;
+			cmd->flag_hd = 1;
+			close(pipefd[0]);
+			write(STDOUT_FILENO, "\n", 1);
+			return (130);
+		}
+		cmd->heredoc_pipe[i][0] = pipefd[0];
+		cmd->heredoc_pipe[i][1] = -1;
 	}
 	return (0);
-}
-
-void	check_heredocs(t_ast *ast, t_mini *mini)// add t_mini *mini
-{
-	if (!ast)
-		return ;
-	if (g_signal_pid == 1)
-		return ;
-	if (ast->ast_token.type == PIPE)
-	{
-		check_heredocs(ast->left, mini);
-		check_heredocs(ast->right, mini);
-	}
-	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
-		exec_heredocs(ast->cmd, mini);
 }

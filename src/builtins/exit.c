@@ -105,13 +105,15 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 	//print_cmd(cmd);
 	if (cmd->cmd_args[1] && !ft_isnumeric(cmd->cmd_args[1]))
 	{
-		printf("exit\n");
+		if (isatty(STDIN_FILENO))
+			printf("exit\n");
 		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
 		safe_exit(mini, 2);
 	}
 	if (args_count(cmd->cmd_args) > 2)
 	{
-		printf("exit\n");
+		if (isatty(STDIN_FILENO))
+			printf("exit\n");
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
 		//ft_update_last_exit_value(mini, 1);
 		return (1);
@@ -120,6 +122,7 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 	{
 		if (!ft_is_long_limits(cmd->cmd_args[1]))
 		{
+			if (isatty(STDIN_FILENO))
 			printf("exit\n");
 			ft_putstr_fd("minishell: exit: numeric arguments required\n", 2);
 			safe_exit(mini, 2);
@@ -128,7 +131,8 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 		if (code < 0)
 			code = 256 + code;
 	}
-	printf("exit\n");
+	if (isatty(STDIN_FILENO))
+			printf("exit\n");
 	safe_exit(mini, (unsigned char)code);
 	return (0);
 }

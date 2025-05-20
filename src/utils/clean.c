@@ -27,7 +27,8 @@ void	reset_cmd(t_cmd *cmd)
 	cmd->heredocs = NULL;
 	cmd->heredoc_nb = 0;
 	cmd->heredoc_pipe = NULL;
-	cmd->flag_error = 0;
+	cmd->flag_hd = 0;
+	cmd->in_error = 0;
 	cmd->path_error = 0;
 	cmd->heredocs_quote = NULL;
 }
@@ -89,6 +90,7 @@ void	safe_cleanup(t_mini *mini, char *line)
 		free_ast(mini->ast);
 		mini->ast = NULL;
 	}
+	mini->stop_hd = 0;
 	g_signal_pid = 0;
 }
 

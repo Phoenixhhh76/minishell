@@ -24,7 +24,7 @@ void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini)
 	if (fd < 0)
 	{
 		perror(cmd->infile);
-		cmd->flag_error = 1;
+		cmd->in_error = 1;
 	}
 	else
 		close(fd);
@@ -37,7 +37,7 @@ void	handle_redir_out(t_token *tmp, t_cmd *cmd, t_mini *mini)
 	if (cmd->outfile)
 		free(cmd->outfile);
 	cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
-	if (cmd->flag_error != 1)
+	if (cmd->in_error != 1)
 	{
 		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
 		if (fd < 0)
@@ -61,7 +61,7 @@ void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini)
 	if (cmd->append)
 		free(cmd->append);
 	cmd->append = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
-	if (cmd->flag_error != 1)
+	if (cmd->in_error != 1)
 	{
 		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);
 		if (fd < 0)

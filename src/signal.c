@@ -12,6 +12,14 @@
 
 #include "../includes/minishell.h"
 
+void	heredoc_sigint_handler(int sig)
+{
+	(void)sig;
+	write(1, "\n", 1);
+	exit(130);
+}
+
+
 void	signal_handler(int sig)
 {
 	//(void)sig;
@@ -42,3 +50,12 @@ void	ft_setup_signals(void)
 	sa.sa_handler = SIG_IGN;
 	signal(SIGQUIT, SIG_IGN);
 }
+
+// int	get_exit_status(int status)
+// {
+// 	if (WIFEXITED(status))
+// 		return (WEXITSTATUS(status));
+// 	else if (WIFSIGNALED(status))
+// 		return (128 + WTERMSIG(status));
+// 	return (1);
+// }

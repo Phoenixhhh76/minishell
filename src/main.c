@@ -76,10 +76,10 @@ void	exec_or_builtin(t_mini *mini)
 
 	if (!mini->ast)
 		return ;
-	check_heredocs(mini->ast, mini);
+	//check_heredocs(mini->ast, mini);
 	if (!is_there_pipe(mini) && ft_builtin(mini->ast))
 	{
-		if (mini->ast->cmd->flag_error != 1 && mini->ast->cmd->path_error != 1)
+		if (mini->ast->cmd->in_error != 1 && mini->ast->cmd->path_error != 1)
 		{
 			in_fd = dup(STDIN_FILENO);
 			out_fd = dup(STDOUT_FILENO);
@@ -131,9 +131,7 @@ int	main(int ac, char **av, char **envp)
 		if (read_and_prepare_line(&line))
 			break ;
 		if (check_line(line, &mini))
-		{
 			exec_or_builtin(&mini);
-		}
 		safe_cleanup(&mini, line);
 	}
 	free_double_tab(mini.env);

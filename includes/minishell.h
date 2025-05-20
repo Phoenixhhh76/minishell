@@ -39,9 +39,9 @@ typedef enum e_quote_type {
 
 typedef struct s_token
 {
-	t_node		type;
+	t_node			type;
 	char			*str;
-	t_quote	quote_type;
+	t_quote			quote_type;
 	struct s_token	*next;
 }	t_token;
 
@@ -60,11 +60,10 @@ typedef struct s_cmd
 	char	**heredocs;
 	int		heredoc_nb;
 	int		**heredoc_pipe;
-	bool	flag_error;
+	bool	flag_hd;
+	bool	in_error;
 	bool	path_error;
-	t_quote	*heredocs_quote; // maybe we can change t_quote in a shorter name ?
-	//int		heredoc_error;//add for exit_error
-	//int		child;
+	t_quote	*heredocs_quote;
 }	t_cmd;
 
 
@@ -83,11 +82,10 @@ typedef struct s_mini
 	t_ast	*ast;
 	t_token	*token;
 	char	**env;
-	char	**exp_list; // for export without args, not in env
+	char	**exp_list;
 	char	**av;
-	int	 	last_exit; // last exit code for $?
-	//int		ac;
-	//???		histoire(readlin add history);
+	bool	stop_hd;
+	int		last_exit;
 }	t_mini;
 
 //init_mini
@@ -97,6 +95,7 @@ char	**copy_env(char **env);
 //signals
 void	signal_handler(int sig);
 void	ft_setup_signals(void);
+void	heredoc_sigint_handler(int sig);
 
 //tokenizing
 void	init_token(t_mini *mini);
@@ -157,6 +156,7 @@ char	*resolve_cmd_path(char *cmd, char **envp); //add
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);
 void	check_heredocs(t_ast *ast, t_mini *mini);
 int		create_heredocs(t_cmd *cmd);
+int		fork_heredoc(t_cmd *cmd, char *delimiter, int i);
 int		exec_heredocs(t_cmd *cmd, t_mini *mini);
 int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);

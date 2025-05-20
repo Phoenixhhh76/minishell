@@ -35,6 +35,7 @@ void	set_args_and_path(t_cmd *cmd, t_token *start, \
 void	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 {
 	t_token	*tmp;
+	int		i;
 
 	tmp = start;
 	while (tmp && tmp != end)
@@ -54,8 +55,24 @@ void	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 	}
 	if (cmd->heredoc_nb > 0)
 	{
+		i = 0;
 		cmd->heredoc_pipe = create_heredoc_pipe(cmd->heredoc_nb);
 		cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
+		while (i < cmd->heredoc_nb)
+		{
+			if (mini->stop_hd == 1)
+				return ;
+			if (cmd->flag_hd == 1 || g_signal_pid == 1)
+			{
+				mini->stop_hd = 1;
+				return ;
+			}
+			if (fork_heredoc(cmd, cmd->heredocs[i], i))
+				return ;
+			i++;
+		}
+		//cmd->heredoc_pipe = create_heredoc_pipe(cmd->heredoc_nb);
+		//cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
 	}
 }
 
