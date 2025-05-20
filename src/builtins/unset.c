@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   unset.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-23 15:29:22 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-23 15:29:22 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/23 15:29:22 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/20 16:56:54 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -43,22 +43,67 @@ int	rm_var_from_env(char **env, char ***mini_env, int be_removed)
 	return (0);
 }
 
+int	unset_err_msg(char *arg)
+{
+	ft_putstr_fd("minishell: unset: `", 2);
+	ft_putstr_fd(arg, 2);
+	ft_putstr_fd("': not a valid identifier\n", 2);
+	return (1);
+}
+/*
 int	ft_unset(t_cmd *cmd, char ***mini_env)
 {
 	int		i;
 	int		env_index;
 	char	**env;
+	int		status;
 
 	i = 1;
+	status = 0;
+
+	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
+		return (0);
+
+	while (cmd->cmd_args[i])
+	{
+		if (!is_valid_var_name(cmd->cmd_args[i]))
+			status = unset_err_msg(cmd->cmd_args[i]);
+		else
+		{
+			env = *mini_env;
+			env_index = does_var_exist(env, cmd->cmd_args[i]);
+			if (env_index >= 0)
+				rm_var_from_env(env, mini_env, env_index);
+		}
+		i++;
+	}
+	return (status);
+} */
+
+int	ft_unset(t_cmd *cmd, t_mini *mini)
+{
+	int		i;
+	int		env_index;
+	int		status;
+
+	i = 1;
+	status = 0;
 	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
 		return (0);
 	while (cmd->cmd_args[i])
 	{
-		env = *mini_env;
-		env_index = does_var_exist(env, cmd->cmd_args[i]);
-		if (env_index >= 0)
-			rm_var_from_env(env, mini_env, env_index);
+		if (!is_valid_var_name(cmd->cmd_args[i]) || ft_strchr(cmd->cmd_args[i], '='))
+			status = unset_err_msg(cmd->cmd_args[i]);
+		else
+		{
+			env_index = does_var_exist(mini->env, cmd->cmd_args[i]);
+			if (env_index >= 0)
+				rm_var_from_env(mini->env, &mini->env, env_index);
+			if (in_exp_list(mini->exp_list, cmd->cmd_args[i]))
+				remove_from_exp_list(&mini->exp_list, cmd->cmd_args[i]);
+		}
 		i++;
 	}
-	return (0);
+	return (status);
 }
+
