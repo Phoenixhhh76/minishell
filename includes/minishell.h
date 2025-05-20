@@ -146,7 +146,7 @@ int		ft_echo(t_cmd *cmd);
 int		ft_pwd(void);
 int		ft_cd(t_cmd *cmd);
 int		ft_env(t_cmd *cmd, char ***env);
-int		ft_unset(t_cmd *cmd, char ***mini_env);
+int		ft_unset(t_cmd *cmd, t_mini *mini);
 //builtins_utils
 int		does_var_exist(char **env, const char *var);
 bool	is_authorized_character(char c);

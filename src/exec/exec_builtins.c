@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 10:32:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 11:58:01 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/20 15:43:05 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -55,7 +55,7 @@ int	ft_run_builtin( t_mini *mini, t_cmd *cmd)
 	if (!ft_strcmp(cmd->cmd_args[0], "env"))
 		return (ft_env(cmd, &mini->env));
 	if (!ft_strcmp(cmd->cmd_args[0], "unset"))
-		return (ft_unset(cmd, &mini->env));
+		return (ft_unset(cmd, mini));
 	// else if (!ft_strcmp(name, "exit"))
 	// {
 	// 	printf("exit\n");
