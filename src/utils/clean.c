@@ -72,7 +72,10 @@ void	free_ast(t_ast *ast)
 	if (ast->cmd)
 		free_cmd(ast->cmd);
 	if (ast->ast_token.str)
+	{
 		free(ast->ast_token.str);
+		ast->ast_token.str = NULL;
+	}
 	free(ast);
 }
 

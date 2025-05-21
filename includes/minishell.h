@@ -91,6 +91,7 @@ typedef struct s_mini
 //init_mini
 void	init_mini(t_mini *mini, char **av, char **env);
 char	**copy_env(char **env);
+t_mini	*static_struct(t_mini *mini);
 
 //signals
 void	signal_handler(int sig);
