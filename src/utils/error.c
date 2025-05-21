@@ -21,8 +21,6 @@ void	exit_error_pipe(int error_status, t_cmd *cmd)
 			free(cmd->pipe);
 		if (cmd->pids != NULL)
 			free(cmd->pids);
-		//if (cmd->cmd_opts != NULL || cmd->cmd_path != NULL)//we don't use cmd->opts
-		//	free_strs(cmd->cmd_path, cmd->cmd_opts);
 	}
 	if (cmd->heredoc_nb == 1)
 		unlink(".heredoc.tmp");//why ? we dont use .tmp with heredoc ?
