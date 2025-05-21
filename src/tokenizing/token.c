@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 12:38:05 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:52:43 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,17 +28,41 @@ if it is a quote, it will call the extract_quoted function
 if it is not a quote, it will call the extract_plain function
 if the current character is a space or a meta character, it will break the loop
 */
+// void	fill_current_token(const char *input,
+// 				int *i, char **current, t_quote *qt)
+// {
+// 	while (input[*i] && !ft_isspace(input[*i]) && !is_meta_char(input[*i]))
+// 	{
+// 		if (input[*i] == '\'' || input[*i] == '"')
+// 			*current = extract_quoted(input, i, *current, qt);
+// 		else
+// 			*current = extract_plain(input, i, *current);
+// 	}
+// }
+
+//chage164
 void	fill_current_token(const char *input,
 				int *i, char **current, t_quote *qt)
 {
+	t_quote	local_qt;
+
 	while (input[*i] && !ft_isspace(input[*i]) && !is_meta_char(input[*i]))
 	{
 		if (input[*i] == '\'' || input[*i] == '"')
-			*current = extract_quoted(input, i, *current, qt);
+		{
+			local_qt = Q_NONE;
+			char *new_segment = extract_quoted(input, i, ft_strdup(""), &local_qt);
+			*current = ft_strjoin_ff(*current, new_segment);
+
+			// 保留最外层 quote_type（首次赋值）
+			if (*qt == Q_NONE)
+				*qt = local_qt;
+		}
 		else
 			*current = extract_plain(input, i, *current);
 	}
 }
+
 
 void	finalize_token(char *current, t_quote qt, t_token **tokens)
 {

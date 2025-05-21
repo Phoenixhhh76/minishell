@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 14:30:41 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/21 14:55:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -34,13 +34,13 @@ static void	set_quote_type(char quote, t_quote *qt)
 ""''echo hola""'''' que""'' tal""''
 we skip the first and last quote if in pair
 */
-static int	should_strip_quotes(const char *input, int i, const char *current)
-{
-	return (current[0] == '\0'
-		&& (input[i] == '\0' || ft_isspace(input[i])
-			|| is_meta_char(input[i])));
-}
-
+// static int	should_strip_quotes(const char *input, int i, const char *current)
+// {
+// 	return (current[0] == '\0'
+// 		&& (input[i] == '\0' || ft_isspace(input[i])
+// 			|| is_meta_char(input[i])));
+// }
+/*
 char	*extract_quoted(const char *input, int *i,
 						char *current, t_quote *qt)
 {
@@ -69,4 +69,35 @@ char	*extract_quoted(const char *input, int *i,
 		*qt = Q_NONE;
 	}
 	return (ft_strjoin_ff(current, quoted));
+} */
+
+//change for 164
+
+char	*extract_quoted(const char *input, int *i,
+						char *current, t_quote *qt)
+{
+	char	quote;
+	int		start;
+	int		len;
+	char	*quoted;
+
+	quote = input[(*i)++];
+	start = *i;
+	len = get_quote_len(input, start, quote);
+
+	// 安全跳过结尾 quote
+	if (input[*i + len] == quote)
+		*i += len + 1;
+	else
+		*i += len;
+
+	// 始终 strip 掉引号本身，只保留内容
+	quoted = ft_strndup(&input[start], len);
+
+	// 更新 quote_type（只影响变量展开）
+	set_quote_type(quote, qt);
+
+	return (ft_strjoin_ff(current, quoted));
 }
+
+
