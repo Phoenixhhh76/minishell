@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 13:06:45 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/21 12:23:44 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/16 11:15:58 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -127,18 +127,22 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 	char	*line;
 	char	*expanded;
 	int		status;
+	int		pipefd[2];
 
 	line = NULL;
 	cmd->flag_hd = 0;
 	g_signal_pid = 0;
+	if (pipe(pipefd) == -1)
+		return (perror("pipe"), 1);
 	pid = fork();
 	if (pid == -1)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
+		//dprintf(2, "%d\n", getpid());
 		signal(SIGINT, heredoc_sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
-		close(cmd->heredoc_pipe[i][0]);
+		close(pipefd[0]);
 		while (1)
 		{
 			line = readline("> ");
@@ -162,22 +166,19 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 				write(cmd->heredoc_pipe[i][1], "\n", 1);
 				free(expanded);
 			}
-			else
-			{
-				write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
-				write(cmd->heredoc_pipe[i][1], "\n", 1);
-			}
+			write(pipefd[1], line, ft_strlen(line));
+			write(pipefd[1], "\n", 1);
 			free(line);
 		}
 		if (line)
 			free(line);
-		close(cmd->heredoc_pipe[i][1]);
+		close(pipefd[1]);
 		safe_exit(mini, 0);
 	}
 	else
 	{
 		signal(SIGINT, SIG_IGN);
-		close(cmd->heredoc_pipe[i][1]);
+		close(pipefd[1]);
 		waitpid(pid, &status, 0);
 		signal(SIGINT, SIG_DFL);
 		if (status / 256 == 130/*WIFSIGNALED(status) && WTERMSIG(status) == SIGINT*/)
@@ -185,9 +186,12 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 			cmd->flag_hd = 1;
 			mini->stop_hd = 1;
 			mini->last_exit = 130;
-			close(cmd->heredoc_pipe[i][0]);
+			close(pipefd[0]);
+			//safe_exit(mini, 130);
 			return (130);
 		}
+		cmd->heredoc_pipe[i][0] = pipefd[0];
+		cmd->heredoc_pipe[i][1] = -1;
 	}
 	return (0);
 }

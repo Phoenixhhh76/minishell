@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 14:14:49 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 10:35:49 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:06:49 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -98,6 +98,7 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
 	ast->cmd = build_command(start, end, mini);
 	if (!ast->cmd)
 	{
+		free(ast->ast_token.str);
 		free(ast);
 		return (NULL);
 	}

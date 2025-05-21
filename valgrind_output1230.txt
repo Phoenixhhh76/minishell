@@ -1,0 +1,106 @@
+==423509== Memcheck, a memory error detector
+==423509== Copyright (C) 2002-2017, and GNU GPL'd, by Julian Seward et al.
+==423509== Using Valgrind-3.18.1 and LibVEX; rerun with -h for copyright info
+==423509== Command: ./minishell
+==423509== Parent PID: 389144
+==423509== 
+==423582== 
+==423582== HEAP SUMMARY:
+==423582==     in use at exit: 208,402 bytes in 231 blocks
+==423582==   total heap usage: 581 allocs, 350 frees, 233,501 bytes allocated
+==423582== 
+==423582== 4 bytes in 1 blocks are still reachable in loss record 3 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408CD4: ft_strdup (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x40342C: parse_pipeline (parse_pipeline.c:95)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 4 bytes in 1 blocks are still reachable in loss record 4 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408B0C: ft_calloc (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x4051D2: get_heredoc (exec_heredoc.c:54)
+==423582==    by 0x403BC4: parse_tokens (build_command.c:60)
+==423582==    by 0x403D34: build_command (build_command.c:94)
+==423582==    by 0x40345E: parse_pipeline (parse_pipeline.c:98)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 4 bytes in 1 blocks are still reachable in loss record 5 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408CD4: ft_strdup (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x405259: get_heredoc (exec_heredoc.c:61)
+==423582==    by 0x403BC4: parse_tokens (build_command.c:60)
+==423582==    by 0x403D34: build_command (build_command.c:94)
+==423582==    by 0x40345E: parse_pipeline (parse_pipeline.c:98)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 8 bytes in 1 blocks are still reachable in loss record 7 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408B0C: ft_calloc (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x4052EF: create_heredoc_pipe (exec_heredoc.c:78)
+==423582==    by 0x403BA1: parse_tokens (build_command.c:59)
+==423582==    by 0x403D34: build_command (build_command.c:94)
+==423582==    by 0x40345E: parse_pipeline (parse_pipeline.c:98)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 8 bytes in 1 blocks are still reachable in loss record 8 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408B0C: ft_calloc (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x40532B: create_heredoc_pipe (exec_heredoc.c:83)
+==423582==    by 0x403BA1: parse_tokens (build_command.c:59)
+==423582==    by 0x403D34: build_command (build_command.c:94)
+==423582==    by 0x40345E: parse_pipeline (parse_pipeline.c:98)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 16 bytes in 1 blocks are still reachable in loss record 16 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408B0C: ft_calloc (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x4051A8: get_heredoc (exec_heredoc.c:51)
+==423582==    by 0x403BC4: parse_tokens (build_command.c:60)
+==423582==    by 0x403D34: build_command (build_command.c:94)
+==423582==    by 0x40345E: parse_pipeline (parse_pipeline.c:98)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 72 bytes in 1 blocks are still reachable in loss record 23 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408B0C: ft_calloc (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x4033F7: parse_pipeline (parse_pipeline.c:91)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== 112 bytes in 1 blocks are still reachable in loss record 28 of 72
+==423582==    at 0x4848899: malloc (in /usr/libexec/valgrind/vgpreload_memcheck-amd64-linux.so)
+==423582==    by 0x408B0C: ft_calloc (in /home/hho-troc/Documents/mini2142/minishell)
+==423582==    by 0x403CED: build_command (build_command.c:89)
+==423582==    by 0x40345E: parse_pipeline (parse_pipeline.c:98)
+==423582==    by 0x407F85: check_line (main.c:48)
+==423582==    by 0x408273: main (main.c:131)
+==423582== 
+==423582== LEAK SUMMARY:
+==423582==    definitely lost: 0 bytes in 0 blocks
+==423582==    indirectly lost: 0 bytes in 0 blocks
+==423582==      possibly lost: 0 bytes in 0 blocks
+==423582==    still reachable: 228 bytes in 8 blocks
+==423582==         suppressed: 208,174 bytes in 223 blocks
+==423582== 
+==423582== For lists of detected and suppressed errors, rerun with: -s
+==423582== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
+==423509== 
+==423509== HEAP SUMMARY:
+==423509==     in use at exit: 208,186 bytes in 223 blocks
+==423509==   total heap usage: 614 allocs, 391 frees, 234,265 bytes allocated
+==423509== 
+==423509== LEAK SUMMARY:
+==423509==    definitely lost: 0 bytes in 0 blocks
+==423509==    indirectly lost: 0 bytes in 0 blocks
+==423509==      possibly lost: 0 bytes in 0 blocks
+==423509==    still reachable: 0 bytes in 0 blocks
+==423509==         suppressed: 208,186 bytes in 223 blocks
+==423509== 
+==423509== For lists of detected and suppressed errors, rerun with: -s
+==423509== ERROR SUMMARY: 0 errors from 0 contexts (suppressed: 0 from 0)
