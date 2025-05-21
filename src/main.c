@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 14:59:39 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:24:08 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,7 +28,7 @@ int	read_and_prepare_line(char **line)
 	add_history(*line);
 	return (0);
 }
-
+/*
 int	check_line(char *line, t_mini *mini)
 {
 	if (check_unclosed_quotes(line))
@@ -47,6 +47,32 @@ int	check_line(char *line, t_mini *mini)
 	}
 	mini->ast = parse_pipeline(mini->token, NULL, mini);
 	//print_ast(mini->ast, 10);
+	return (1);
+} */
+
+int	check_line(char *line, t_mini *mini)
+{
+	if (check_unclosed_quotes(line))
+	{
+		mini->last_exit = 2;
+		return (0);
+	}
+	mini->token = tokenize_input(line);
+	if (!mini->token || !check_syntax(mini->token))
+	{
+		mini->last_exit = 2;
+		free_token_list(mini->token);
+		mini->token = NULL;
+		return (2);
+	}
+	mini->ast = parse_pipeline(mini->token, NULL, mini);
+	if (!mini->ast)
+	{
+		mini->last_exit = 2;
+		free_token_list(mini->token);
+		mini->token = NULL;
+		return (2);
+	}
 	return (1);
 }
 
@@ -113,6 +139,34 @@ void	exec_or_builtin(t_mini *mini)
 	}
 	close_all_heredocs(mini->ast);
 }
+/*
+int	main(int ac, char **av, char **envp)
+{
+	t_mini	mini;
+	char	*line;
+
+	(void)ac;
+	init_mini(&mini, av, envp);
+	mini.last_exit = 0;
+	static_struct(&mini);
+	while (1)
+	{
+		ft_setup_signals();
+		if (read_and_prepare_line(&line))
+			break ;
+		if (!check_line(line, &mini)|| mini.stop_hd)
+		{
+			safe_cleanup(&mini, line);
+			continue ;
+		}
+		exec_or_builtin(&mini);
+		safe_cleanup(&mini, line);
+	}
+	free_double_tab(mini.env);
+	free_double_tab(mini.exp_list);
+	rl_clear_history();
+	return (0);
+} */
 
 int	main(int ac, char **av, char **envp)
 {
@@ -128,10 +182,15 @@ int	main(int ac, char **av, char **envp)
 		ft_setup_signals();
 		if (read_and_prepare_line(&line))
 			break ;
-		if (check_line(line, &mini) && !mini.stop_hd)
-			exec_or_builtin(&mini);
+		if (!check_line(line, &mini) || mini.stop_hd)
+		{
+			safe_cleanup(&mini, line);
+			continue ;
+		}
+		exec_or_builtin(&mini);
 		safe_cleanup(&mini, line);
 	}
+	safe_cleanup(&mini, NULL);
 	free_double_tab(mini.env);
 	free_double_tab(mini.exp_list);
 	rl_clear_history();
