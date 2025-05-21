@@ -36,7 +36,7 @@ void	signal_handler(int sig)
 	else if (sig == SIGTERM)
 	{
 		write(STDOUT_FILENO, "\n", 1);
-		//exit_error();
+		safe_exit(static_struct(NULL), 1);
 	}
 }
 
@@ -49,7 +49,18 @@ void	ft_setup_signals(void)
 	sa.sa_handler = signal_handler;
 	sigaction(SIGINT, &sa, NULL);
 	sa.sa_handler = SIG_IGN;
-	signal(SIGQUIT, SIG_IGN);
+	//signal(SIGQUIT, SIG_IGN);
+	sigaction(SIGQUIT, &sa, NULL);
+	// sa.sa_handler = signal_handler;
+	// sigemptyset(&sa.sa_mask);
+	// sa.sa_flags = SA_RESTART;
+
+	// sigaction(SIGINT, &sa, NULL);         // CTRL+C : affiche prompt à la ligne suivante
+	// signal(SIGQUIT, SIG_IGN);            // CTRL+\ : ignoré
+	// signal(SIGTSTP, SIG_IGN);            // CTRL+Z : ignoré
+	// signal(SIGTTIN, SIG_IGN);            // job control
+	// signal(SIGTTOU, SIG_IGN);
+
 }
 
 // int	get_exit_status(int status)

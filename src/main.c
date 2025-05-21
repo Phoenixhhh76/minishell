@@ -107,8 +107,17 @@ void	exec_or_builtin(t_mini *mini)
 			exit(mini->last_exit);
 		}
 		waitpid(pid, &status, 0);
-		if (WIFEXITED(status))
-			mini->last_exit = WEXITSTATUS(status);
+		if (WIFSIGNALED(status))
+		{
+			if (WTERMSIG(status) == SIGINT)
+				mini->last_exit = 130;
+			else if (WTERMSIG(status) == SIGQUIT)
+				mini->last_exit = 131;
+			else
+				mini->last_exit = 128 + WTERMSIG(status);
+		}
+		else if (WIFEXITED(status))
+				mini->last_exit = WEXITSTATUS(status);
 	}
 	close_all_heredocs(mini->ast);
 }
@@ -127,6 +136,8 @@ int	main(int ac, char **av, char **envp)
 		ft_setup_signals();
 		if (read_and_prepare_line(&line))
 			break ;
+		if (g_signal_pid == SIGINT)
+			mini.last_exit = 130;
 		if (!check_line(line, &mini) || mini.stop_hd)
 		{
 			safe_cleanup(&mini, line);
