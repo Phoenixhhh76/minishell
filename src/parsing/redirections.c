@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 09:20:41 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/21 10:42:20 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:58:11 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -83,8 +83,5 @@ void	handle_hd(t_token *tmp, t_cmd *cmd, t_mini *mini)
 	if (cmd->infile)
 		free(cmd->infile);
 	cmd->last_redirin = 1;
-	//cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
-	//we need this line ?
-	//does this line will confuse the parser?handle_redirects?
 	cmd->heredoc_nb += 1;
 }
