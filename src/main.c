@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 14:59:39 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/21 12:58:42 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,8 +37,8 @@ int	check_line(char *line, t_mini *mini)
 		return (0);
 	}
 	mini->token = tokenize_input(line);
-	//print_token_list(mini->token);
-	if (!mini->token || !check_syntax(mini->token))
+	print_token_list(mini->token);
+	if (!check_syntax(mini->token))
 	{
 		mini->last_exit = 2;
 		free_token_list(mini->token);
@@ -46,7 +46,6 @@ int	check_line(char *line, t_mini *mini)
 		return (2);
 	}
 	mini->ast = parse_pipeline(mini->token, NULL, mini);
-	//print_ast(mini->ast, 10);
 	return (1);
 }
 
@@ -139,10 +138,15 @@ int	main(int ac, char **av, char **envp)
 			break ;
 		if (g_signal_pid == SIGINT)
 			mini.last_exit = 130;
-		if (check_line(line, &mini) && !mini.stop_hd)
-			exec_or_builtin(&mini);
+		if (!check_line(line, &mini) || mini.stop_hd)
+		{
+			safe_cleanup(&mini, line);
+			continue ;
+		}
+		exec_or_builtin(&mini);
 		safe_cleanup(&mini, line);
 	}
+	safe_cleanup(&mini, NULL);
 	free_double_tab(mini.env);
 	free_double_tab(mini.exp_list);
 	rl_clear_history();

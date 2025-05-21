@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   redirections.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-16 09:20:41 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-05-16 09:20:41 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/05/16 09:20:41 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/21 12:58:11 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -77,9 +77,11 @@ void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini)
 
 void	handle_hd(t_token *tmp, t_cmd *cmd, t_mini *mini)
 {
+	(void)tmp;
+	(void)mini;
+
 	if (cmd->infile)
 		free(cmd->infile);
 	cmd->last_redirin = 1;
-	cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
 	cmd->heredoc_nb += 1;
 }
