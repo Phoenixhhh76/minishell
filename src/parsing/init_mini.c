@@ -12,6 +12,15 @@
 
 #include "../includes/minishell.h"
 
+t_mini	*static_struct(t_mini *mini)
+{
+	static t_mini	*tmp = NULL;
+
+	if (mini)
+		tmp = mini;
+	return (tmp);
+}
+
 char	**copy_env(char **env)
 {
 	int		i;

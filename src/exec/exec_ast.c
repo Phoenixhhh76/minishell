@@ -52,7 +52,6 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 	close(node->fd[1]);
 	waitpid(right_pid, &status, 0);
 	waitpid(left_pid, NULL, 0);
-	//dprintf(2, "status = %i\n", status);
 	safe_exit(mini, status / 256);
 }
 
@@ -71,16 +70,6 @@ void	handle_redirects(t_cmd *cmd)
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}
-	// else if (cmd->heredoc_nb > 0)
-	// {
-	// 	dup2(cmd->heredoc_pipe[cmd->heredoc_nb - 1][0], STDIN_FILENO);
-	// 	while (i < cmd->heredoc_nb)
-	// 	{
-	// 		close(cmd->heredoc_pipe[i][0]);
-	// 		close(cmd->heredoc_pipe[i][1]);
-	// 		i++;
-	// 	}
-	// }
 	else if (cmd->heredoc_nb > 0 && !cmd->flag_hd)
 	{
 		dup2(cmd->heredoc_pipe[cmd->heredoc_nb - 1][0], STDIN_FILENO);
@@ -112,22 +101,31 @@ void	handle_redirects(t_cmd *cmd)
 
 void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 {
-
 	if (!node->cmd)
 		safe_exit(mini, mini->last_exit);
 	if (node->cmd->in_error == 1 || node->cmd->path_error == 1)
-		safe_exit(mini, mini->last_exit);
+		safe_exit(mini, 1);
 	handle_redirects(node->cmd);
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
+		if (access(node->cmd->cmd_path, F_OK) != 0)
+		{
+			err_msg(node->cmd->cmd_path, ":", "  command not found", 127);
+			safe_exit(mini, 127);
+		}
+		if (access(node->cmd->cmd_path, X_OK) != 0)
+		{
+			err_msg(node->cmd->cmd_path, ":", " Permission denied", 126);
+			safe_exit(mini, 126);
+		}
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
+		if (access(node->cmd->cmd_path, X_OK) == 0)
+		{
+			perror(node->cmd->cmd_args[0]);
+			safe_exit(mini, 126);
+		}
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
-		if (g_signal_pid == 2 || node->cmd->flag_hd == 1)
-		{
-			mini->last_exit = 130;
-			return ;
-		}
 	}
 	safe_exit(mini, mini->last_exit);
 }

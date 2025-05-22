@@ -45,8 +45,30 @@ int	check_line(char *line, t_mini *mini)
 		return (2);
 	}
 	mini->ast = parse_pipeline(mini->token, NULL, mini);
+	//print_ast(mini->ast, 10);
 	return (1);
 }
+
+// int	check_line(char *line, t_mini *mini)
+// {
+// 	if (check_unclosed_quotes(line))
+// 	{
+// 		mini->last_exit = 2;
+// 		return (0);
+// 	}
+// 	mini->token = tokenize_input(line);
+// 	if (!check_syntax(mini->token))
+// 	{
+// 		mini->last_exit = 2;
+// 		free_token_list(mini->token);
+// 		mini->token = NULL;
+// 		return (2);
+// 	}
+// 	mini->ast = ft_calloc(1, sizeof(t_ast));
+// 	if (!mini->ast)
+// 		return (0); //need to specify
+// 	parse_pipeline(mini->token, NULL, mini, mini->ast);
+// }
 
 bool	is_there_pipe(t_mini *mini)
 {
@@ -71,6 +93,7 @@ void	exec_or_builtin(t_mini *mini)
 	int		status;
 	int		out_fd;
 	int		in_fd;
+	int		fd;
 
 	if (!mini->ast)
 		return ;
@@ -84,7 +107,11 @@ void	exec_or_builtin(t_mini *mini)
 				handle_redirects(mini->ast->cmd);
 			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			dup2(out_fd, STDOUT_FILENO);
-			dup2(in_fd, STDIN_FILENO);
+			fd = open("/dev/tty", O_RDONLY);
+			if (fd != -1)
+				dup2(fd, STDIN_FILENO);
+			close(fd);
+			// dup2(in_fd, STDIN_FILENO);
 			close(out_fd);
 			close(in_fd);
 			return ;
@@ -112,8 +139,11 @@ void	exec_or_builtin(t_mini *mini)
 				mini->last_exit = 130;
 			else if (WTERMSIG(status) == SIGQUIT)
 				mini->last_exit = 131;
-			else
-				mini->last_exit = 128 + WTERMSIG(status);
+			// else
+			// {
+			// 	mini->last_exit = 128 + WTERMSIG(status);
+			// //	dprintf(2, "     MINI EXIT = %i\n", mini->last_exit);
+			// }
 		}
 		else if (WIFEXITED(status))
 				mini->last_exit = WEXITSTATUS(status);

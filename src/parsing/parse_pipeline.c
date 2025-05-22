@@ -91,6 +91,7 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
 	ast = ft_calloc(1, sizeof(t_ast));
 	if (!ast)
 		return (NULL);
+	//mini->ast = ast;//ADD BY NINA for heredocs leaks !
 	ast->ast_token.type = CMD;
 	ast->ast_token.str = ft_strdup("CMD");
 	ast->fd[0] = -1;
@@ -104,3 +105,64 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
 	}
 	return (ast);
 }
+
+// void	parse_pipeline2(t_token *start, t_token *end, t_mini *mini, t_ast *node)
+// {
+// 	t_token	*pipe_pos;
+
+// 	if (!start || start == end || !node)
+// 		return ;
+// 	pipe_pos = find_next_pipe(start, end);
+// 	if (pipe_pos)
+// 	{
+// 		if (!start || start == pipe_pos || !pipe_pos->next || pipe_pos->next == end)
+// 		{
+// 			err_msg("syntax error ", "near unexpected token ", "pipe", 2);
+// 			return ;
+// 		}
+// 		node->ast_token.type = PIPE;
+// 		node->ast_token.str = ft_strdup("|");
+// 		node->fd[0] = -1;
+// 		node->fd[1] = -1;
+// 		if (!node->ast_token.str)
+// 			return ;
+// 		node->left = ft_calloc(1, sizeof(t_ast));
+// 		if (!node->left)
+// 			return ;
+// 		parse_pipeline(start, pipe_pos, mini, node->left);
+// 		if (!node->left->ast_token.str && !node->left->left && !node->left->right)
+// 		{
+// 			err_msg("syntax error ", "near unexpected token ", "pipe", 2);
+// 			free_ast(node->left);
+// 			node->left = NULL;
+// 			return ;
+// 		}
+// 		node->right = ft_calloc(1, sizeof(t_ast));
+// 		if (!node->right)
+// 			return ;
+// 		parse_pipeline(pipe_pos->next, end, mini, node->right);
+// 		if (!node->right->ast_token.str && !node->right->left && !node->right->right)
+// 		{
+// 			err_msg("syntax error ", "near unexpected token ", "pipe", 2);
+// 			free_ast(node->right);
+// 			node->right = NULL;
+// 			return ;
+// 		}
+// 	}
+// 	else
+// 	{
+// 		node->ast_token.type = CMD;
+// 		node->ast_token.str = ft_strdup("CMD");
+// 		node->fd[0] = -1;
+// 		node->fd[1] = -1;
+// 		if (!node->ast_token.str)
+// 			return ;
+// 		node->cmd = build_command(start, end, mini);
+// 		if (!node->cmd)
+// 		{
+// 			free(node->ast_token.str);
+// 			node->ast_token.str = NULL;
+// 			return ;
+// 		}
+// 	}
+// }

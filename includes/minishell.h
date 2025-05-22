@@ -180,6 +180,8 @@ bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_mini *mini, t_cmd *cmd);
 void	exec_ast(t_mini *mini, t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
+
+//heredocs
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd);
 void	check_heredocs(t_ast *ast, t_mini *mini);
 int		create_heredocs(t_cmd *cmd);
@@ -205,6 +207,7 @@ char	*append_char(char *result, char c);
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);
 t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
+void	parse_pipeline2(t_token *start, t_token *end, t_mini *mini, t_ast *node);
 t_ast	*create_pipe_node(t_token *start, \
 		t_token *pipe_pos, t_token *end, t_mini *mini);
 
@@ -231,6 +234,7 @@ int		export_err_msg(char *arg, int erno);
 void	safe_exit(t_mini *mini, int code);
 void	safe_cleanup(t_mini *mini, char *line);
 void	free_ast(t_ast *ast);
+void	free_cmd(t_cmd *cmd);
 
 //tests, to be erased
 void	print_tab(char **tab);
