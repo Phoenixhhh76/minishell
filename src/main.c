@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/21 12:58:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/22 19:01:27 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,6 +28,16 @@ int	read_and_prepare_line(char **line)
 	add_history(*line);
 	return (0);
 }
+bool	only_spaces(const char *line)
+{
+	while (*line)
+	{
+		if (!ft_isspace(*line))
+			return (false);
+		line++;
+	}
+	return (true);
+}
 
 int	check_line(char *line, t_mini *mini)
 {
@@ -36,8 +46,11 @@ int	check_line(char *line, t_mini *mini)
 		mini->last_exit = 2;
 		return (0);
 	}
+	if (only_spaces(line))
+		return (0);
 	mini->token = tokenize_input(line);
-	if (!check_syntax(mini->token))
+	//print_token_list(mini->token);
+	if (!mini->token || !check_syntax(mini->token))
 	{
 		mini->last_exit = 2;
 		free_token_list(mini->token);
