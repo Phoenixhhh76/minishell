@@ -95,6 +95,7 @@ t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini)
 	ast->ast_token.str = ft_strdup("CMD");
 	ast->fd[0] = -1;
 	ast->fd[1] = -1;
+	mini->ast = ast;
 	ast->cmd = build_command(start, end, mini);
 	if (!ast->cmd)
 	{

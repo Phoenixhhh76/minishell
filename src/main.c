@@ -18,8 +18,9 @@ int	read_and_prepare_line(char **line)
 {
 	g_signal_pid = 0;
 	*line = readline("minishell> ");
-	if (!*line)
+	if (!*line)//if << ok echo $? + ok --> exit here !!!!!
 	{
+		//dprintf(2, "    NO LIIIINE\n");
 		write(1, "exit\n", 5);
 		return (1);
 	}
@@ -44,7 +45,8 @@ int	check_line(char *line, t_mini *mini)
 		mini->token = NULL;
 		return (2);
 	}
-	mini->ast = parse_pipeline(mini->token, NULL, mini);
+	parse_pipeline(mini->token, NULL, mini);
+	//print_ast(mini->ast, 10);
 	return (1);
 }
 
@@ -71,20 +73,27 @@ void	exec_or_builtin(t_mini *mini)
 	int		status;
 	int		out_fd;
 	int		in_fd;
+	int		fd;
 
+	//dprintf(2, "     INSIDE exec_or_builtin 0= %i\n", mini->last_exit);
 	if (!mini->ast)
 		return ;
 	if (!is_there_pipe(mini) && ft_builtin(mini->ast))
 	{
 		if (mini->ast->cmd->in_error != 1 && mini->ast->cmd->path_error != 1)
 		{
+		//	dprintf(2, "     INSIDE exec_or_builtin 2= %i\n", mini->last_exit);
 			in_fd = dup(STDIN_FILENO);
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
 				handle_redirects(mini->ast->cmd);
 			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			dup2(out_fd, STDOUT_FILENO);
-			dup2(in_fd, STDIN_FILENO);
+			fd = open("/dev/tty", O_RDONLY);
+			if (fd != -1)
+				dup2(fd, STDIN_FILENO);
+			close(fd);
+			// dup2(in_fd, STDIN_FILENO);
 			close(out_fd);
 			close(in_fd);
 			return ;
@@ -112,8 +121,11 @@ void	exec_or_builtin(t_mini *mini)
 				mini->last_exit = 130;
 			else if (WTERMSIG(status) == SIGQUIT)
 				mini->last_exit = 131;
-			else
-				mini->last_exit = 128 + WTERMSIG(status);
+			// else
+			// {
+			// 	mini->last_exit = 128 + WTERMSIG(status);
+			// //	dprintf(2, "     MINI EXIT = %i\n", mini->last_exit);
+			// }
 		}
 		else if (WIFEXITED(status))
 				mini->last_exit = WEXITSTATUS(status);

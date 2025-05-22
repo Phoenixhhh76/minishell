@@ -60,8 +60,6 @@ int	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 		cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
 		while (i < cmd->heredoc_nb)
 		{
-		//	printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n", \
-		//		cmd->flag_hd, mini->stop_hd, g_signal_pid);
 			if (mini->stop_hd == 1 || cmd->flag_hd == 1)
 			{
 				mini->stop_hd = 1;
@@ -93,5 +91,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	cmd->fd_out = -1;
 	mini->last_exit = parse_tokens(start, end, cmd, mini);
 	set_args_and_path(cmd, start, end, mini);
+
 	return (cmd);
 }
