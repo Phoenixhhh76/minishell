@@ -142,19 +142,30 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 		while (1)
 		{
 			line = readline("> ");
-			if (cmd->flag_hd == 1 || g_signal_pid == 2)
-				safe_exit(mini, 130);
+			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
+			{
+				dprintf(2, "    !! no heredoc_pipe !!\n");
+				safe_exit(mini, 0);
+			}
 			if (!line)
 			{
+				//dprintf(2, "  g_signal = %i\n", g_signal_pid);
+				if (g_signal_pid == SIGINT)
+				{
+					dprintf(2, "    // no line ctr+C //\n");
+					safe_cleanup(mini, line);
+					safe_exit(mini, 130);
+				}
 				ft_putstr_fd("minichell: warning: ", 2);
 				ft_putstr_fd("here-document delimited by end-of-file ", 2);
 				err_msg("(wanted `", delimiter, "')", 0);
 				break ;
 			}
-			if (!line || ft_strcmp(line, delimiter) == 0)
+			if (ft_strcmp(line, delimiter) == 0)
+			{
+				dprintf(2, "    ** found delimiter **\n");
 				break ;
-			if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
-				safe_exit(mini, 0);
+			}
 			if (cmd->heredocs_quote[i] == Q_NONE)
 			{
 				expanded = expand_heredoc_line(line, mini);
@@ -167,6 +178,7 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 				write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
 				write(cmd->heredoc_pipe[i][1], "\n", 1);
 			}
+			dprintf(2, "     >> free line before returning <<\n");
 			free(line);
 		}
 		if (line)
@@ -186,8 +198,100 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 			mini->stop_hd = 1;
 			mini->last_exit = 130;
 			close(cmd->heredoc_pipe[i][0]);
+			free(line);
+			free(delimiter);
 			return (130);
 		}
 	}
 	return (0);
 }
+
+
+// static void	handle_heredoc_line(t_mini *mini, t_cmd *cmd, char *line, int i)
+// {
+// 	char	*expanded;
+
+// 	if (cmd->heredocs_quote[i] == Q_NONE)
+// 	{
+// 		expanded = expand_heredoc_line(line, mini);
+// 		write(cmd->heredoc_pipe[i][1], expanded, ft_strlen(expanded));
+// 		write(cmd->heredoc_pipe[i][1], "\n", 1);
+// 		free(expanded);
+// 	}
+// 	else
+// 	{
+// 		write(cmd->heredoc_pipe[i][1], line, ft_strlen(line));
+// 		write(cmd->heredoc_pipe[i][1], "\n", 1);
+// 	}
+// }
+
+// static void	print_ctrld(char *delimiter)
+// {
+// 	ft_putstr_fd("minichell: warning: ", 2);
+// 	ft_putstr_fd("here-document delimited by end-of-file ", 2);
+// 	err_msg("(wanted `", delimiter, "')", 0);
+// }
+
+// static void	child_heredoc(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
+// {
+// 	char	*line;
+
+// 	signal(SIGINT, heredoc_sigint_handler);
+// 	signal(SIGQUIT, SIG_IGN);
+// 	close(cmd->heredoc_pipe[i][0]);
+// 	while (1)
+// 	{
+// 		line = readline("> ");
+// 		if (cmd->flag_hd == 1 || g_signal_pid == 2)
+// 		{
+// 			return (free(line);
+// 			safe_exit(mini, 130));
+// 		}
+// 		if (!line)
+// 		{
+// 			print_ctrld(delimiter);
+// 			break ;
+// 		}
+// 		if (ft_strcmp(line, delimiter) == 0)
+// 			break ;
+// 		if (!cmd->heredoc_pipe || !cmd->heredoc_pipe[i])
+// 			safe_exit(mini, 0);
+// 		handle_heredoc_line(mini, cmd, line, i);
+// 		free(line);
+// 	}
+// 	free(line);
+// 	close(cmd->heredoc_pipe[i][1]);
+// 	safe_exit(mini, 0);
+// }
+
+// static int	parent_heredoc(t_mini *mini, t_cmd *cmd, int *status, int i)
+// {
+// 	signal(SIGINT, SIG_IGN);
+// 	close(cmd->heredoc_pipe[i][1]);
+// 	waitpid(-1, status, 0);
+// 	signal(SIGINT, SIG_DFL);
+// 	if (*status / 256 == 130)
+// 	{
+// 		cmd->flag_hd = 1;
+// 		mini->stop_hd = 1;
+// 		mini->last_exit = 130;
+// 		close(cmd->heredoc_pipe[i][0]);
+// 		return (130);
+// 	}
+// 	return (0);
+// }
+
+// int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
+// {
+// 	pid_t	pid;
+// 	int		status;
+
+// 	cmd->flag_hd = 0;
+// 	g_signal_pid = 0;
+// 	pid = fork();
+// 	if (pid == -1)
+// 		return (perror("fork"), 1);
+// 	if (pid == 0)
+// 		child_heredoc(mini, cmd, delimiter, i);
+// 	return (parent_heredoc(mini, cmd, &status, i));
+// }
