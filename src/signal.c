@@ -15,11 +15,20 @@
 void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
-	write(1, "\n", 1);
-	g_signal_pid = 2;
-	safe_exit(static_struct(NULL), 130);
+	//write(1, "\n", 1);
+	write(2, "inside sig\n", 11);
+	//rl_replace_line("", 0);
+	//rl_done = 1;
+	//g_signal_pid = SIGINT;
+	//safe_exit(static_struct(NULL), 130);
+	if (sig == SIGINT)
+	{
+		dprintf(2, "         if (sig == SIGINT)\n");
+		g_signal_pid = SIGINT;
+		write(STDOUT_FILENO, "\n", 1);
+		close(0);
+	}
 }
-
 
 void	signal_handler(int sig)
 {
