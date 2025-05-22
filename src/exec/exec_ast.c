@@ -130,24 +130,8 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 	safe_exit(mini, mini->last_exit);
 }
 
-// 	if (node->cmd->cmd_args && node->cmd->cmd_path)
-// 	{
-// 		dprintf(1, "     exec_cmd_node\n");
-// 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
-
-// 		// execve a échoué malgré access X_OK : format invalide ?
-// 		perror(node->cmd->cmd_args[0]);
-// 		safe_exit(mini, 126);
-// 	}
-
-// 	// Cas improbable
-// 	safe_exit(mini, 1);
-// }
-
-
 void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 {
-	//dprintf(2, "     INSIDE exec_ast 3= %i\n", mini->last_exit);
 	if (!node)
 		return ;
 	if (node->ast_token.type == PIPE)

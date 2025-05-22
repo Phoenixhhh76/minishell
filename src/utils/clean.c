@@ -58,7 +58,6 @@ void	free_cmd(t_cmd *cmd)
 	if (cmd->heredocs_quote)
 		free(cmd->heredocs_quote);
 	reset_cmd(cmd);
-	//dprintf(2, " <<<<<<<<<<<<<< BONJOUR  >>>>>>>>>\n", cmd->heredocs[0]);
 	free(cmd);
 }
 

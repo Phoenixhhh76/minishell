@@ -18,9 +18,8 @@ int	read_and_prepare_line(char **line)
 {
 	g_signal_pid = 0;
 	*line = readline("minishell> ");
-	if (!*line)//if << ok echo $? + ok --> exit here !!!!!
+	if (!*line)
 	{
-		//dprintf(2, "    NO LIIIINE\n");
 		write(1, "exit\n", 5);
 		return (1);
 	}
@@ -45,10 +44,31 @@ int	check_line(char *line, t_mini *mini)
 		mini->token = NULL;
 		return (2);
 	}
-	parse_pipeline(mini->token, NULL, mini);
+	mini->ast = parse_pipeline(mini->token, NULL, mini);
 	//print_ast(mini->ast, 10);
 	return (1);
 }
+
+// int	check_line(char *line, t_mini *mini)
+// {
+// 	if (check_unclosed_quotes(line))
+// 	{
+// 		mini->last_exit = 2;
+// 		return (0);
+// 	}
+// 	mini->token = tokenize_input(line);
+// 	if (!check_syntax(mini->token))
+// 	{
+// 		mini->last_exit = 2;
+// 		free_token_list(mini->token);
+// 		mini->token = NULL;
+// 		return (2);
+// 	}
+// 	mini->ast = ft_calloc(1, sizeof(t_ast));
+// 	if (!mini->ast)
+// 		return (0); //need to specify
+// 	parse_pipeline(mini->token, NULL, mini, mini->ast);
+// }
 
 bool	is_there_pipe(t_mini *mini)
 {
@@ -75,14 +95,12 @@ void	exec_or_builtin(t_mini *mini)
 	int		in_fd;
 	int		fd;
 
-	//dprintf(2, "     INSIDE exec_or_builtin 0= %i\n", mini->last_exit);
 	if (!mini->ast)
 		return ;
 	if (!is_there_pipe(mini) && ft_builtin(mini->ast))
 	{
 		if (mini->ast->cmd->in_error != 1 && mini->ast->cmd->path_error != 1)
 		{
-		//	dprintf(2, "     INSIDE exec_or_builtin 2= %i\n", mini->last_exit);
 			in_fd = dup(STDIN_FILENO);
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
