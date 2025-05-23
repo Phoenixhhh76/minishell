@@ -88,6 +88,16 @@ typedef struct s_mini
 	int		last_exit;
 }	t_mini;
 
+typedef struct s_pipe_ctx
+{
+	t_token	*start;
+	t_token	*end;
+	t_token	*pipe_pos;
+	t_mini	*mini;
+	t_ast	*node;
+}	t_pipe_ctx;
+
+
 //init_mini
 void	init_mini(t_mini *mini, char **av, char **env);
 char	**copy_env(char **env);
@@ -172,7 +182,6 @@ int		handle_var_assignment(char **env, \
 void	add_to_exp_list(char ***exp_list, const char *key);
 void	remove_from_exp_list(char ***exp_list, const char *key);
 
-
 //exec
 void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast);
@@ -206,10 +215,7 @@ char	*append_char(char *result, char c);
 
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);
-t_ast	*parse_pipeline(t_token *start, t_token *end, t_mini *mini);
-void	parse_pipeline2(t_token *start, t_token *end, t_mini *mini, t_ast *node);
-t_ast	*create_pipe_node(t_token *start, \
-		t_token *pipe_pos, t_token *end, t_mini *mini);
+void	parse_pipeline(t_token *start, t_token *end, t_mini *mini, t_ast *node);
 
 //utils
 char	*ft_strndup(const char *s, size_t n);
