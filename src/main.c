@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/30 17:20:31 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/21 12:58:42 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/23 10:14:44 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,26 +29,6 @@ int	read_and_prepare_line(char **line)
 	return (0);
 }
 
-int	check_line(char *line, t_mini *mini)
-{
-	if (check_unclosed_quotes(line))
-	{
-		mini->last_exit = 2;
-		return (0);
-	}
-	mini->token = tokenize_input(line);
-	if (!check_syntax(mini->token))
-	{
-		mini->last_exit = 2;
-		free_token_list(mini->token);
-		mini->token = NULL;
-		return (2);
-	}
-	mini->ast = parse_pipeline(mini->token, NULL, mini);
-	//print_ast(mini->ast, 10);
-	return (1);
-}
-
 // int	check_line(char *line, t_mini *mini)
 // {
 // 	if (check_unclosed_quotes(line))
@@ -64,11 +44,32 @@ int	check_line(char *line, t_mini *mini)
 // 		mini->token = NULL;
 // 		return (2);
 // 	}
-// 	mini->ast = ft_calloc(1, sizeof(t_ast));
-// 	if (!mini->ast)
-// 		return (0); //need to specify
-// 	parse_pipeline(mini->token, NULL, mini, mini->ast);
+// 	mini->ast = parse_pipeline(mini->token, NULL, mini);
+// 	//print_ast(mini->ast, 10);
+// 	return (1);
 // }
+
+int	check_line(char *line, t_mini *mini)
+{
+	if (check_unclosed_quotes(line))
+	{
+		mini->last_exit = 2;
+		return (0);
+	}
+	mini->token = tokenize_input(line);
+	if (!check_syntax(mini->token))
+	{
+		mini->last_exit = 2;
+		free_token_list(mini->token);
+		mini->token = NULL;
+		return (2);
+	}
+	mini->ast = ft_calloc(1, sizeof(t_ast));
+	if (!mini->ast)
+		return (0); //need to specify
+	parse_pipeline2(mini->token, NULL, mini, mini->ast);
+	return (1);
+}
 
 bool	is_there_pipe(t_mini *mini)
 {
