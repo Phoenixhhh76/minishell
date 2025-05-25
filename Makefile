@@ -32,7 +32,7 @@ PARSING     := $(PARSING_DIR)/parse_pipeline.c \
 					$(PARSING_DIR)/args_count.c $(PARSING_DIR)/process_token.c
 
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
-					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c
+					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c $(EXEC_DIR)/heredoc_utils.c
 
 EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c \
 					$(EXPAND_DIR)/expand_arg_quote.c

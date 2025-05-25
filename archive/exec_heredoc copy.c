@@ -139,7 +139,6 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 		return (perror("fork"), 1);
 	if (pid == 0)
 	{
-		//dprintf(2, "%d\n", getpid());
 		signal(SIGINT, heredoc_sigint_handler);
 		signal(SIGQUIT, SIG_IGN);
 		close(pipefd[0]);

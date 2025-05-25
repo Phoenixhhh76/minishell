@@ -93,5 +93,6 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	cmd->fd_out = -1;
 	mini->last_exit = parse_tokens(start, end, cmd, mini);
 	set_args_and_path(cmd, start, end, mini);
+
 	return (cmd);
 }
