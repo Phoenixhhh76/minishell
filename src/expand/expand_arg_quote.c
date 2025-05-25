@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 10:58:15 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 11:00:49 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/25 09:42:15 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,10 +28,10 @@ char	*handle_single_quote(const char *str, int *i)
 
 char	*handle_double_quote(const char *str, int *i, t_mini *mini)
 {
-	int		start;
+	//int		start;
 	char	*result;
 
-	start = ++(*i);
+	//start = ++(*i);
 	result = ft_strdup("");
 	while (str[*i] && str[*i] != '"')
 	{

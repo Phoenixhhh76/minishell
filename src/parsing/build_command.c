@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:23:52 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/20 11:55:48 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/25 09:40:12 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -60,7 +60,7 @@ int	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 		cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
 		while (i < cmd->heredoc_nb)
 		{
-		//	printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n", \
+		//	printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n", 
 		//		cmd->flag_hd, mini->stop_hd, g_signal_pid);
 			if (mini->stop_hd == 1 || cmd->flag_hd == 1)
 			{
