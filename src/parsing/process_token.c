@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 11:40:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/22 18:38:47 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 18:23:59 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,6 +14,8 @@
 
 int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 {
+	//printf("[DEBUG] write args[%d] = %s\n", i, args[i]);
+
 	if (tok->quote_type == Q_S)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
@@ -44,6 +46,7 @@ the condition strchr ", make sure if we have a string like
 $HOLA="  bonjour he ",have space at the beginning and end
 Token [wesh"$HOLA"]  quote_type 0, we won't split it, we keep "  bonjour he "
  */
+
 int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 {
 	char	*expanded;
@@ -51,14 +54,14 @@ int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	expanded = expand_if_needed(tok, mini);
 	if (!expanded)
 		return (i);
-	if (tok->quote_type == Q_D || ft_strchr(tok->str, '"') || tok->quote_type == Q_S || ft_strchr(tok->str, '\'') )
-	{
-		args[i++] = expanded;
-	}
+	if (tok->quote_type == Q_D || ft_strchr(tok->str, '"') ||
+		tok->quote_type == Q_S || ft_strchr(tok->str, '\''))
+		args[i++] = expanded;  // even if "", still added
 	else
-	{
 		i = add_split(args, i, expanded);
-	}
 	return (i);
 }
+
+
+
 

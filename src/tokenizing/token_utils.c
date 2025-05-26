@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 12:37:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 11:13:40 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/25 13:15:16 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,6 +37,7 @@ t_token	*create_t(char *str, t_quote quote_type)
 	new->str = str;
 	new->type = get_token_type(str);
 	new->quote_type = quote_type;
+	new->is_dollar_quote = false;
 	new->next = NULL;
 	return (new);
 }

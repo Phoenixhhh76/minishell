@@ -110,3 +110,31 @@ void	print_token_list(t_token *token)
 	}
 }
 
+const char *token_type_to_str(t_node type)
+{
+	switch (type)
+	{
+		case CMD:     return "CMD";
+		case PIPE:    return "PIPE";
+		case R_IN:    return "R_IN";
+		case R_OUT:   return "R_OUT";
+		case R_A:     return "R_APPEND";
+		case HD:      return "HEREDOC";
+		case UNKNOWN: return "UNKNOWN";
+		default:      return "INVALID";
+	}
+}
+
+void debug_tokens_type(t_token *tok)
+{
+	while (tok)
+	{
+		printf("Token [%s]  type=%s  quote_type=%d  glued=%d\n",
+			tok->str,
+			token_type_to_str(tok->type),
+			tok->quote_type,
+			tok->glued);
+		tok = tok->next;
+	}
+}
+

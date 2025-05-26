@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   init_ast_args_count.c                              :+:      :+:    :+:   */
+/*   args_count.c                                       :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 11:38:14 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 11:49:28 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:37:20 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -18,13 +18,15 @@ int	count_token_args(t_token *tok, t_mini *mini)
 	int		count;
 
 	count = 0;
-	if (tok->quote_type == Q_S || tok->quote_type == Q_D)
-		return (1);
 	expanded = expand_if_needed(tok, mini);
 	if (!expanded)
 		return (0);
-	if (expanded[0] != '\0' || tok->quote_type != Q_NONE)
+	if (tok->quote_type == Q_S || tok->quote_type == Q_D)
+		count = 1;
+	else if (expanded[0] != '\0')
 		count = count_expanded_split(expanded);
+	else
+		count = 0;
 	free(expanded);
 	return (count);
 }
@@ -69,25 +71,42 @@ int	count_export_args(t_token *start, t_token *end, t_mini *mini)
 	return (count);
 }
 
+// void	fill_export_args(char **args,
+// 					t_token *start, t_token *end, t_mini *mini)
+// {
+// 	int		i;
+// 	char	*expanded;
+
+// 	i = 0;
+// 	while (start && start != end)
+// 	{
+// 		if (start->type == CMD || start->type == UNKNOWN)
+// 		{
+// 			expanded = expand_if_needed(start, mini);
+// 			if (expanded && (expanded[0] != '\0'
+// 							|| start->quote_type != Q_NONE))
+// 				args[i++] = expanded;
+// 			else
+// 				free(expanded);
+// 		}
+// 		start = start->next;
+// 	}
+// 	args[i] = NULL;
+// }
+
+
 void	fill_export_args(char **args,
-					t_token *start, t_token *end, t_mini *mini)
+			t_token *start, t_token *end, t_mini *mini)
 {
-	int		i;
-	char	*expanded;
+	int	i;
 
 	i = 0;
 	while (start && start != end)
 	{
 		if (start->type == CMD || start->type == UNKNOWN)
-		{
-			expanded = expand_if_needed(start, mini);
-			if (expanded && (expanded[0] != '\0' \
-							|| start->quote_type != Q_NONE))
-				args[i++] = expanded;
-			else
-				free(expanded);
-		}
-		start = start->next;
+			args[i++] = join_tokens_for_arg(&start, mini, false);
+		else
+			start = start->next;
 	}
 	args[i] = NULL;
 }

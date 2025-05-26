@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:23:52 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/25 09:40:12 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:39:13 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,9 @@ void	set_args_and_path(t_cmd *cmd, t_token *start, \
 		cmd->cmd_args = collect_args_for_export(start, end, mini);
 	else
 		cmd->cmd_args = collect_args(start, end, mini);
-	if (cmd->cmd_args && cmd->cmd_args[0])
+	//if (cmd->cmd_args && cmd->cmd_args[0]) no good for '' echo hola
+	//because ''=empty, should consider as a cmd invalide
+	if (cmd->cmd_args && cmd->cmd_args[0] && cmd->cmd_args[0][0] != '\0')
 	{
 		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
 			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
@@ -60,7 +62,7 @@ int	parse_tokens(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini)
 		cmd->heredocs = get_heredoc(cmd->heredoc_nb, start, end, cmd);
 		while (i < cmd->heredoc_nb)
 		{
-		//	printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n", 
+		//	printf("flag_hd = %i\nstop_hd= %i\ng_signal_pid= %i\n",
 		//		cmd->flag_hd, mini->stop_hd, g_signal_pid);
 			if (mini->stop_hd == 1 || cmd->flag_hd == 1)
 			{
@@ -93,6 +95,10 @@ t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini)
 	cmd->fd_out = -1;
 	mini->last_exit = parse_tokens(start, end, cmd, mini);
 	set_args_and_path(cmd, start, end, mini);
-
+	if (!cmd->cmd_args || !cmd->cmd_args[0] || cmd->cmd_args[0][0] == '\0')
+	{
+		mini->last_exit = err_msg("", ":", " command not found", 127);
+		cmd->path_error = 1;
+	}
 	return (cmd);
 }

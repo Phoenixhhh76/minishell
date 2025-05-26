@@ -42,6 +42,8 @@ typedef struct s_token
 	t_node			type;
 	char			*str;
 	t_quote			quote_type;
+	bool			is_dollar_quote;
+	bool 			glued;
 	struct s_token	*next;
 }	t_token;
 
@@ -97,6 +99,12 @@ typedef struct s_pipe_ctx
 	t_ast	*node;
 }	t_pipe_ctx;
 
+typedef struct s_parse_state
+{
+	int 			i;
+	bool 			glued;
+} t_parse_state;
+
 
 //init_mini
 void	init_mini(t_mini *mini, char **av, char **env);
@@ -110,22 +118,29 @@ void	heredoc_sigint_handler(int sig);
 
 //tokenizing
 void	init_token(t_mini *mini);
-t_token	*tokenize_input(const char *input);
+//t_token	*tokenize_input(const char *input);
+t_token *create_t_with_glued(char *str, t_quote qt, bool glued);
+t_token	*tokenize_input(const char *input, t_mini *mini);
 void	free_token_list(t_token *token);
 t_token	*create_t(char *str, t_quote quote_type);
 void	append_t(t_token **head, t_token *new);
 int		check_unclosed_quotes(const char *line);
 bool	check_syntax(t_token *tokens);
+int		get_quote_len(const char *input, int start, char quote);
+bool	is_redirection(t_node type);
+bool	is_meta_token(t_node type);
+
 
 //token_helper
 int		is_meta_char(char c);
 void	skip_spaces(const char *input, int *i);
 
-char	*extract_plain(const char *input, int *i, char *current);
+//char	*extract_plain(const char *input, int *i, char *current);
+char	*extract_plain(const char *input, int *i);
 int		handle_meta(const char *input, int i, t_token **tokens);
 //extract_quoted.c
-char	*extract_quoted(const char *input, int *i, \
-							char *current, t_quote *qt);
+//char	*extract_quoted(const char *input, int *i, char *current, t_quote *qt);
+char	*extract_quoted(const char *input, int *i, t_quote *qt);
 
 //init_ast
 void	init_ast(t_mini *mini);
@@ -143,6 +158,7 @@ int		count_expanded_split(char *expanded);
 int		count_export_args(t_token *start, t_token *end, t_mini *mini);
 void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
+char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split);
 int		process_token(char **args, int i, t_token *tok, t_mini *mini);
 int		handle_single(char **args, int i, t_token *tok);
 int		handle_expanded(char **args, int i, t_token *tok, t_mini *mini);
@@ -200,7 +216,8 @@ int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 
 //expand
-char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
+//char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
+char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_dollar_quote);
 char	*expand_if_needed(t_token *token, t_mini *mini);
 char	*handle_single_quote(const char *str, int *i);
 char	*handle_double_quote(const char *str, int *i, t_mini *mini);
@@ -248,4 +265,5 @@ void	print_cmd(t_cmd *cmd);
 void	print_mini(t_mini *mini);
 void	print_token_list(t_token *token);
 void	print_ast(t_ast *node, int depth);
+void	debug_tokens_type(t_token *tok);
 #endif
