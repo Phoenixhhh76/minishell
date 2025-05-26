@@ -6,12 +6,11 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 18:43:17 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:08:31 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-
 
 /*
 ** Check if current input position is a Bash-style $"..." or $'...'
@@ -72,16 +71,15 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 {
 	char	*arg;
 	t_quote	qt;
-	t_quote part_qt;
+	t_quote	part_qt;
 	char	*chunk;
 
 	arg = ft_strdup("");
 	qt = Q_NONE;
 	while (input[ps->i] && !ft_isspace(input[ps->i]) && !is_meta_char(input[ps->i]))
 	{
-
-		if (arg[0] != '\0' && !ps->glued)//
-				break; //echo "$HO"ME
+		if (arg[0] != '\0' && !ps->glued)
+				break ; //echo "$HO"ME
 		chunk = NULL;
 		part_qt = Q_NONE;
 		if (is_dollar_quote(input, ps->i))
@@ -98,10 +96,7 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 			chunk = expand_var(input, &ps->i, mini);
 		}
 		else
-		{
 			chunk = extract_plain(input, &ps->i);
-		}
-
 		if (!chunk)
 			break ;
 		arg = ft_strjoin_ff(arg, chunk);
@@ -112,8 +107,7 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 		append_t(tokens, create_t_with_glued(arg, qt, ps->glued));
 	else
 		free(arg);
-	printf("[DEBUG fill] arg=[%s] qt=%d glued=%d\n", arg, qt, ps->glued);
-
+	//printf("[DEBUG fill] arg=[%s] qt=%d glued=%d\n", arg, qt, ps->glued);
 }
 
 /* bool is_safe_to_continue_gluing(t_quote last_qt, t_quote next_qt, bool glued)
@@ -137,7 +131,6 @@ t_token	*create_t_with_glued(char *str, t_quote qt, bool glued)
 	tok->glued = glued;
 	return (tok);
 }
-
 
 void	check_and_handle_meta(const char *input, int *i, t_token **tokens)
 {

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 17:32:56 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:11:36 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,8 @@ char	*expand_if_needed(t_token *token, t_mini *mini)
 		return (ft_strdup(token->str));
 	if (token->quote_type == Q_D && token->is_dollar_quote)
 		return (ft_strdup(token->str));
-	return (expand_arg(token->str, mini, token->quote_type, token->is_dollar_quote));
+	return (expand_arg(token->str, mini, \
+						token->quote_type, token->is_dollar_quote));
 }
 
 /*
@@ -116,9 +117,7 @@ char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_doll
 		else
 			result = ft_strjoin_ff(result, ft_strndup(str + i++, 1));
 		if (i == old_i)
-		{
 			i++;
-		}
 	}
 	return (result);
 }

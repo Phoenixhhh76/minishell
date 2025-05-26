@@ -31,7 +31,8 @@ typedef enum e_node_type
 	UNKNOWN = -1
 }	t_node;
 
-typedef enum e_quote_type {
+typedef enum e_quote_type
+{
 	Q_NONE = 0,
 	Q_S,
 	Q_D
@@ -43,7 +44,7 @@ typedef struct s_token
 	char			*str;
 	t_quote			quote_type;
 	bool			is_dollar_quote;
-	bool 			glued;
+	bool			glued;
 	struct s_token	*next;
 }	t_token;
 
@@ -101,9 +102,9 @@ typedef struct s_pipe_ctx
 
 typedef struct s_parse_state
 {
-	int 			i;
-	bool 			glued;
-} t_parse_state;
+	int			i;
+	bool		glued;
+}	t_parse_state;
 
 
 //init_mini
@@ -119,7 +120,7 @@ void	heredoc_sigint_handler(int sig);
 //tokenizing
 void	init_token(t_mini *mini);
 //t_token	*tokenize_input(const char *input);
-t_token *create_t_with_glued(char *str, t_quote qt, bool glued);
+t_token	*create_t_with_glued(char *str, t_quote qt, bool glued);
 t_token	*tokenize_input(const char *input, t_mini *mini);
 void	free_token_list(t_token *token);
 t_token	*create_t(char *str, t_quote quote_type);
@@ -158,7 +159,8 @@ int		count_expanded_split(char *expanded);
 int		count_export_args(t_token *start, t_token *end, t_mini *mini);
 void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
-char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split);
+char	*join_tokens_for_arg(t_token **cur_tok_ptr, \
+							t_mini *mini, bool allow_split);
 int		process_token(char **args, int i, t_token *tok, t_mini *mini);
 int		handle_single(char **args, int i, t_token *tok);
 int		handle_expanded(char **args, int i, t_token *tok, t_mini *mini);
