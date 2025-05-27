@@ -15,11 +15,6 @@
 void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
-	//write(1, "\n", 1);
-	//rl_replace_line("", 0);
-	//rl_done = 1;
-	//g_signal_pid = SIGINT;
-	//safe_exit(static_struct(NULL), 130);
 	if (sig == SIGINT)
 	{
 		g_signal_pid = SIGINT;
@@ -30,15 +25,13 @@ void	heredoc_sigint_handler(int sig)
 
 void	signal_handler(int sig)
 {
-	//(void)sig;
-	//printf("Received SIGINT, %d!\n", sig);
 	if (sig == SIGINT)
 	{
-		g_signal_pid = SIGINT;
 		write(STDOUT_FILENO, "\n", 1);
-		rl_on_new_line();
 		rl_replace_line("", 0);
+		rl_on_new_line();
 		rl_redisplay();
+		g_signal_pid = SIGINT;
 	}
 	else if (sig == SIGTERM)
 	{
@@ -59,12 +52,3 @@ void	ft_setup_signals(void)
 	//signal(SIGQUIT, SIG_IGN);
 	sigaction(SIGQUIT, &sa, NULL);
 }
-
-// int	get_exit_status(int status)
-// {
-// 	if (WIFEXITED(status))
-// 		return (WEXITSTATUS(status));
-// 	else if (WIFSIGNALED(status))
-// 		return (128 + WTERMSIG(status));
-// 	return (1);
-// }

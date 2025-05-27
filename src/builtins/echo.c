@@ -52,8 +52,5 @@ int	ft_echo(t_cmd *cmd)
 	}
 	if (!option)
 		printf("\n");
-
-	for (int j = 0; cmd->cmd_args[j]; j++)
-		printf("[DEBUG] argv[%d] = [%s]\n", j, cmd->cmd_args[j]);
 	return (0);
 }

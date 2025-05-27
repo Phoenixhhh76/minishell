@@ -106,8 +106,21 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 	if (node->cmd->in_error == 1 || node->cmd->path_error == 1)
 		safe_exit(mini, 1);
 	handle_redirects(node->cmd);
+	if ((!node->cmd->append && !node->cmd->heredoc_nb && !node->cmd->infile \
+			&& !node->cmd->outfile) && (!node->cmd->cmd_args \
+			|| !node->cmd->cmd_args[0] || node->cmd->cmd_args[0][0] == '\0'))
+	{
+		mini->last_exit = err_msg("", ":", " command not found", 127);
+		node->cmd->path_error = 1;
+	}
 	if (node->cmd->cmd_args && node->cmd->cmd_path)
 	{
+		if (!node->cmd->cmd_args || !node->cmd->cmd_args[0] \
+			|| node->cmd->cmd_args[0][0] == '\0')
+		{
+			mini->last_exit = err_msg("", ":", " command not found", 127);
+			node->cmd->path_error = 1;
+		}
 		if (access(node->cmd->cmd_path, F_OK) != 0)
 		{
 			err_msg(node->cmd->cmd_path, ":", "  command not found", 127);
@@ -138,13 +151,13 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 		exec_pipe_node(mini, node, envp);
 	else if (node->ast_token.type == CMD)
 	{
-		if (g_signal_pid == 2 || node->cmd->flag_hd)
-		{
-			mini->last_exit = 130;
-			return ;
-		}
-		if (node->cmd->path_error)
-		return ;
+		// if (g_signal_pid == 2 || node->cmd->flag_hd)
+		// {
+		// 	mini->last_exit = 130;
+		// 	return ;
+		// }
+		// if (node->cmd->path_error)
+			// return ;
 		if (ft_builtin(node))
 			ft_run_builtin(mini, node->cmd);
 		else

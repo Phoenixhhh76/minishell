@@ -28,6 +28,7 @@ int	read_and_prepare_line(char **line)
 	add_history(*line);
 	return (0);
 }
+
 bool	only_spaces(const char *line)
 {
 	while (*line)
@@ -62,11 +63,12 @@ int	check_line(char *line, t_mini *mini)
 			mini->ast = NULL;
 		}
 		return (2);
-		}
+	}
 	mini->ast = ft_calloc(1, sizeof(t_ast));
 	if (!mini->ast)
 		return (0); //need to specify
 	parse_pipeline(mini->token, NULL, mini, mini->ast);
+	//print_ast(mini->ast, 10);
 	return (1);
 }
 
@@ -165,26 +167,20 @@ int	main(int ac, char **av, char **envp)
 		ft_setup_signals();
 		if (read_and_prepare_line(&line))
 			break ;
-		// if (g_signal_pid == SIGINT)
-		// 	mini.last_exit = 130;
-		if (g_signal_pid == SIGINT)
-		{
-			mini.last_exit = 130;
-			safe_cleanup(&mini, line);  //  line + token + ast
-			continue;
-		}
 		if (!check_line(line, &mini) || mini.stop_hd)
 		{
 			safe_cleanup(&mini, line);
 			continue ;
 		}
 		exec_or_builtin(&mini);
+		if (g_signal_pid == SIGINT)
+		{
+			mini.last_exit = 130;
+		//	safe_cleanup(&mini, line);  //  line + token + ast
+		// 	continue;
+		}
 		safe_cleanup(&mini, line);
 	}
-	// safe_cleanup(&mini, NULL);
-	// free_double_tab(mini.env);
-	// free_double_tab(mini.exp_list);
-	// rl_clear_history();
 	safe_exit(&mini, 0);
 	return (0);
 }
