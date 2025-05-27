@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 09:20:41 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/21 12:58:11 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/25 19:29:03 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,7 @@ void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini)
 	if (cmd->infile)
 		free(cmd->infile);
 	cmd->last_redirin = 0;
-	cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+	cmd->infile = expand_arg(tmp->next->str, mini, tmp->next->quote_type, tmp->next->is_dollar_quote);
 	fd = open(cmd->infile, O_RDONLY);
 	if (fd < 0)
 	{
@@ -36,7 +36,7 @@ void	handle_redir_out(t_token *tmp, t_cmd *cmd, t_mini *mini)
 
 	if (cmd->outfile)
 		free(cmd->outfile);
-	cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+	cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type, tmp->next->is_dollar_quote);
 	if (cmd->in_error != 1)
 	{
 		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_TRUNC, 0644);
@@ -57,10 +57,10 @@ void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini)
 
 	if (cmd->outfile)
 		free(cmd->outfile);
-	cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+	cmd->outfile = expand_arg(tmp->next->str, mini, tmp->next->quote_type, tmp->next->is_dollar_quote);
 	if (cmd->append)
 		free(cmd->append);
-	cmd->append = expand_arg(tmp->next->str, mini, tmp->next->quote_type);
+	cmd->append = expand_arg(tmp->next->str, mini, tmp->next->quote_type, tmp->next->is_dollar_quote);
 	if (cmd->in_error != 1)
 	{
 		fd = open(cmd->outfile, O_WRONLY | O_CREAT | O_APPEND, 0644);

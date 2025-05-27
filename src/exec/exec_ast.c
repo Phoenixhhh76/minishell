@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:06:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/08 10:06:40 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 10:25:06 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -143,6 +143,8 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 			mini->last_exit = 130;
 			return ;
 		}
+		if (node->cmd->path_error)
+		return ;
 		if (ft_builtin(node))
 			ft_run_builtin(mini, node->cmd);
 		else

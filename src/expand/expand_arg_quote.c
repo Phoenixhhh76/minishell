@@ -6,11 +6,34 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 10:58:15 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/25 09:42:15 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 17:25:28 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+char	*handle_double_quote(const char *str, int *i, t_mini *mini)
+{
+	char	*result;
+	char	*chunk;
+
+	result = ft_strdup("");
+	(*i)++;
+	while (str[*i])
+	{
+		if (str[*i] == '"')
+			break ;
+		if (str[*i] == '$')
+			chunk = expand_var(str, i, mini);
+		else
+			chunk = ft_strndup(str + (*i)++, 1);
+
+		result = ft_strjoin_ff(result, chunk);
+	}
+	if (str[*i] == '"')
+		(*i)++;
+	return (result);
+}
 
 char	*handle_single_quote(const char *str, int *i)
 {
@@ -26,21 +49,4 @@ char	*handle_single_quote(const char *str, int *i)
 	return (segment);
 }
 
-char	*handle_double_quote(const char *str, int *i, t_mini *mini)
-{
-	//int		start;
-	char	*result;
 
-	//start = ++(*i);
-	result = ft_strdup("");
-	while (str[*i] && str[*i] != '"')
-	{
-		if (str[*i] == '$')
-			result = ft_strjoin_ff(result, expand_var(str, i, mini));
-		else
-			result = ft_strjoin_ff(result, ft_strndup(str + (*i)++, 1));
-	}
-	if (str[*i] == '"')
-		(*i)++;
-	return (result);
-}

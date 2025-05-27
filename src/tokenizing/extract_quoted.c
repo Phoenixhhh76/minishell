@@ -6,67 +6,48 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/16 14:30:41 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/26 19:06:05 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static int	get_quote_len(const char *input, int start, char quote)
+char	*extract_quoted(const char *input, int *i, t_quote *qt)
 {
-	int	i;
-
-	i = start;
-	while (input[i] && input[i] != quote)
-		i++;
-	return (i - start);
-}
-
-static void	set_quote_type(char quote, t_quote *qt)
-{
-	if (quote == '"')
-		*qt = Q_D;
-	else if (quote == '\'')
-		*qt = Q_S;
-}
-
-/*
-""''echo hola""'''' que""'' tal""''
-we skip the first and last quote if in pair
-*/
-static int	should_strip_quotes(const char *input, int i, const char *current)
-{
-	return (current[0] == '\0'
-		&& (input[i] == '\0' || ft_isspace(input[i])
-			|| is_meta_char(input[i])));
-}
-
-char	*extract_quoted(const char *input, int *i,
-						char *current, t_quote *qt)
-{
-	char	quote;
+	char	quote ;
 	int		start;
 	int		len;
-	int		strip;
-	char	*quoted;
+	char	*chunk;
 
 	quote = input[(*i)++];
 	start = *i;
-	len = get_quote_len(input, start, quote);
-	if (input[*i + len] == quote)
-		*i += len + 1;
-	else
-		*i += len;
-	strip = should_strip_quotes(input, *i, current);
-	if (strip)
+	while (input[*i] && input[*i] != quote)
 	{
-		quoted = ft_strndup(&input[start], len);
-		set_quote_type(quote, qt);
+		//printf("[raw] i=%d, char=%c\n", *i, input[*i]);
+		(*i)++;
 	}
-	else
-	{
-		quoted = ft_strndup(&input[start - 1], len + 2);
-		*qt = Q_NONE;
-	}
-	return (ft_strjoin_ff(current, quoted));
+	len = *i - start;
+	if (input[*i] == quote)
+		(*i)++;
+	if (quote == '\'')
+		*qt = Q_S;
+	else if (quote == '"')
+		*qt = Q_D;
+	chunk = ft_strndup(&input[start], len);
+	//printf("[extract_quoted] -> %.*s\n", len, &input[start]);
+	//printf("[DEBUG after quote] i=%d char=%c\n", *i, input[*i]);
+	return (chunk);
 }
+
+
+
+// /*
+// ""''echo hola""'''' que""'' tal""''
+// we skip the first and last quote if in pair
+// */
+// static int	should_strip_quotes(const char *input, int i, const char *current)
+// {
+// 	return (current[0] == '\0'
+// 		&& (input[i] == '\0' || ft_isspace(input[i])
+// 			|| is_meta_char(input[i])));
+// }
