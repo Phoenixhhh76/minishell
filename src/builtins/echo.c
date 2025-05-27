@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:00:20 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/26 12:01:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/27 17:52:46 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,14 +46,11 @@ int	ft_echo(t_cmd *cmd)
 	{
 		if (!first)
 			printf(" ");
-		printf("%s", cmd->cmd_args[i]);
+		printf("%s", cmd->cmd_args[i]); //echo a > /dev/full becareful
 		first = 0;
 		i++;
 	}
 	if (!option)
 		printf("\n");
-
-	for (int j = 0; cmd->cmd_args[j]; j++)
-		printf("[DEBUG] argv[%d] = [%s]\n", j, cmd->cmd_args[j]);
 	return (0);
 }
