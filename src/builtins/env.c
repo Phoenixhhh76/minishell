@@ -3,14 +3,30 @@
 /*                                                        :::      ::::::::   */
 /*   env.c                                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-04-23 15:14:07 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-04-23 15:14:07 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/04/23 15:14:07 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/28 10:53:52 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
+
+// int	ft_env(t_cmd *cmd, char ***envp)
+// {
+// 	int		i;
+// 	char	**env;
+
+// 	i = 0;
+// 	env = *envp;
+// 	(void)cmd; //maybe needed to check options
+// 	while (env[i])
+// 	{
+// 		printf("%s\n", env[i]);
+// 		i++;
+// 	}
+// 	return (0);
+// }
 
 int	ft_env(t_cmd *cmd, char ***envp)
 {
@@ -19,11 +35,17 @@ int	ft_env(t_cmd *cmd, char ***envp)
 
 	i = 0;
 	env = *envp;
-	(void)cmd; //maybe needed to check options
+	(void)cmd;
 	while (env[i])
 	{
-		printf("%s\n", env[i]);
+		if (write(STDOUT_FILENO, env[i], strlen(env[i])) < 0 || \
+			write(STDOUT_FILENO, "\n", 1) < 0)
+		{
+			perror("env: write error");
+			return (125); //I/O error
+		}
 		i++;
 	}
 	return (0);
 }
+
