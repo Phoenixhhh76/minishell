@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 19:08:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/28 17:13:00 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -46,6 +46,13 @@ char	*handle_dollar_quote(const char *input, int *i, t_quote *qt)
 	if (input[*i] == quote)
 		(*i)++;
 	chunk = ft_strndup(&input[start], len);
+	if (!chunk)
+	{
+		free(arg);
+		free_token_list(*tokens);
+		*tokens = NULL;
+		return;
+	}
 	//printf("[handle_dollar_quote] -> %.*s\n", len, &input[start]);
 	return (chunk);
 }
@@ -75,6 +82,12 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 	char	*chunk;
 
 	arg = ft_strdup("");
+	if (!arg)
+	{
+		free_token_list(*tokens);
+		*tokens = NULL;
+		return ;
+	}
 	qt = Q_NONE;
 	while (input[ps->i] && !ft_isspace(input[ps->i]) && !is_meta_char(input[ps->i]))
 	{
@@ -100,6 +113,11 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 		if (!chunk)
 			break ;
 		arg = ft_strjoin_ff(arg, chunk);
+		{
+			free_token_list(*tokens);
+			*tokens = NULL;
+			return ;
+		}
 		if (qt == Q_NONE)
 			qt = part_qt;
 	}
@@ -109,19 +127,6 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 		free(arg);
 	//printf("[DEBUG fill] arg=[%s] qt=%d glued=%d\n", arg, qt, ps->glued);
 }
-
-/* bool is_safe_to_continue_gluing(t_quote last_qt, t_quote next_qt, bool glued)
-{
-	(void)next_qt;
-	if (glued)
-		return (true); // 如果是 glued，就继续拼接
-
-	if (last_qt != Q_NONE)
-		return (false); // 前面是引号包裹的，但现在不是 glued → 不拼
-
-	return (false); // 默认情况下也不拼
-}
-*/
 
 t_token	*create_t_with_glued(char *str, t_quote qt, bool glued)
 {

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/14 14:20:37 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/16 18:07:02 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/28 16:52:50 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -110,3 +110,4 @@ void	safe_exit(t_mini *mini, int code)
 	rl_clear_history();
 	exit(code);
 }
+
