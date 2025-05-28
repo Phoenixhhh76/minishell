@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/18 20:06:06 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 10:25:06 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/28 15:37:48 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -32,7 +32,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
 		exec_ast(mini, node->left, envp);
-		safe_exit(mini, mini->last_exit);//Nina
+		safe_exit_child(mini, mini->last_exit);//Nina
 	}
 	right_pid = fork();
 	if (right_pid < 0)
@@ -46,7 +46,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
 		exec_ast(mini, node->right, envp);
-		safe_exit(mini, mini->last_exit);//Nina
+		safe_exit_child(mini, mini->last_exit);//Nina
 	}
 	close(node->fd[0]);
 	close(node->fd[1]);
@@ -102,9 +102,9 @@ void	handle_redirects(t_cmd *cmd)
 void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 {
 	if (!node->cmd)
-		safe_exit(mini, mini->last_exit);
+		safe_exit_child(mini, mini->last_exit);
 	if (node->cmd->in_error == 1 || node->cmd->path_error == 1)
-		safe_exit(mini, 1);
+		safe_exit_child(mini, 1);
 	handle_redirects(node->cmd);
 	if ((!node->cmd->append && !node->cmd->heredoc_nb && !node->cmd->infile \
 			&& !node->cmd->outfile) && (!node->cmd->cmd_args \
@@ -124,23 +124,23 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 		if (access(node->cmd->cmd_path, F_OK) != 0)
 		{
 			err_msg(node->cmd->cmd_path, ":", "  command not found", 127);
-			safe_exit(mini, 127);
+			safe_exit_child(mini, 127);
 		}
 		if (access(node->cmd->cmd_path, X_OK) != 0)
 		{
 			err_msg(node->cmd->cmd_path, ":", " Permission denied", 126);
-			safe_exit(mini, 126);
+			safe_exit_child(mini, 126);
 		}
 		execve(node->cmd->cmd_path, node->cmd->cmd_args, envp);
 		if (access(node->cmd->cmd_path, X_OK) == 0)
 		{
 			perror(node->cmd->cmd_args[0]);
-			safe_exit(mini, 126);
+			safe_exit_child(mini, 126);
 		}
 		mini->last_exit = err_msg(node->cmd->cmd_args[0], ":", \
 			" command not found", 127);
 	}
-	safe_exit(mini, mini->last_exit);
+	safe_exit_child(mini, mini->last_exit);
 }
 
 void	exec_ast(t_mini *mini, t_ast *node, char **envp)

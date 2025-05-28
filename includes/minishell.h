@@ -259,6 +259,7 @@ int		export_err_msg(char *arg, int erno);
 
 //clean
 void	safe_exit(t_mini *mini, int code);
+void	safe_exit_child(t_mini *mini, int code);
 void	safe_cleanup(t_mini *mini, char *line);
 void	free_ast(t_ast *ast);
 void	free_cmd(t_cmd *cmd);
