@@ -24,8 +24,6 @@ int	read_and_prepare_line(char **line, t_mini *mini)
 		write(1, "exit\n", 5);
 		return (1);
 	}
-	// if (g_signal_pid == SIGINT)
-	// 	mini->last_exit = 130;//not working when @ new echo after CTRL+C
 	if ((*line)[0] == '\0')
 		return (0);
 	add_history(*line);
@@ -110,12 +108,11 @@ void	exec_or_builtin(t_mini *mini)
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
 				handle_redirects(mini->ast->cmd);
-			// if (!ft_strcmp(mini->ast->cmd->cmd_args, "exit"))
-			// {
-			// 	mini->in_fd = in_fd;
-			// 	mini->out_fd = out_fd;
-			// }
-			printf(" DEBUG 1 = %i\n", mini->last_exit);
+			if (!ft_strcmp(mini->ast->cmd->cmd_args[0], "exit"))
+			{
+				mini->cpy_in_fd = in_fd;
+				mini->cpy_out_fd = out_fd;
+			}
 			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			dup2(out_fd, STDOUT_FILENO);
 			fd = open("/dev/tty", O_RDONLY);
@@ -138,7 +135,7 @@ void	exec_or_builtin(t_mini *mini)
 		}
 		if (pid == 0)
 		{
-			signal(SIGINT, SIG_DFL);
+			signal(SIGINT, signal_handler);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
 			safe_exit(mini, mini->last_exit);
@@ -159,7 +156,6 @@ void	exec_or_builtin(t_mini *mini)
 		else if (WIFEXITED(status))
 				mini->last_exit = WEXITSTATUS(status);
 	}
-	printf(" DEBUG exec ast = %i\n", mini->last_exit);
 	close_all_heredocs(mini->ast);
 }
 
