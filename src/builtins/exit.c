@@ -106,7 +106,6 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 		if (isatty(STDIN_FILENO))
 			printf("exit\n");
 		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
-		printf(" DEBUG 2 = %i\n", mini->last_exit);
 		safe_exit(mini, 2);
 	}
 	if (args_count(cmd->cmd_args) > 2)
@@ -133,10 +132,10 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 
 	if (isatty(STDIN_FILENO))
 		printf("exit\n");
-	// if (mini->in_fd != -1)
-	// 	close (mini->in_fd);
-	// if (mini->out_fd != -1)
-	//	close (mini->out_fd);
+	if (mini->cpy_in_fd != -1)
+		close (mini->cpy_in_fd);
+	if (mini->cpy_out_fd != -1)
+		close (mini->cpy_out_fd);
 
 	safe_exit(mini, (unsigned char)code);
 	return (0);

@@ -88,9 +88,9 @@ typedef struct s_mini
 	char	**exp_list;
 	char	**av;
 	bool	stop_hd;
-	// int		in_fd;
-	// int		out_fd;
 	int		last_exit;
+	int		cpy_in_fd;
+	int		cpy_out_fd;
 }	t_mini;
 
 typedef struct s_pipe_ctx

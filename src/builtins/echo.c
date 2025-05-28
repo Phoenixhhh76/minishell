@@ -9,7 +9,6 @@
 /*   Updated: 2025/05/27 17:52:46 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 int	is_valid_n_option(const char *str)
@@ -28,11 +27,45 @@ int	is_valid_n_option(const char *str)
 	return (1);
 }
 
+// int	ft_echo(t_cmd *cmd)
+// {
+// 	int	i;
+// 	int	option;
+// 	int	first;
+// 	int	printf_result;
+
+// 	i = 1;
+// 	option = 0;
+// 	first = 1;
+// 	while (cmd->cmd_args[i] && is_valid_n_option(cmd->cmd_args[i]))
+// 	{
+// 		option = 1;
+// 		i++;
+// 	}
+// 	while (cmd->cmd_args[i])
+// 	{
+// 		if (!first)
+// 			printf(" ");
+// 		printf_result=printf("%s", cmd->cmd_args[i]); //echo a > /dev/full becareful
+// 		if (printf_result < 0)
+// 		{
+// 			perror("echo");
+// 			return (1);
+// 		}
+// 		first = 0;
+// 		i++;
+// 	}
+// 	if (!option)
+// 		printf("\n");
+// 	return (0);
+// }
+
 int	ft_echo(t_cmd *cmd)
 {
 	int	i;
 	int	option;
 	int	first;
+
 
 	i = 1;
 	option = 0;
@@ -45,12 +78,16 @@ int	ft_echo(t_cmd *cmd)
 	while (cmd->cmd_args[i])
 	{
 		if (!first)
-			printf(" ");
-		printf("%s", cmd->cmd_args[i]); //echo a > /dev/full becareful
+			if (write(STDOUT_FILENO, " ", 1) < 0)
+				return (perror("echo: write error"), 1);
+		if (write(STDOUT_FILENO, cmd->cmd_args[i],
+				strlen(cmd->cmd_args[i])) < 0)
+			return (perror("echo: write error"), 1);
 		first = 0;
 		i++;
 	}
 	if (!option)
-		printf("\n");
+		if (write(STDOUT_FILENO, "\n", 1) < 0)
+			return (perror("echo: write error"), 1);
 	return (0);
 }

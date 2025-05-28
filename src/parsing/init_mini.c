@@ -49,8 +49,8 @@ void	init_mini(t_mini *mini, char **av, char **env)
 	mini->env = copy_env(env);
 	mini->av = av;
 	mini->stop_hd = 0;
-	// mini->in_fd = -1;
-	// mini->out_fd = -1;
+	mini->cpy_in_fd = -1;
+	mini->cpy_out_fd = -1;
 	mini->last_exit = 0;
 	mini->exp_list = NULL;
 }
