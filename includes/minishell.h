@@ -88,6 +88,8 @@ typedef struct s_mini
 	char	**exp_list;
 	char	**av;
 	bool	stop_hd;
+	// int		in_fd;
+	// int		out_fd;
 	int		last_exit;
 }	t_mini;
 

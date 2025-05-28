@@ -14,7 +14,7 @@
 
 pid_t g_signal_pid = 0;
 
-int	read_and_prepare_line(char **line)
+int	read_and_prepare_line(char **line, t_mini *mini)
 {
 	g_signal_pid = 0;
 	*line = readline("minishell> ");
@@ -23,6 +23,8 @@ int	read_and_prepare_line(char **line)
 		write(1, "exit\n", 5);
 		return (1);
 	}
+	if (g_signal_pid == SIGINT)
+		mini->last_exit = 130;
 	if ((*line)[0] == '\0')
 		return (0);
 	add_history(*line);
@@ -107,6 +109,9 @@ void	exec_or_builtin(t_mini *mini)
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
 				handle_redirects(mini->ast->cmd);
+			// mini->in_fd = in_fd;
+			// mini->out_fd = out_fd;
+			printf(" DEBUG 1 = %i\n", mini->last_exit);
 			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			dup2(out_fd, STDOUT_FILENO);
 			fd = open("/dev/tty", O_RDONLY);
@@ -132,7 +137,7 @@ void	exec_or_builtin(t_mini *mini)
 			signal(SIGINT, SIG_DFL);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
-			exit(mini->last_exit);
+			safe_exit(mini, mini->last_exit);
 		}
 		waitpid(pid, &status, 0);
 		if (WIFSIGNALED(status))
@@ -150,6 +155,7 @@ void	exec_or_builtin(t_mini *mini)
 		else if (WIFEXITED(status))
 				mini->last_exit = WEXITSTATUS(status);
 	}
+	printf(" DEBUG exec ast = %i\n", mini->last_exit);
 	close_all_heredocs(mini->ast);
 }
 
@@ -164,8 +170,9 @@ int	main(int ac, char **av, char **envp)
 	static_struct(&mini);
 	while (1)
 	{
+		printf(" DEBUG while main = %i\n", mini.last_exit);
 		ft_setup_signals();
-		if (read_and_prepare_line(&line))
+		if (read_and_prepare_line(&line, &mini))
 			break ;
 		if (!check_line(line, &mini) || mini.stop_hd)
 		{

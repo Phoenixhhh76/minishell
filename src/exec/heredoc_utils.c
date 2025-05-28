@@ -78,7 +78,11 @@ void	close_all_heredocs(t_ast *ast)
 		i = 0;
 		while (i < ast->cmd->heredoc_nb)
 		{
-			close(ast->cmd->heredoc_pipe[i][0]);
+			if (ast->cmd->heredoc_pipe[i][0] > 0)
+				close(ast->cmd->heredoc_pipe[i][0]);
+			if (ast->cmd->heredoc_pipe[i][1] > 0)
+				close(ast->cmd->heredoc_pipe[i][1]);
+			//close(ast->cmd->heredoc_pipe[i][0]);
 			i++;
 		}
 	}

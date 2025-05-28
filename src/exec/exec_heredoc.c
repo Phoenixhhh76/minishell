@@ -12,6 +12,21 @@
 
 #include "../../includes/minishell.h"
 
+void	close_all_heredoc_pipes(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (i < cmd->heredoc_nb)
+	{
+		if (cmd->heredoc_pipe[i][0] > 0)
+			close(cmd->heredoc_pipe[i][0]);
+		if (cmd->heredoc_pipe[i][1] > 0)
+			close(cmd->heredoc_pipe[i][1]);
+		i++;
+	}
+}
+
 int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 {
 	pid_t	pid;
@@ -88,6 +103,7 @@ int	fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i)
 			free(line);
 			return (130);
 		}
+		close_all_heredoc_pipes(cmd);
 	}
 	return (0);
 }

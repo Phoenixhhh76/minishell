@@ -123,6 +123,7 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 		}
 		if (access(node->cmd->cmd_path, F_OK) != 0)
 		{
+			printf(" DEBUG 2 = %i\n", mini->last_exit);
 			err_msg(node->cmd->cmd_path, ":", "  command not found", 127);
 			safe_exit(mini, 127);
 		}
