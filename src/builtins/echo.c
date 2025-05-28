@@ -9,7 +9,6 @@
 /*   Updated: 2025/05/28 10:48:30 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
-
 #include "../../includes/minishell.h"
 
 int	is_valid_n_option(const char *str)

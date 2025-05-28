@@ -14,10 +14,11 @@
 
 pid_t g_signal_pid = 0;
 
-int	read_and_prepare_line(char **line)
+int	read_and_prepare_line(char **line, t_mini *mini)
 {
 	g_signal_pid = 0;
 	*line = readline("minishell> ");
+	(void)mini;
 	if (!*line)
 	{
 		write(1, "exit\n", 5);
@@ -107,6 +108,11 @@ void	exec_or_builtin(t_mini *mini)
 			out_fd = dup(STDOUT_FILENO);
 			if (has_redirection(mini->ast->cmd))
 				handle_redirects(mini->ast->cmd);
+			if (!ft_strcmp(mini->ast->cmd->cmd_args[0], "exit"))
+			{
+				mini->cpy_in_fd = in_fd;
+				mini->cpy_out_fd = out_fd;
+			}
 			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
 			dup2(out_fd, STDOUT_FILENO);
 			fd = open("/dev/tty", O_RDONLY);
@@ -129,10 +135,10 @@ void	exec_or_builtin(t_mini *mini)
 		}
 		if (pid == 0)
 		{
-			signal(SIGINT, SIG_DFL);
+			signal(SIGINT, signal_handler);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
-			exit(mini->last_exit);
+			safe_exit(mini, mini->last_exit);
 		}
 		waitpid(pid, &status, 0);
 		if (WIFSIGNALED(status))
@@ -165,7 +171,7 @@ int	main(int ac, char **av, char **envp)
 	while (1)
 	{
 		ft_setup_signals();
-		if (read_and_prepare_line(&line))
+		if (read_and_prepare_line(&line, &mini))
 			break ;
 		if (!check_line(line, &mini) || mini.stop_hd)
 		{
@@ -173,12 +179,12 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		exec_or_builtin(&mini);
-		if (g_signal_pid == SIGINT)
-		{
-			mini.last_exit = 130;
-		//	safe_cleanup(&mini, line);  //  line + token + ast
-		// 	continue;
-		}
+		// if (g_signal_pid == SIGINT)
+		// {
+		// 	mini.last_exit = 130;
+		// //	safe_cleanup(&mini, line);  //  line + token + ast
+		// // 	continue;
+		// }
 		safe_cleanup(&mini, line);
 	}
 	safe_exit(&mini, 0);

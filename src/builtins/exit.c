@@ -101,7 +101,6 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 	int	code;
 
 	code = 0;
-	//print_cmd(cmd);
 	if (cmd->cmd_args[1] && !ft_isnumeric(cmd->cmd_args[1]))
 	{
 		if (isatty(STDIN_FILENO))
@@ -130,8 +129,14 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 		if (code < 0)
 			code = 256 + code;
 	}
+
 	if (isatty(STDIN_FILENO))
 		printf("exit\n");
+	if (mini->cpy_in_fd != -1)
+		close (mini->cpy_in_fd);
+	if (mini->cpy_out_fd != -1)
+		close (mini->cpy_out_fd);
+
 	safe_exit(mini, (unsigned char)code);
 	return (0);
 }

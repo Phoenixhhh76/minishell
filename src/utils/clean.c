@@ -93,6 +93,8 @@ void	safe_cleanup(t_mini *mini, char *line)
 		free_ast(mini->ast);
 		mini->ast = NULL;
 	}
+	if (mini->ast && mini->ast->cmd && mini->ast->cmd->heredoc_pipe)
+		close_all_heredocs(mini->ast);
 	mini->stop_hd = 0;
 	g_signal_pid = 0;
 }
