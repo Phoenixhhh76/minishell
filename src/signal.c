@@ -12,10 +12,10 @@
 
 #include "../includes/minishell.h"
 
-void	update_exit_status(t_mini *mini, int status)
-{
-	mini->last_exit = status;
-}
+// void	update_exit_status(t_mini *mini, int status)
+// {
+// 	mini->last_exit = status;
+// }
 
 void	heredoc_sigint_handler(int sig)
 {
@@ -36,7 +36,7 @@ void	signal_handler(int sig)
 		rl_replace_line("", 0);
 		rl_on_new_line();
 		rl_redisplay();
-		//update_exit_status(static_struct(NULL), 130);
+		static_struct(NULL)->last_exit = 130;
 		g_signal_pid = SIGINT;
 	}
 	else if (sig == SIGTERM)

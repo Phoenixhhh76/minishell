@@ -183,12 +183,12 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		exec_or_builtin(&mini);
-		if (g_signal_pid == SIGINT)
-		{
-			mini.last_exit = 130;
-		//	safe_cleanup(&mini, line);  //  line + token + ast
-		// 	continue;
-		}
+		// if (g_signal_pid == SIGINT)
+		// {
+		// 	mini.last_exit = 130;
+		// //	safe_cleanup(&mini, line);  //  line + token + ast
+		// // 	continue;
+		// }
 		safe_cleanup(&mini, line);
 	}
 	safe_exit(&mini, 0);
