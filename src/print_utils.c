@@ -86,7 +86,7 @@ void debug_tokens(t_token *tok)
 
 // 	i = 0;
 // 	printf("### PRINT T_AST ###\n");
-// 	printf("Token_str: %-10s Type: %d\n", ast->ast_token->str, ast->ast_token->type);
+// 	printf("Token_str: %-10s Type: %d\n", ast->ast_tok->str, ast->ast_tok->type);
 // 	printf("fd[0]= %i, fd[1]")
 // 	printf("### END PRINT AST###\n\n");
 // }
@@ -102,7 +102,7 @@ void	print_mini(t_mini *mini)
 	while (tmp)
 	{
 		printf("Token: %-10s Type: %d\n", tmp->str, tmp->type);
-		//printf("Ast_token: %d\n", tmp_ast->fd[0]);
+		//printf("ast_tok: %d\n", tmp_ast->fd[0]);
 		tmp = tmp->next;
 		//tmp_ast = tmp_ast->next;
 	}

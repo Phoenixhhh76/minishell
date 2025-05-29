@@ -26,13 +26,14 @@ BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c \
 					$(BUILT_DIR)/export_parser.c $(BUILT_DIR)/export_single.c \
 					$(BUILT_DIR)/exit.c
 
-PARSING     := $(PARSING_DIR)/parse_pipeline.c \
+PARSING     := $(PARSING_DIR)/parse_pipeline.c $(PARSING_DIR)/parse_pipeline_utils.c \
 					$(PARSING_DIR)/init_ast.c $(PARSING_DIR)/init_mini.c \
 					$(PARSING_DIR)/build_command.c $(PARSING_DIR)/redirections.c \
 					$(PARSING_DIR)/args_count.c $(PARSING_DIR)/process_token.c
 
-EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
-					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c $(EXEC_DIR)/heredoc_utils.c
+EXEC        := $(EXEC_DIR)/exec_or_builtins.c $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
+					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c $(EXEC_DIR)/heredoc_utils.c \
+					$(EXEC_DIR)/exec_utils.c
 
 EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c \
 					$(EXPAND_DIR)/expand_arg_quote.c

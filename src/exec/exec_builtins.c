@@ -29,7 +29,7 @@ bool	ft_is_builtin(char *arg)
 
 bool	ft_builtin(t_ast *ast)
 {
-	if (!ast || ast->ast_token.type != CMD || !ast->cmd)
+	if (!ast || ast->ast_tok.type != CMD || !ast->cmd)
 		return (false);
 	if (!ft_is_builtin(ast->cmd->cmd_args[0]))
 		return (false);
