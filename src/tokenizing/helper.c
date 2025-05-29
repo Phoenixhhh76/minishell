@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:41:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 18:37:15 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:36:36 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -59,35 +59,3 @@ int	handle_meta(const char *input, int i, t_token **tokens)
 	append_t(tokens, create_t(ft_strndup(&input[i], len), Q_NONE));
 	return (i + len);
 }
-
-
-
-// char	*ft_strjoin_b(const char *s1, char *s2)
-// {
-// 	char	*joined;
-// 	size_t	len1;
-// 	size_t	len2;
-
-// 	if (!s1 && !s2)
-// 		return (NULL);
-// 	if (!s1)
-// 		len1 = 0;
-// 	else
-// 		len1 = ft_strlen(s1);
-// 	if (!s2)
-// 		len2 = 0;
-// 	else
-// 		len2 = ft_strlen(s2);
-// 	joined = malloc(len1 + len2 + 1);
-// 	if (!joined)
-// 		return (NULL);
-// 	if (s1)
-// 		ft_memcpy(joined, s1, len1);
-// 	if (s2)
-// 		ft_memcpy(joined + len1, s2, len2);
-
-// 	joined[len1 + len2] = '\0';
-// 	if (s2)
-// 		free(s2);
-// 	return (joined);
-// }

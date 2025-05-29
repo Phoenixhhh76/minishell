@@ -120,31 +120,55 @@ void	signal_handler(int sig);
 void	signal_handler_child(int sig);
 void	heredoc_sigint_handler(int sig);
 
-//tokenizing
-void	init_token(t_mini *mini);
-//t_token	*tokenize_input(const char *input);
-t_token	*create_t_with_glued(char *str, t_quote qt, bool glued);
+//------tokenizing------//
+//token.c//
 t_token	*tokenize_input(const char *input, t_mini *mini);
+//extract_quoted.c//
+bool	has_closing_quote(const char *input, int i, char quote);
+bool	is_dollar_quote(const char *input, int i);
+char	*extract_quoted(const char *input, int *i, t_quote *qt, t_mini *mini);
+//helper.c//
+int		is_meta_char(char c);
+void	skip_spaces(const char *input, int *i);
+char	*extract_plain(const char *input, int *i);
+int		handle_meta(const char *input, int i, t_token **tokens);
+//syntax_error.c//
+int		check_unclosed_quotes(const char *line);
+bool	check_syntax(t_token *tokens);
+bool	is_redirection(t_node type);
+bool	is_meta_token(t_node type);
+//token_utils.c//
+t_token	*create_t_with_glued(char *str, t_quote qt, bool glued);
 void	free_token_list(t_token *token);
 t_token	*create_t(char *str, t_quote quote_type);
 void	append_t(t_token **head, t_token *new);
-int		check_unclosed_quotes(const char *line);
-bool	check_syntax(t_token *tokens);
-int		get_quote_len(const char *input, int start, char quote);
-bool	is_redirection(t_node type);
-bool	is_meta_token(t_node type);
 
+//--------expand--------//
+//expand_arg.c//
+char	*expand_arg(const char *str, t_mini *mini, \
+	t_quote quote_type, bool is_dollar_quote);
+char	*expand_if_needed(t_token *token, t_mini *mini);
+char	*expand_var(const char *str, int *i, t_mini *mini);
+char	*append_char(char *result, char c);
+//expand_arg_quote.c//
+char	*handle_single_quote(const char *str, int *i);
+char	*handle_double_quote(const char *str, int *i, t_mini *mini);
+//expand_heredoc.c//
+char	*get_env_value(const char *key, char **env);
+char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
+char	*handle_exit_code(char *result, int *i, t_mini *mini);
+char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
+char	*expand_heredoc_line(const char *str, t_mini *mini);
 
-//token_helper
-int		is_meta_char(char c);
-void	skip_spaces(const char *input, int *i);
+//-----------parsing-----------//
+//init_count_token.c//
 
-//char	*extract_plain(const char *input, int *i, char *current);
-char	*extract_plain(const char *input, int *i);
-int		handle_meta(const char *input, int i, t_token **tokens);
-//extract_quoted.c
-//char	*extract_quoted(const char *input, int *i, char *current, t_quote *qt);
-char	*extract_quoted(const char *input, int *i, t_quote *qt);
+//init_ast.c//
+
+//args_count.c//
+
+//process_tokens.c//
+
 
 //init_ast
 void	init_ast(t_mini *mini);
@@ -222,20 +246,11 @@ int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 void	close_all_heredoc_pipes(t_cmd *cmd);
 
-//expand
-//char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
-char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_dollar_quote);
-char	*expand_if_needed(t_token *token, t_mini *mini);
-char	*handle_single_quote(const char *str, int *i);
-char	*handle_double_quote(const char *str, int *i, t_mini *mini);
-char	*get_env_value(const char *key, char **env);
-char	*expand_var(const char *str, int *i, t_mini *mini);
-char	*expand_heredoc_line(const char *str, t_mini *mini);
-char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
-char	*handle_exit_code(char *result, int *i, t_mini *mini);
-char	*handle_pid(char *result, int *i);
-char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
-char	*append_char(char *result, char c);
+
+
+
+
+
 
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);
@@ -271,4 +286,7 @@ void	print_mini(t_mini *mini);
 void	print_token_list(t_token *token);
 void	print_ast(t_ast *node, int depth);
 void	debug_tokens_type(t_token *tok);
+void	debug_tokens(t_token *tok);
+
+
 #endif

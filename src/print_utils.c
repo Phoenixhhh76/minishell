@@ -23,6 +23,16 @@ void	print_tab(char **tab)
 	printf("*** END PRINT TAB ***\n\n");
 }
 
+void debug_tokens(t_token *tok)
+{
+	while (tok)
+	{
+		printf("Token [%s]  quote_type=%d  glued=%d\n",
+			tok->str, tok->quote_type, tok->glued);
+		tok = tok->next;
+	}
+}
+
 // void	print_cmd(t_cmd *cmd)
 // {
 // 	int	i;

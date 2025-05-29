@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 11:38:14 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/27 16:45:15 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:01:30 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -107,8 +107,6 @@ char	*join_tokens_for_export(t_token **cur_tok_ptr, t_mini *mini)
 	return (arg);
 }
 
-
-
 void	fill_export_args(char **args,
 			t_token *start, t_token *end, t_mini *mini)
 {
@@ -124,3 +122,5 @@ void	fill_export_args(char **args,
 	}
 	args[i] = NULL;
 }
+
+

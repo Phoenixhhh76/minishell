@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/09 14:44:38 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 14:48:28 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:58:57 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,8 +93,17 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 	}
 	while (cmd->cmd_args[i])
 	{
-		if (handle_single_export(cmd->cmd_args[i], mini_env, mini) != 0)
-		status = 1;
+		if (!cmd->cmd_args[i] || cmd->cmd_args[i][0] == '\0')
+		{
+			printf("[DEBUG] export invalid arg: [%s]\n", cmd->cmd_args[i]);
+			export_err_msg(cmd->cmd_args[i], 1);
+			status = 1;
+			i++;
+			continue ;
+		}
+		else if (handle_single_export(cmd->cmd_args[i], mini_env, mini) != 0)
+			status = 1;
+		printf("[DEBUG export loop] arg: [%s]\n", cmd->cmd_args[i]);
 		i++;
 	}
 	mini->last_exit = status;

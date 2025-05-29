@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 19:11:36 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:01:44 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -93,7 +93,8 @@ char	*handle_special_case(const char *str)
 	return (ft_strjoin_ff(ft_strdup("$"), after));
 }
 
-char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_dollar_quote)
+char	*expand_arg(const char *str, t_mini *mini,
+						t_quote quote_type, bool is_dollar_quote)
 {
 	char	*result;
 	int		i;
@@ -121,4 +122,3 @@ char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_doll
 	}
 	return (result);
 }
-
