@@ -51,8 +51,6 @@ int	check_line(char *line, t_mini *mini)
 	if (only_spaces(line))
 		return (0);
 	mini->token = tokenize_input(line, mini);
-	//print_token_list(mini->token);
-	//debug_tokens_type(mini->token);
 	if (!mini->token || !check_syntax(mini->token))
 	{
 		mini->last_exit = 2;
@@ -69,7 +67,6 @@ int	check_line(char *line, t_mini *mini)
 	if (!mini->ast)
 		return (0); //need to specify
 	parse_pipeline(mini->token, NULL, mini, mini->ast);
-	//print_ast(mini->ast, 10);
 	return (1);
 }
 
@@ -133,14 +130,15 @@ void	exec_or_builtin(t_mini *mini)
 			perror("fork");
 			mini->last_exit = 1;
 		}
+		signal(SIGINT, signal_handler_child);
 		if (pid == 0)
 		{
-			signal(SIGINT, signal_handler);
 			signal(SIGQUIT, SIG_DFL);
 			exec_ast(mini, mini->ast, mini->env);
 			safe_exit(mini, mini->last_exit);
 		}
 		waitpid(pid, &status, 0);
+		signal(SIGINT, signal_handler);
 		if (WIFSIGNALED(status))
 		{
 			if (WTERMSIG(status) == SIGINT)
@@ -179,12 +177,6 @@ int	main(int ac, char **av, char **envp)
 			continue ;
 		}
 		exec_or_builtin(&mini);
-		// if (g_signal_pid == SIGINT)
-		// {
-		// 	mini.last_exit = 130;
-		// //	safe_cleanup(&mini, line);  //  line + token + ast
-		// // 	continue;
-		// }
 		safe_cleanup(&mini, line);
 	}
 	safe_exit(&mini, 0);
