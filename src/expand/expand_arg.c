@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 19:11:36 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:47:19 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,6 +76,7 @@ char	*expand_var(const char *str, int *i, t_mini *mini)
 		(*i)++;
 	var = ft_strndup(str + start, *i - start);
 	val = get_env_value(var, mini->env);
+	printf("[expand_var] variable name = '%s'\n", var);
 	free(var);
 	return (val);
 }

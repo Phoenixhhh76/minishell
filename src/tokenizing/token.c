@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 19:08:31 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 12:56:15 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -89,7 +89,8 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 		else if ((input[ps->i] == '\'' || input[ps->i] == '"') && \
 							has_closing_quote(input, ps->i, input[ps->i]))
 		{
-			chunk = extract_quoted(input, &ps->i, &part_qt);
+			//chunk = extract_quoted(input, &ps->i, &part_qt);
+			chunk = extract_quoted(input, &ps->i, &part_qt, mini);
 		}
 		else if (input[ps->i] == '$')
 		{
@@ -187,7 +188,7 @@ t_token	*tokenize_input(const char *input, t_mini *mini)
 		else
 			ps.glued = false;
 	}
-	//debug_tokens(tokens);
+	debug_tokens(tokens);
 	return (tokens);
 }
 

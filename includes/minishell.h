@@ -143,7 +143,8 @@ char	*extract_plain(const char *input, int *i);
 int		handle_meta(const char *input, int i, t_token **tokens);
 //extract_quoted.c
 //char	*extract_quoted(const char *input, int *i, char *current, t_quote *qt);
-char	*extract_quoted(const char *input, int *i, t_quote *qt);
+//char	*extract_quoted(const char *input, int *i, t_quote *qt);
+char	*extract_quoted(const char *input, int *i, t_quote *qt, t_mini *mini);
 
 //init_ast
 void	init_ast(t_mini *mini);

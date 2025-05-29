@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:21:50 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/27 14:33:03 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 13:33:27 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,6 +26,7 @@ int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 		should_store_unassigned_var(arg, env, mini);
 		return (0);
 	}
+	printf("[DEBUG export] checking arg: [%s]\n", arg);
 	return (handle_var_with_equal(arg, env, mini_env, mini));
 }
 
