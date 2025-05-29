@@ -11,7 +11,6 @@
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
-//faut penser si on return the (exitno)
 
 bool	ft_is_builtin(char *arg)
 {
@@ -39,9 +38,6 @@ bool	ft_builtin(t_ast *ast)
 
 int	ft_run_builtin( t_mini *mini, t_cmd *cmd)
 {
-	//char	*name;
-
-	//name = cmd->cmd_args[0];
 	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[0])
 		return (1);
 	if (!ft_strcmp(cmd->cmd_args[0], "echo"))
@@ -58,5 +54,5 @@ int	ft_run_builtin( t_mini *mini, t_cmd *cmd)
 		return (ft_unset(cmd, mini));
 	else if (!ft_strcmp(cmd->cmd_args[0], "exit"))
 		return (ft_exit(mini, cmd));
-	return(1); // not handled
+	return (-2);
 }

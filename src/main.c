@@ -111,6 +111,8 @@ void	exec_or_builtin(t_mini *mini)
 				mini->cpy_out_fd = out_fd;
 			}
 			mini->last_exit = ft_run_builtin(mini, mini->ast->cmd);
+			if (mini->last_exit == -2)
+				perror("Wrong use of ft_run_builtin");
 			dup2(out_fd, STDOUT_FILENO);
 			fd = open("/dev/tty", O_RDONLY);
 			if (fd != -1)

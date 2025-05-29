@@ -12,11 +12,6 @@
 
 #include "../includes/minishell.h"
 
-// void	update_exit_status(t_mini *mini, int status)
-// {
-// 	mini->last_exit = status;
-// }
-
 void	heredoc_sigint_handler(int sig)
 {
 	(void)sig;
@@ -72,6 +67,5 @@ void	ft_setup_signals(void)
 	sa.sa_handler = signal_handler;
 	sigaction(SIGINT, &sa, NULL);
 	sa.sa_handler = SIG_IGN;
-	//signal(SIGQUIT, SIG_IGN);
 	sigaction(SIGQUIT, &sa, NULL);
 }

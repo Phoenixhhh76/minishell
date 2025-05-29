@@ -150,13 +150,6 @@ void	exec_ast(t_mini *mini, t_ast *node, char **envp)
 		exec_pipe_node(mini, node, envp);
 	else if (node->ast_token.type == CMD)
 	{
-		// if (g_signal_pid == 2 || node->cmd->flag_hd)
-		// {
-		// 	mini->last_exit = 130;
-		// 	return ;
-		// }
-		// if (node->cmd->path_error)
-			// return ;
 		if (ft_builtin(node))
 			ft_run_builtin(mini, node->cmd);
 		else
