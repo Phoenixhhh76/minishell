@@ -33,7 +33,7 @@ PARSING     := $(PARSING_DIR)/parse_pipeline.c $(PARSING_DIR)/parse_pipeline_uti
 
 EXEC        := $(EXEC_DIR)/exec_or_builtins.c $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c $(EXEC_DIR)/heredoc_utils.c \
-					$(EXEC_DIR)/exec_utils.c
+					$(EXEC_DIR)/exec_utils.c $(EXEC_DIR)/exec_cmd_node.c $(EXEC_DIR)/handle_redirect.c
 
 EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c \
 					$(EXPAND_DIR)/expand_arg_quote.c

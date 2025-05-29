@@ -238,7 +238,9 @@ void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast);
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_mini *mini, t_cmd *cmd);
+
 void	exec_ast(t_mini *mini, t_ast *node, char **envp);
+void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 
 //heredocs
