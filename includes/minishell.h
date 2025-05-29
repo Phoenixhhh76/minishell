@@ -115,8 +115,9 @@ char	**copy_env(char **env);
 t_mini	*static_struct(t_mini *mini);
 
 //signals
-void	signal_handler(int sig);
 void	ft_setup_signals(void);
+void	signal_handler(int sig);
+void	signal_handler_child(int sig);
 void	heredoc_sigint_handler(int sig);
 
 //tokenizing
@@ -148,10 +149,11 @@ char	*extract_quoted(const char *input, int *i, t_quote *qt);
 //init_ast
 void	init_ast(t_mini *mini);
 
+void	handle_redir(t_token *start, t_token *end, t_cmd *cmd, t_mini *mini);
 void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	handle_redir_out(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini);
-void	handle_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
+void	count_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
 
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
 char	**collect_args(t_token *start, t_token *end, t_mini *mini);
@@ -218,6 +220,7 @@ int		fork_heredocs(t_mini *mini, t_cmd *cmd, char *delimiter, int i);
 int		exec_heredocs(t_cmd *cmd, t_mini *mini);
 int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
+void	close_all_heredoc_pipes(t_cmd *cmd);
 
 //expand
 //char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type);
@@ -249,12 +252,10 @@ void	free_strs(char *str, char **strs);
 void	free_split(char **split);
 char	*ft_strjoin_f(char *s1, char *s2);
 char	*ft_strjoin_ff(char *s1, char *s2);
-void	close_fds(t_cmd *cmd);
+
 //utils error.c
-void	exit_error_pipe(int error_status, t_cmd *cmd);
 int		err_msg(char *str1, char *str2, char *str3, int erno);
 int		syntax_err_msg(char *str1, char *str2, int erno);
-void	exit_error(const char *msg);
 int		export_err_msg(char *arg, int erno);
 
 //clean

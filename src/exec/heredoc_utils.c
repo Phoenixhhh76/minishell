@@ -45,6 +45,7 @@ int	**create_heredoc_pipe(int heredoc_nb)
 {
 	int	i;
 	int	**tab_pipe;
+//	int	flag_error;
 
 	i = 0;
 	tab_pipe = (int **)ft_calloc(heredoc_nb, sizeof(int *));
@@ -54,9 +55,17 @@ int	**create_heredoc_pipe(int heredoc_nb)
 	{
 		tab_pipe[i] = (int *)ft_calloc(2, sizeof(int));
 		if (!tab_pipe[i])
+		{
+			perror("Heredoc pipe calloc");
 			return (NULL); //error calloc
+		}
+		// flag_error = -1;
+		// if (flag_error == -1)
 		if (pipe(tab_pipe[i]) == -1)
+		{
+			perror("Heredoc pipe");
 			return (NULL); //pipe error
+		}
 		i++;
 	}
 	return (tab_pipe);
@@ -82,8 +91,22 @@ void	close_all_heredocs(t_ast *ast)
 				close(ast->cmd->heredoc_pipe[i][0]);
 			if (ast->cmd->heredoc_pipe[i][1] > 0)
 				close(ast->cmd->heredoc_pipe[i][1]);
-			//close(ast->cmd->heredoc_pipe[i][0]);
 			i++;
 		}
+	}
+}
+
+void	close_all_heredoc_pipes(t_cmd *cmd)
+{
+	int	i;
+
+	i = 0;
+	while (i < cmd->heredoc_nb)
+	{
+		if (cmd->heredoc_pipe[i][0] > 0)
+			close(cmd->heredoc_pipe[i][0]);
+		if (cmd->heredoc_pipe[i][1] > 0)
+			close(cmd->heredoc_pipe[i][1]);
+		i++;
 	}
 }

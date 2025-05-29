@@ -19,7 +19,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 	pid_t	right_pid;
 
 	if (pipe(node->fd) == -1)
-		exit_error("pipe");
+		perror("pipe");
 	left_pid = fork();
 	if (left_pid < 0)
 	{
@@ -32,7 +32,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[1], STDOUT_FILENO);
 		close(node->fd[1]);
 		exec_ast(mini, node->left, envp);
-		safe_exit(mini, mini->last_exit);//Nina
+		safe_exit(mini, mini->last_exit);
 	}
 	right_pid = fork();
 	if (right_pid < 0)
@@ -46,7 +46,7 @@ void	exec_pipe_node(t_mini *mini, t_ast *node, char **envp)
 		dup2(node->fd[0], STDIN_FILENO);
 		close(node->fd[0]);
 		exec_ast(mini, node->right, envp);
-		safe_exit(mini, mini->last_exit);//Nina
+		safe_exit(mini, mini->last_exit);
 	}
 	close(node->fd[0]);
 	close(node->fd[1]);
@@ -66,7 +66,6 @@ void	handle_redirects(t_cmd *cmd)
 		fd = open(cmd->infile, O_RDONLY);
 		if (fd < 0)
 			perror(cmd->infile);
-			//exit_error(cmd->infile);
 		dup2(fd, STDIN_FILENO);
 		close(fd);
 	}

@@ -31,7 +31,7 @@ char	**copy_env(char **env)
 		i++;
 	new_env = (char **)ft_calloc(i + 1, sizeof(char *));
 	if (!new_env)
-		return (NULL);//error alloc
+		return (NULL);
 	i = 0;
 	while (env[i])
 	{
@@ -46,11 +46,13 @@ void	init_mini(t_mini *mini, char **av, char **env)
 {
 	mini->token = NULL;
 	mini->ast = NULL;
-	mini->env = copy_env(env);
 	mini->av = av;
 	mini->stop_hd = 0;
 	mini->cpy_in_fd = -1;
 	mini->cpy_out_fd = -1;
 	mini->last_exit = 0;
 	mini->exp_list = NULL;
+	mini->env = copy_env(env);
+	if (!mini->env)
+		safe_exit(mini, 17);
 }

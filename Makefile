@@ -36,7 +36,7 @@ EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 
 EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c \
 					$(EXPAND_DIR)/expand_arg_quote.c
-UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/fd.c $(UTILS_DIR)/error.c \
+UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/error.c \
 					$(UTILS_DIR)/str.c $(UTILS_DIR)/clean.c
 
 TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c \

@@ -12,21 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-void	exit_error_pipe(int error_status, t_cmd *cmd)
-{
-	if (cmd)
-	{
-		close_fds(cmd);
-		if (cmd->pipe != NULL)
-			free(cmd->pipe);
-		if (cmd->pids != NULL)
-			free(cmd->pids);
-	}
-	if (cmd->heredoc_nb == 1)
-		unlink(".heredoc.tmp");//why ? we dont use .tmp with heredoc ?
-	exit(error_status);
-}
-
 int	err_msg(char *str1, char *str2, char *str3, int erno)
 {
 	ft_putstr_fd("minishell: ", 2);
@@ -34,13 +19,6 @@ int	err_msg(char *str1, char *str2, char *str3, int erno)
 	ft_putstr_fd(str2, 2);
 	ft_putendl_fd(str3, 2);
 	return (erno);
-}
-
-void exit_error(const char *msg)
-{
-	perror(msg);
-	//need to care about memory leak
-	exit(1);//Nina
 }
 
 int	syntax_err_msg(char *str1, char *str2, int erno)
