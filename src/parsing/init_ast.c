@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 13:05:22 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/27 18:10:55 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:12:16 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -29,7 +29,8 @@ int	count_args_advanced(t_token *start, t_token *end, t_mini *mini)
 	return (count);
 }
 
-char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split)
+char	*join_tokens_for_arg(t_token **cur_tok_ptr,
+									t_mini *mini, bool allow_split)
 {
 	t_token	*tok;
 	char	*arg;
@@ -73,81 +74,6 @@ char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split)
 }
 
 
-// char	**collect_args(t_token *start, t_token *end, t_mini *mini)
-// {
-// 	int		size;
-// 	char	**args;
-// 	int		i;
-// 	t_token	*prev;
-// 	t_token	*scan;
-
-// 	i = 0;
-// 	size = count_args_advanced(start, end, mini);
-// 	args = ft_calloc(size + 1, sizeof(char *));
-// 	if (!args)
-// 		return NULL;
-// 	while (start && start != end)
-// 	{
-// 		if (start->quote_type != Q_NONE && (!start->str || start->str[0] == '\0'))
-// 		{
-// 			args[i++] = ft_strdup("");
-// 			start = start->next;
-// 			continue ;
-// 		}
-// 		if (start->type == CMD || start->type == UNKNOWN)
-// 		{
-// 			prev = start;
-// 			scan = start;
-// 			char *arg = join_tokens_for_arg(&start, mini, false);
-// 			// fallback: 如果 join 没前进，就手动推进
-// 			if (start == prev)
-// 				start = start->next;
-// 			// 判断拼接内容中是否包含非空的 quoted token
-// 			bool quoted = false;
-// 			while (scan && scan != start)
-// 			{
-// 				if (scan->quote_type != Q_NONE && scan->str && scan->str[0] != '\0')
-// 				{
-// 					quoted = true;
-// 					break;
-// 				}
-// 				scan = scan->next;
-// 			}
-// 			if (quoted)
-// 			{
-// 				// 即使是空，也要保留
-// 				args[i++] = (arg && arg[0]) ? arg : ft_strdup("");
-// 			}
-// 			else
-// 			{
-// 				// 拆分逻辑
-// 				char **split = ft_split(arg, ' ');
-// 				free(arg);
-// 				if (!split || !split[0])
-// 				{
-// 					args[i++] = ft_strdup("");  // 保留空字符串参数
-// 					free_double_tab(split);
-// 				}
-// 				else
-// 				{
-// 					for (int j = 0; split[j]; j++)
-// 						args[i++] = ft_strdup(split[j]);
-// 					free_double_tab(split);
-// 				}
-// 			}
-// 		}
-// 		else if (is_redirection(start->type) && start->next)
-// 		{
-// 			start = start->next->next;
-// 		}
-// 		else
-// 		{
-// 			start = start->next;
-// 		}
-// 	}
-// 	args[i] = NULL;
-// 	return args;
-// }
 static void	process_split_argument(char ***args, int *i, char *arg)
 {
 	char	**split;

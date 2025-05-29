@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/29 12:47:19 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 15:01:44 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -76,7 +76,6 @@ char	*expand_var(const char *str, int *i, t_mini *mini)
 		(*i)++;
 	var = ft_strndup(str + start, *i - start);
 	val = get_env_value(var, mini->env);
-	printf("[expand_var] variable name = '%s'\n", var);
 	free(var);
 	return (val);
 }
@@ -94,7 +93,8 @@ char	*handle_special_case(const char *str)
 	return (ft_strjoin_ff(ft_strdup("$"), after));
 }
 
-char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_dollar_quote)
+char	*expand_arg(const char *str, t_mini *mini,
+						t_quote quote_type, bool is_dollar_quote)
 {
 	char	*result;
 	int		i;
@@ -122,4 +122,3 @@ char	*expand_arg(const char *str, t_mini *mini, t_quote quote_type, bool is_doll
 	}
 	return (result);
 }
-

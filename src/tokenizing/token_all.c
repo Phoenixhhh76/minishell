@@ -44,10 +44,6 @@ bool	has_closing_quote(const char *input, int i, char quote)
 	return (false);
 }
 
-bool	is_token_start(const char *input, int i)
-{
-	return (i == 0 || ft_isspace(input[i - 1]) || is_meta_char(input[i - 1]));
-}
 
 void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, t_mini *mini)
 {
@@ -71,7 +67,7 @@ void fill_current_token(const char *input, t_parse_state *ps, t_token **tokens, 
 		else if ((input[ps->i] == '\'' || input[ps->i] == '"') && \
 							has_closing_quote(input, ps->i, input[ps->i]))
 		{
-			chunk = extract_quoted(input, &ps->i, &part_qt);
+			chunk = extract_quoted(input, &ps->i, &part_qt, mini);
 		}
 		else if (input[ps->i] == '$')
 		{

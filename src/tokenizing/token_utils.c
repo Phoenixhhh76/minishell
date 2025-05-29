@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/25 12:37:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/25 13:15:16 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 14:52:05 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,15 +14,15 @@
 
 t_node	get_token_type(const char *str)
 {
-	if (!strcmp(str, "|"))
+	if (!ft_strcmp(str, "|"))
 		return (PIPE);
-	if (!strcmp(str, ">"))
+	if (!ft_strcmp(str, ">"))
 		return (R_OUT);
-	if (!strcmp(str, "<"))
+	if (!ft_strcmp(str, "<"))
 		return (R_IN);
-	if (!strcmp(str, ">>"))
+	if (!ft_strcmp(str, ">>"))
 		return (R_A);
-	if (!strcmp(str, "<<"))
+	if (!ft_strcmp(str, "<<"))
 		return (HD);
 	return (CMD);
 }
@@ -70,12 +70,11 @@ void	free_token_list(t_token *token)
 	}
 }
 
-/*
-void	print_token_list(t_token *token)
+t_token	*create_t_with_glued(char *str, t_quote qt, bool glued)
 {
-	while (token)
-	{
-		printf("Token: %-10s Type: %d\n", token->str, token->type);
-		token = token->next;
-	}
-} */
+	t_token	*tok;
+
+	tok = create_t(str, qt);
+	tok->glued = glued;
+	return (tok);
+}
