@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/30 12:01:56 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 13:00:57 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -45,12 +45,42 @@ static char	*extract_single_quote(const char *input, int *i)
 // 	return (result);
 // }
 
+// static char	*extract_double_quote(const char *input, int *i, t_mini *mini)
+// {
+// 	char	*result;
+// 	char	*chunk;
+
+// 	result = ft_strdup("");
+// 	if (input[*i] == '$' && (input[*i + 1] == '"' || input[*i + 1] == '\0'))
+// 	{
+// 		(*i)++;
+// 		if (input[*i] == '"')
+// 			(*i)++;
+// 		return (ft_strjoin_ff(result, ft_strdup("$")));
+// 	}
+// 	while (input[*i] && input[*i] != '"')
+// 	{
+// 		if (input[*i] == '$')
+// 			chunk = expand_var(input, i, mini);
+// 		else
+// 			chunk = ft_strndup(&input[(*i)++], 1);
+// 		result = ft_strjoin_ff(result, chunk);
+// 	}
+// 	if (input[*i] == '"')
+// 		(*i)++;
+// 	return (result);
+// }
+
 static char	*extract_double_quote(const char *input, int *i, t_mini *mini)
 {
 	char	*result;
 	char	*chunk;
 
 	result = ft_strdup("");
+	if (!result)
+		return (NULL);
+
+	// 開頭處理 $" or $""
 	if (input[*i] == '$' && (input[*i + 1] == '"' || input[*i + 1] == '\0'))
 	{
 		(*i)++;
@@ -58,10 +88,21 @@ static char	*extract_double_quote(const char *input, int *i, t_mini *mini)
 			(*i)++;
 		return (ft_strjoin_ff(result, ft_strdup("$")));
 	}
+
 	while (input[*i] && input[*i] != '"')
 	{
 		if (input[*i] == '$')
-			chunk = expand_var(input, i, mini);
+		{
+			if (!input[*i + 1] || !(ft_isalpha(input[*i + 1]) || \
+					input[*i + 1] == '_' || input[*i + 1] == '?' || \
+					ft_isdigit(input[*i + 1])))
+			{
+				chunk = ft_strdup("$");
+				(*i)++;
+			}
+			else
+				chunk = expand_var(input, i, mini);
+		}
 		else
 			chunk = ft_strndup(&input[(*i)++], 1);
 		result = ft_strjoin_ff(result, chunk);
@@ -70,6 +111,7 @@ static char	*extract_double_quote(const char *input, int *i, t_mini *mini)
 		(*i)++;
 	return (result);
 }
+
 
 char	*extract_quoted(const char *input, int *i, t_quote *qt, t_mini *mini)
 {

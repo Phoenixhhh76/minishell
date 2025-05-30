@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/13 12:33:03 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 12:32:13 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:39:14 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -115,4 +115,3 @@ void	print_sorted_env_line(const char *entry)
 		write(1, "\n", 1);
 	}
 }
-
