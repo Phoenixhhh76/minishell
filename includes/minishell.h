@@ -164,11 +164,24 @@ char	*expand_heredoc_line(const char *str, t_mini *mini);
 //init_count_token.c//
 
 //init_ast.c//
+char	**collect_args(t_token *start, t_token *end, t_mini *mini);
 
-//args_count.c//
 
 //process_tokens.c//
-
+int		process_token(char **args, int i, t_token *tok, t_mini *mini);
+int		handle_single(char **args, int i, t_token *tok);
+int		handle_expanded(char **args, int i, t_token *tok, t_mini *mini);
+int		add_split(char **args, int i, char *expanded);
+//args_count.c//
+int		count_expanded_split(char *expanded);
+int		count_token_args(t_token *tok, t_mini *mini);
+int		count_args_advanced(t_token *start, t_token *end, t_mini *mini);
+//export_count.c//
+int		count_export_args(t_token *start, t_token *end, t_mini *mini);
+void	fill_export_args(char **args, \
+					t_token *start, t_token *end, t_mini *mini);
+//join_tokens_arg.c//
+char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split);
 
 //init_ast
 void	init_ast(t_mini *mini);
@@ -180,19 +193,12 @@ void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	count_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
 
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
-char	**collect_args(t_token *start, t_token *end, t_mini *mini);
-int		count_args_advanced(t_token *start, t_token *end, t_mini *mini);
-int		count_token_args(t_token *tok, t_mini *mini);
-int		count_expanded_split(char *expanded);
-int		count_export_args(t_token *start, t_token *end, t_mini *mini);
-void	fill_export_args(char **args, \
-					t_token *start, t_token *end, t_mini *mini);
-char	*join_tokens_for_arg(t_token **cur_tok_ptr, \
-							t_mini *mini, bool allow_split);
-int		process_token(char **args, int i, t_token *tok, t_mini *mini);
-int		handle_single(char **args, int i, t_token *tok);
-int		handle_expanded(char **args, int i, t_token *tok, t_mini *mini);
-int		add_split(char **args, int i, char *expanded);
+
+
+
+
+
+
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 12:11:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/20 12:34:08 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/29 19:14:26 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -67,4 +67,17 @@ char	*make_joined_assignment(char **var)
 	joined = ft_strjoin_f(joined, cleaned_val);
 	free(cleaned_val);
 	return (joined);
+}
+
+char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini)
+{
+	int		count;
+	char	**args;
+
+	count = count_export_args(start, end, mini);
+	args = (char **)ft_calloc(count + 1, sizeof(char *));
+	if (!args)
+		return (NULL);
+	fill_export_args(args, start, end, mini);
+	return (args);
 }

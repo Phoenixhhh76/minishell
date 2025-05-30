@@ -29,7 +29,8 @@ BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c \
 PARSING     := $(PARSING_DIR)/parse_pipeline.c \
 					$(PARSING_DIR)/init_ast.c $(PARSING_DIR)/init_mini.c \
 					$(PARSING_DIR)/build_command.c $(PARSING_DIR)/redirections.c \
-					$(PARSING_DIR)/args_count.c $(PARSING_DIR)/process_token.c
+					$(PARSING_DIR)/args_count.c $(PARSING_DIR)/process_token.c \
+					$(PARSING_DIR)/join_tokens_arg.c $(PARSING_DIR)/export_count.c
 
 EXEC        := $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c $(EXEC_DIR)/heredoc_utils.c

@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 20:52:58 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/29 14:42:03 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:01:56 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,12 +26,38 @@ static char	*extract_single_quote(const char *input, int *i)
 	return (chunk);
 }
 
+// static char	*extract_double_quote(const char *input, int *i, t_mini *mini)
+// {
+// 	char	*result;
+// 	char	*chunk;
+
+// 	result = ft_strdup("");
+// 	while (input[*i] && input[*i] != '"')
+// 	{
+// 		if (input[*i] == '$')
+// 			chunk = expand_var(input, i, mini);
+// 		else
+// 			chunk = ft_strndup(&input[(*i)++], 1);
+// 		result = ft_strjoin_ff(result, chunk);
+// 	}
+// 	if (input[*i] == '"')
+// 		(*i)++;
+// 	return (result);
+// }
+
 static char	*extract_double_quote(const char *input, int *i, t_mini *mini)
 {
 	char	*result;
 	char	*chunk;
 
 	result = ft_strdup("");
+	if (input[*i] == '$' && (input[*i + 1] == '"' || input[*i + 1] == '\0'))
+	{
+		(*i)++;
+		if (input[*i] == '"')
+			(*i)++;
+		return (ft_strjoin_ff(result, ft_strdup("$")));
+	}
 	while (input[*i] && input[*i] != '"')
 	{
 		if (input[*i] == '$')
