@@ -12,7 +12,7 @@
 
 #include "../includes/minishell.h"
 
-pid_t g_signal_pid = 0;
+pid_t	g_signal_pid = 0;
 
 int	read_and_prepare_line(char **line, t_mini *mini)
 {
@@ -44,10 +44,7 @@ bool	only_spaces(const char *line)
 int	check_line(char *line, t_mini *mini)
 {
 	if (check_unclosed_quotes(line))
-	{
-		mini->last_exit = 2;
-		return (0);
-	}
+		return (mini->last_exit = 2, 0);
 	if (only_spaces(line))
 		return (0);
 	mini->token = tokenize_input(line, mini);
@@ -70,7 +67,6 @@ int	check_line(char *line, t_mini *mini)
 		return (-2);
 	return (1);
 }
-
 
 int	main(int ac, char **av, char **envp)
 {

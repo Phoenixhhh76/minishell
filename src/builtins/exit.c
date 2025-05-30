@@ -12,100 +12,17 @@
 
 #include "../../includes/minishell.h"
 
-bool	ft_is_long_limits(const char *nptr)
+int	ft_exit_errors(t_mini *mini, t_cmd *cmd)
 {
-	int			i;
-	int			sign;
-	int			digit;
-	long long	nb;
-
-	i = 0;
-	nb = 0;
-	sign = 1;
-	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
-		i++;
-	if (nptr[i] == '+' || nptr[i] == '-')
-	{
-		if (nptr[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (nptr[i] >= '0' && nptr[i] <= '9')
-	{
-		digit = nptr[i] - 48;
-		if (sign == 1 && (nb > (LLONG_MAX - digit) / 10))
-			return (false);
-		if (sign == -1 && (-nb < (LLONG_MIN + digit) / 10))
-			return (false);
-		nb = nb * 10 + (nptr[i] - 48);
-		i++;
-	}
-	return (true);
-}
-
-long long	ft_atoll(const char *nptr)
-{
-	int			i;
-	int			sign;
-	long long	nb;
-
-	i = 0;
-	nb = 0;
-	sign = 1;
-	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
-		i++;
-	if (nptr[i] == '+' || nptr[i] == '-')
-	{
-		if (nptr[i] == '-')
-			sign = -1;
-		i++;
-	}
-	while (nptr[i] >= '0' && nptr[i] <= '9')
-	{
-		nb = nb * 10 + (nptr[i] - 48);
-		i++;
-	}
-	return (nb * sign);
-}
-
-static bool	ft_isnumeric(char *str)
-{
-	int	i;
-
-	i = 0;
-	if (!str || !*str)
-		return (false);
-	if (str[i] == '-' || str[i] == '+')
-		i++;
-	while (str[i])
-	{
-		if (!ft_isdigit(str[i]))
-			return (false);
-		i++;
-	}
-	return (true);
-}
-
-int	args_count(char **args)
-{
-	int	i;
-
-	i = 0;
-	while (args[i])
-		i++;
-	return (i);
-}
-
-int	ft_exit(t_mini *mini, t_cmd *cmd)
-{
-	int	code;
-
-	code = 0;
 	if (cmd->cmd_args[1] && !ft_isnumeric(cmd->cmd_args[1]))
 	{
 		if (isatty(STDIN_FILENO))
 			printf("exit\n");
 		ft_putstr_fd("minishell: exit: numeric argument required\n", 2);
+		if (mini->cpy_in_fd != -1)
+			close(mini->cpy_in_fd);
+		if (mini->cpy_out_fd != -1)
+			close(mini->cpy_out_fd);
 		safe_exit(mini, 2);
 	}
 	if (args_count(cmd->cmd_args) > 2)
@@ -113,9 +30,16 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 		if (isatty(STDIN_FILENO))
 			printf("exit\n");
 		ft_putstr_fd("minishell: exit: too many arguments\n", 2);
-		//ft_update_last_exit_value(mini, 1);
 		return (1);
 	}
+	return (0);
+}
+
+int	get_exit_code(t_mini *mini, t_cmd *cmd)
+{
+	int	code;
+
+	code = 0;
 	if (ft_isnumeric(cmd->cmd_args[1]))
 	{
 		if (!ft_is_long_limits(cmd->cmd_args[1]))
@@ -123,20 +47,32 @@ int	ft_exit(t_mini *mini, t_cmd *cmd)
 			if (isatty(STDIN_FILENO))
 				printf("exit\n");
 			ft_putstr_fd("minishell: exit: numeric arguments required\n", 2);
+			if (mini->cpy_in_fd != -1)
+				close(mini->cpy_in_fd);
+			if (mini->cpy_out_fd != -1)
+				close(mini->cpy_out_fd);
 			safe_exit(mini, 2);
 		}
 		code = ft_atoll(cmd->cmd_args[1]);
 		if (code < 0)
 			code = 256 + code;
 	}
+	return (code);
+}
 
+int	ft_exit(t_mini *mini, t_cmd *cmd)
+{
+	int	code;
+
+	if (ft_exit_errors(mini, cmd))
+		return (1);
+	code = get_exit_code(mini, cmd);
 	if (isatty(STDIN_FILENO))
 		printf("exit\n");
 	if (mini->cpy_in_fd != -1)
-		close (mini->cpy_in_fd);
+		close(mini->cpy_in_fd);
 	if (mini->cpy_out_fd != -1)
-		close (mini->cpy_out_fd);
-
+		close(mini->cpy_out_fd);
 	safe_exit(mini, (unsigned char)code);
 	return (0);
 }

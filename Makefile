@@ -24,7 +24,7 @@ BUILTINS    := $(BUILT_DIR)/echo.c $(BUILT_DIR)/cd.c \
 					$(BUILT_DIR)/env.c $(BUILT_DIR)/unset.c \
 					$(BUILT_DIR)/builtins_utils.c $(BUILT_DIR)/export_utils.c \
 					$(BUILT_DIR)/export_parser.c $(BUILT_DIR)/export_single.c \
-					$(BUILT_DIR)/exit.c
+					$(BUILT_DIR)/exit.c $(BUILT_DIR)/exit_utils.c
 
 PARSING     := $(PARSING_DIR)/parse_pipeline.c $(PARSING_DIR)/parse_pipeline_utils.c \
 					$(PARSING_DIR)/init_ast.c $(PARSING_DIR)/init_mini.c \
