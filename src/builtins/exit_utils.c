@@ -53,7 +53,6 @@ bool	ft_is_long_limits(const char *nptr)
 	return (true);
 }
 
-
 bool	ft_isnumeric(char *str)
 {
 	int	i;
