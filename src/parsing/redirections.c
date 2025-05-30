@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini)
 {

@@ -1,3 +1,15 @@
+/* ************************************************************************** */
+/*                                                                            */
+/*                                                        :::      ::::::::   */
+/*   minishell.h                                        :+:      :+:    :+:   */
+/*                                                    +:+ +:+         +:+     */
+/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*                                                +#+#+#+#+#+   +#+           */
+/*   Created: 2025-05-30 12:12:39 by ndabbous          #+#    #+#             */
+/*   Updated: 2025-05-30 12:12:39 by ndabbous         ###   ########.fr       */
+/*                                                                            */
+/* ************************************************************************** */
+
 #ifndef MINISHELL_H
 # define MINISHELL_H
 
@@ -69,7 +81,6 @@ typedef struct s_cmd
 	t_quote	*heredocs_quote;
 }	t_cmd;
 
-
 typedef struct s_ast
 {
 	t_token			ast_tok;
@@ -96,7 +107,132 @@ typedef struct s_mini
 typedef struct s_pipe_ctx
 {
 	t_token	*start;
-	t_token	*end;
+	t_token	*end;# minishell
+yeah yeah
+
+## ✅ **Basic Git Collaboration Workflow (Two People)**
+
+### 🔧 1. **Start from a clean `main`**
+Everyone should sync with the latest `main` before doing anything:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+---
+
+### 🌿 2. **Create a feature/fix branch**
+Always work in a new branch named after your task.
+
+```bash
+git checkout -b feature/ast           # for new features
+# or
+git checkout -b fix/lexer-bug         # for bug fixes
+```
+
+✅ **Branch naming tips:**
+- Use `feature/xxx` for new features
+- Use `fix/xxx` for bug fixes
+- Use `refactor/xxx` for code clean-up
+- No spaces or special characters (`_` or `-` are okay)
+
+---
+
+### ✍️ 3. **Commit your work**
+Once you make changes:
+
+```bash
+git add .
+git commit -m "feat: add basic AST structure"
+```
+
+✅ Good commit message format:
+- `feat:` for features
+- `fix:` for bug fixes
+- `refactor:` for code cleanup
+- `docs:` for documentation
+
+---
+
+### 🚀 4. **Push your branch to GitHub**
+
+```bash
+git push -u origin feature/ast
+```
+
+Then go to GitHub and **create a Pull Request (PR)**.
+
+---
+
+### 🔍 5. **Code review + Merge**
+Your teammate reviews the PR and merges it into `main`.
+
+---
+
+### 🔄 6. **Update your local main before next task**
+
+```bash
+git checkout main
+git pull origin main
+```
+
+---
+
+## 📁 Suggested Directory Structure for minishell
+
+```bash
+includes/
+    minishell.h
+    ast.h
+    lexer.h
+    parser.h
+
+src/
+    ast/
+    lexer/
+    parser/
+    builtin/
+    exec/
+
+Makefile
+README.md
+```
+
+---
+
+## 🧠 Team Tip
+
+When you're not sure who's doing what, write it down in a shared `CONTRIBUTORS.md` or a GitHub Project/Issue:
+
+```markdown
+### Phoenix:
+- Implement `ast.h` and `parser.c`
+
+### Nina:
+- Work on `lexer.c` and `tokenizer`
+
+
+
+int main()
+{
+    blablabla
+    init_mini();
+}
+
+void    ini_mini()
+{
+    env = babla;
+    av;
+    ac;
+    heredoc;
+    ast = init_ast();
+}
+
+void    init_ast()
+(
+    type = found_token()
+)
 	t_token	*pipe_pos;
 	t_mini	*mini;
 	t_ast	*node;
@@ -107,7 +243,6 @@ typedef struct s_parse_state
 	int			i;
 	bool		glued;
 }	t_parse_state;
-
 
 //init_mini
 void	init_mini(t_mini *mini, char **av, char **env);
@@ -193,12 +328,6 @@ void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	count_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
 
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
-
-
-
-
-
-
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
 //builtins
@@ -233,11 +362,10 @@ int		handle_var_assignment(char **env, \
 void	add_to_exp_list(char ***exp_list, const char *key);
 void	remove_from_exp_list(char ***exp_list, const char *key);
 //builtin exit
-int			ft_exit(t_mini *mini, t_cmd *cmd);
-int			args_count(char **args);
-bool		ft_isnumeric(char *str);
-long long	ft_atoll(const char *nptr);
-bool		ft_is_long_limits(const char *nptr);
+int		ft_exit(t_mini *mini, t_cmd *cmd);
+int		args_count(char **args);
+bool	ft_isnumeric(char *str);
+bool	ft_is_long_limits(const char *nptr);
 
 //exec
 void	exec_or_builtin(t_mini *mini);
@@ -264,24 +392,17 @@ int		**create_heredoc_pipe(int heredoc_nb);
 void	close_all_heredocs(t_ast *ast);
 void	close_all_heredoc_pipes(t_cmd *cmd);
 
-
-
-
-
-
-
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);
 int		parse_pipeline(t_token *start, t_token *end, t_mini *mini, t_ast *node);
-
 int		handle_pipe_syntax_error(t_ast *node);
 int		init_pipe_node(t_ast *node);
 int		handle_left_branch(t_token *start, t_token *pipe_pos, \
 	t_mini *mini, t_ast *node);
 int		handle_right_branch(t_token *pipe_pos, t_token *end, \
 	t_mini *mini, t_ast *node);
-int		handle_cmd_node(t_token *start, t_token *end, t_mini *mini, t_ast *node);
-
+int		handle_cmd_node(t_token *start, t_token *end, \
+	t_mini *mini, t_ast *node);
 
 //--------utils--------//
 //utils
@@ -317,6 +438,5 @@ void	print_token_list(t_token *token);
 void	print_ast(t_ast *node, int depth);
 void	debug_tokens_type(t_token *tok);
 void	debug_tokens(t_token *tok);
-
 
 #endif

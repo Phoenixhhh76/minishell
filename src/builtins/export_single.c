@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 {

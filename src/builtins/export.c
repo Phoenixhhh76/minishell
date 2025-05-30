@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 int	handle_var_assignment(char **env, char *joined, char ***mini_env, int index)
 {
