@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 static bool	should_break(char *arg, t_token *tok, t_quote prev_quote)
 {

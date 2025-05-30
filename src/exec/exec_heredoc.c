@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 static void	handle_heredoc_interrupt(t_mini *mini, t_cmd *cmd)
 {

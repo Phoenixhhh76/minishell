@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd)
 {
