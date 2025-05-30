@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/29 14:41:41 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 11:47:55 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -52,9 +52,19 @@ char	*parse_token_chunk(const char *input,
 							has_closing_quote(input, ps->i, input[ps->i]))
 		chunk = extract_quoted(input, &ps->i, part_qt, mini);
 	else if (input[ps->i] == '$')
-		chunk = expand_var(input, &ps->i, mini);
+	{
+		if (!input[ps->i + 1] || !(ft_isalpha(input[ps->i + 1]) || \
+							input[ps->i + 1] == '_' || input[ps->i + 1] == '?'))
+		{
+			*part_qt = Q_D;
+			ps->i++;
+			return (ft_strdup("$"));
+		}
+		else
+			return (expand_var(input, &ps->i, mini));
+	}
 	else
-		chunk = extract_plain(input, &ps->i);
+		chunk = (extract_plain(input, &ps->i));
 	return (chunk);
 }
 
@@ -80,7 +90,7 @@ void	fill_current_token(const char *input,
 		if (qt == Q_NONE)
 			qt = part_qt;
 	}
-	if (arg[0] || qt != Q_NONE)
+	if (arg && (arg[0] || qt != Q_NONE))
 		append_t(tokens, create_t_with_glued(arg, qt, ps->glued));
 	else
 		free(arg);

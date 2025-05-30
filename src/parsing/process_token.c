@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/20 11:40:11 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/26 18:23:59 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 12:04:19 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -14,8 +14,6 @@
 
 int	process_token(char **args, int i, t_token *tok, t_mini *mini)
 {
-	//printf("[DEBUG] write args[%d] = %s\n", i, args[i]);
-
 	if (tok->quote_type == Q_S)
 		return (handle_single(args, i, tok));
 	return (handle_expanded(args, i, tok, mini));
@@ -54,14 +52,10 @@ int	handle_expanded(char **args, int i, t_token *tok, t_mini *mini)
 	expanded = expand_if_needed(tok, mini);
 	if (!expanded)
 		return (i);
-	if (tok->quote_type == Q_D || ft_strchr(tok->str, '"') ||
+	if (tok->quote_type == Q_D || ft_strchr(tok->str, '"') || \
 		tok->quote_type == Q_S || ft_strchr(tok->str, '\''))
-		args[i++] = expanded;  // even if "", still added
+		args[i++] = expanded;
 	else
 		i = add_split(args, i, expanded);
 	return (i);
 }
-
-
-
-
