@@ -36,7 +36,10 @@ void	handle_exit_status(t_mini *mini, int status)
 		if (WTERMSIG(status) == SIGINT)
 			mini->last_exit = 130;
 		else if (WTERMSIG(status) == SIGQUIT)
+		{
+			write(STDOUT_FILENO, "Quit (core dumped)\n", 19);
 			mini->last_exit = 131;
+		}
 	}
 	else if (WIFEXITED(status))
 		mini->last_exit = WEXITSTATUS(status);
