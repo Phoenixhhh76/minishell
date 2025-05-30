@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 /* for "'$USER'" */
 char	*expand_if_needed(t_token *token, t_mini *mini)

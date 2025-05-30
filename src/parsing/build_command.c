@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../includes/minishell.h"
+#include "minishell.h"
 
 void	set_args_and_path(t_cmd *cmd, t_token *start, \
 	t_token *end, t_mini *mini)

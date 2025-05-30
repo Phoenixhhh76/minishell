@@ -44,7 +44,7 @@ UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/error.c \
 TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c \
 					$(TOKEN_DIR)/helper.c $(TOKEN_DIR)/extract_quoted.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c \
-					$(SRC_DIR)/print_utils.c  $(SRC_DIR)/print_ast.c
+#					$(SRC_DIR)/print_utils.c  $(SRC_DIR)/print_ast.c
 
 SRCS = $(BUILTINS) $(PARSING) $(EXEC) $(EXPAND) $(UTILS) $(TOKENIZING) $(COMMON)
 

@@ -10,7 +10,7 @@
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "../../includes/minishell.h"
+#include "minishell.h"
 
 void	exec_pipe_child_left(t_mini *mini, t_ast *node, char **envp)
 {
