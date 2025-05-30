@@ -93,7 +93,7 @@ void	print_ast(t_ast *node, int depth)
 		return;
 
 	print_indent(depth);
-	print_token_type(node->ast_token.type);
+	print_token_type(node->ast_tok.type);
 
 	if (node->cmd)
 	{
@@ -130,8 +130,8 @@ void	print_ast(t_ast *node, int depth)
 
 // 	for (int i = 0; i < level; i++) printf("  ");
 // 	printf("Node: %-10s (type: %d)\n",
-// 		ast->ast_token.str ? ast->ast_token.str : "(null)",
-// 		ast->ast_token.type);
+// 		ast->ast_tok.str ? ast->ast_tok.str : "(null)",
+// 		ast->ast_tok.type);
 
 // 	if (ast->cmd)
 // 	{

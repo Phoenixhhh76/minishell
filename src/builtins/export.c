@@ -95,7 +95,7 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 	{
 		if (!cmd->cmd_args[i] || cmd->cmd_args[i][0] == '\0')
 		{
-			printf("[DEBUG] export invalid arg: [%s]\n", cmd->cmd_args[i]);
+		//	printf("[DEBUG] export invalid arg: [%s]\n", cmd->cmd_args[i]);
 			export_err_msg(cmd->cmd_args[i], 1);
 			status = 1;
 			i++;
@@ -103,7 +103,7 @@ int	ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini)
 		}
 		else if (handle_single_export(cmd->cmd_args[i], mini_env, mini) != 0)
 			status = 1;
-		printf("[DEBUG export loop] arg: [%s]\n", cmd->cmd_args[i]);
+		//printf("[DEBUG export loop] arg: [%s]\n", cmd->cmd_args[i]);
 		i++;
 	}
 	mini->last_exit = status;

@@ -22,7 +22,7 @@ char	**get_heredoc(int nb, t_token *start, t_token *end, t_cmd *cmd)
 	tmp = start;
 	tab_heredocs = (char **)ft_calloc(nb + 1, sizeof(char *));
 	if (!tab_heredocs)
-		return (NULL);//calloc_error
+		return (NULL);
 	cmd->heredocs_quote = (t_quote *)ft_calloc(nb, sizeof(t_quote));
 	if (!cmd->heredocs_quote)
 		return (NULL);
@@ -45,7 +45,6 @@ int	**create_heredoc_pipe(int heredoc_nb)
 {
 	int	i;
 	int	**tab_pipe;
-//	int	flag_error;
 
 	i = 0;
 	tab_pipe = (int **)ft_calloc(heredoc_nb, sizeof(int *));
@@ -56,15 +55,15 @@ int	**create_heredoc_pipe(int heredoc_nb)
 		tab_pipe[i] = (int *)ft_calloc(2, sizeof(int));
 		if (!tab_pipe[i])
 		{
-			perror("Heredoc pipe calloc");
-			return (NULL); //error calloc
+			ft_free_tab_int(tab_pipe, i);
+			perror("Heredoc : calloc error");
+			return (NULL);
 		}
-		// flag_error = -1;
-		// if (flag_error == -1)
 		if (pipe(tab_pipe[i]) == -1)
 		{
-			perror("Heredoc pipe");
-			return (NULL); //pipe error
+			ft_free_tab_int(tab_pipe, i);
+			perror("Heredoc : pipe error");
+			return (NULL);
 		}
 		i++;
 	}
@@ -77,12 +76,12 @@ void	close_all_heredocs(t_ast *ast)
 
 	if (!ast)
 		return ;
-	if (ast->ast_token.type == PIPE)
+	if (ast->ast_tok.type == PIPE)
 	{
 		close_all_heredocs(ast->left);
 		close_all_heredocs(ast->right);
 	}
-	else if (ast->ast_token.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
+	else if (ast->ast_tok.type == CMD && ast->cmd && ast->cmd->heredoc_nb > 0)
 	{
 		i = 0;
 		while (i < ast->cmd->heredoc_nb)

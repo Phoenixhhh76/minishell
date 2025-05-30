@@ -68,7 +68,7 @@ int	add_var_to_env(char **env, char *cmd, char ***mini_env)
 		index++;
 	new_env = (char **)ft_calloc(index + 2, sizeof(char *));
 	if (!new_env)
-		return (-1); //alloc error
+		return (-1);
 	while (i < index)
 	{
 		new_env[i] = ft_strdup(env[i]);

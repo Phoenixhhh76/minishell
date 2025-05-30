@@ -81,4 +81,3 @@ char	*resolve_cmd_path(char *cmd, char **envp)
 	free_double_tab(paths);
 	return (NULL);
 }
-

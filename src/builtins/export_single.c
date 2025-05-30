@@ -26,7 +26,6 @@ int	handle_single_export(char *arg, char ***mini_env, t_mini *mini)
 		should_store_unassigned_var(arg, env, mini);
 		return (0);
 	}
-	printf("[DEBUG export] checking arg: [%s]\n", arg);
 	return (handle_var_with_equal(arg, env, mini_env, mini));
 }
 

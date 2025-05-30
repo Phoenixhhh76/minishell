@@ -72,7 +72,7 @@ typedef struct s_cmd
 
 typedef struct s_ast
 {
-	t_token			ast_token;
+	t_token			ast_tok;
 	int				fd[2];
 	t_cmd			*cmd;
 	struct s_ast	*left;
@@ -229,11 +229,18 @@ void	add_to_exp_list(char ***exp_list, const char *key);
 void	remove_from_exp_list(char ***exp_list, const char *key);
 
 //exec
+void	exec_or_builtin(t_mini *mini);
+bool	is_there_pipe(t_mini *mini);
+bool	has_redirection(t_cmd *cmd);
+void	handle_exit_status(t_mini *mini, int status);
+
 void	handle_redirects(t_cmd *cmd);
 bool	ft_builtin(t_ast *ast);
 bool	ft_is_builtin(char *arg);
 int		ft_run_builtin(t_mini *mini, t_cmd *cmd);
+
 void	exec_ast(t_mini *mini, t_ast *node, char **envp);
+void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp);
 char	*resolve_cmd_path(char *cmd, char **envp); //add
 
 //heredocs
@@ -254,13 +261,25 @@ void	close_all_heredoc_pipes(t_cmd *cmd);
 
 //parsing
 t_token	*find_next_pipe(t_token *start, t_token *end);
-void	parse_pipeline(t_token *start, t_token *end, t_mini *mini, t_ast *node);
+int		parse_pipeline(t_token *start, t_token *end, t_mini *mini, t_ast *node);
 
+int		handle_pipe_syntax_error(t_ast *node);
+int		init_pipe_node(t_ast *node);
+int		handle_left_branch(t_token *start, t_token *pipe_pos, \
+	t_mini *mini, t_ast *node);
+int		handle_right_branch(t_token *pipe_pos, t_token *end, \
+	t_mini *mini, t_ast *node);
+int		handle_cmd_node(t_token *start, t_token *end, t_mini *mini, t_ast *node);
+
+
+//--------utils--------//
 //utils
 char	*ft_strndup(const char *s, size_t n);
 char	*append_char(char *result, char c);
 int		ft_isspace(char c);
 int		begins_with_digits(char *str);
+
+//free.c
 void	free_double_tab(char **arr);
 void	ft_free_tab_int(int **tab, int size);
 void	free_strs(char *str, char **strs);
@@ -273,7 +292,7 @@ int		err_msg(char *str1, char *str2, char *str3, int erno);
 int		syntax_err_msg(char *str1, char *str2, int erno);
 int		export_err_msg(char *arg, int erno);
 
-//clean
+//clean.c
 void	safe_exit(t_mini *mini, int code);
 void	safe_cleanup(t_mini *mini, char *line);
 void	free_ast(t_ast *ast);
