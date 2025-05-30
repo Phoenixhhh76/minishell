@@ -165,8 +165,6 @@ char	*expand_heredoc_line(const char *str, t_mini *mini);
 
 //init_ast.c//
 char	**collect_args(t_token *start, t_token *end, t_mini *mini);
-
-
 //process_tokens.c//
 int		process_token(char **args, int i, t_token *tok, t_mini *mini);
 int		handle_single(char **args, int i, t_token *tok);
@@ -182,6 +180,7 @@ void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
 //join_tokens_arg.c//
 char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split);
+
 
 //init_ast
 void	init_ast(t_mini *mini);
