@@ -37,7 +37,7 @@ EXEC        := $(EXEC_DIR)/exec_or_builtins.c $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)
 					$(EXEC_DIR)/exec_utils.c $(EXEC_DIR)/exec_cmd_node.c $(EXEC_DIR)/handle_redirect.c
 
 EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c \
-					$(EXPAND_DIR)/expand_arg_quote.c
+					$(EXPAND_DIR)/expand_arg_quote.c $(EXPAND_DIR)/expand_arg_2.c
 UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/error.c \
 					$(UTILS_DIR)/str.c $(UTILS_DIR)/clean.c
 

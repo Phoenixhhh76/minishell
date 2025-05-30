@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:12:39 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/30 15:37:01 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 15:47:55 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -152,6 +152,7 @@ t_token	*create_t_with_glued(char *str, t_quote qt, bool glued);
 void	free_token_list(t_token *token);
 t_token	*create_t(char *str, t_quote quote_type);
 void	append_t(t_token **head, t_token *new);
+char	*handle_special_case(const char *str);
 
 //--------expand--------//
 //expand_arg.c//
@@ -169,7 +170,9 @@ char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
 char	*handle_exit_code(char *result, int *i, t_mini *mini);
 char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
 char	*expand_heredoc_line(const char *str, t_mini *mini);
-
+bool	handle_quoted_empty_token(char **arg_slot, t_token **start_ptr);
+void	process_argument_token(char ***args, \
+				int *i, t_token **start_ptr, t_mini *mini);
 //-----------parsing-----------//
 //init_count_token.c//
 
