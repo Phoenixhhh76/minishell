@@ -107,7 +107,132 @@ typedef struct s_mini
 typedef struct s_pipe_ctx
 {
 	t_token	*start;
-	t_token	*end;
+	t_token	*end;# minishell
+yeah yeah
+
+## ✅ **Basic Git Collaboration Workflow (Two People)**
+
+### 🔧 1. **Start from a clean `main`**
+Everyone should sync with the latest `main` before doing anything:
+
+```bash
+git checkout main
+git pull origin main
+```
+
+---
+
+### 🌿 2. **Create a feature/fix branch**
+Always work in a new branch named after your task.
+
+```bash
+git checkout -b feature/ast           # for new features
+# or
+git checkout -b fix/lexer-bug         # for bug fixes
+```
+
+✅ **Branch naming tips:**
+- Use `feature/xxx` for new features
+- Use `fix/xxx` for bug fixes
+- Use `refactor/xxx` for code clean-up
+- No spaces or special characters (`_` or `-` are okay)
+
+---
+
+### ✍️ 3. **Commit your work**
+Once you make changes:
+
+```bash
+git add .
+git commit -m "feat: add basic AST structure"
+```
+
+✅ Good commit message format:
+- `feat:` for features
+- `fix:` for bug fixes
+- `refactor:` for code cleanup
+- `docs:` for documentation
+
+---
+
+### 🚀 4. **Push your branch to GitHub**
+
+```bash
+git push -u origin feature/ast
+```
+
+Then go to GitHub and **create a Pull Request (PR)**.
+
+---
+
+### 🔍 5. **Code review + Merge**
+Your teammate reviews the PR and merges it into `main`.
+
+---
+
+### 🔄 6. **Update your local main before next task**
+
+```bash
+git checkout main
+git pull origin main
+```
+
+---
+
+## 📁 Suggested Directory Structure for minishell
+
+```bash
+includes/
+    minishell.h
+    ast.h
+    lexer.h
+    parser.h
+
+src/
+    ast/
+    lexer/
+    parser/
+    builtin/
+    exec/
+
+Makefile
+README.md
+```
+
+---
+
+## 🧠 Team Tip
+
+When you're not sure who's doing what, write it down in a shared `CONTRIBUTORS.md` or a GitHub Project/Issue:
+
+```markdown
+### Phoenix:
+- Implement `ast.h` and `parser.c`
+
+### Nina:
+- Work on `lexer.c` and `tokenizer`
+
+
+
+int main()
+{
+    blablabla
+    init_mini();
+}
+
+void    ini_mini()
+{
+    env = babla;
+    av;
+    ac;
+    heredoc;
+    ast = init_ast();
+}
+
+void    init_ast()
+(
+    type = found_token()
+)
 	t_token	*pipe_pos;
 	t_mini	*mini;
 	t_ast	*node;
@@ -188,9 +313,11 @@ int		count_args_advanced(t_token *start, t_token *end, t_mini *mini);
 int		count_export_args(t_token *start, t_token *end, t_mini *mini);
 void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
-char	*join_tokens_for_arg(t_token **cur_tok_ptr, \
-	t_mini *mini, bool allow_split);
-
+//join_tokens_arg.c//
+char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split);
+bool	handle_quoted_empty_token(char **arg_slot, t_token **start_ptr);
+void	process_argument_token(char ***args, int *i, t_token **start_ptr, t_mini *mini);
+char	*collect_tokens(char *arg, t_token **tok, t_mini *mini);
 //init_ast
 void	init_ast(t_mini *mini);
 
