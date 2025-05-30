@@ -12,22 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-// int	ft_env(t_cmd *cmd, char ***envp)
-// {
-// 	int		i;
-// 	char	**env;
-
-// 	i = 0;
-// 	env = *envp;
-// 	(void)cmd; //maybe needed to check options
-// 	while (env[i])
-// 	{
-// 		printf("%s\n", env[i]);
-// 		i++;
-// 	}
-// 	return (0);
-// }
-
 int	ft_env(t_cmd *cmd, char ***envp)
 {
 	int		i;
@@ -42,10 +26,9 @@ int	ft_env(t_cmd *cmd, char ***envp)
 			write(STDOUT_FILENO, "\n", 1) < 0)
 		{
 			perror("env: write error");
-			return (125); //I/O error
+			return (125);
 		}
 		i++;
 	}
 	return (0);
 }
-

@@ -220,7 +220,6 @@ int		ft_export(t_cmd *cmd, char ***mini_env, t_mini *mini);
 void	print_export_env(char **env, char **exp_list);
 char	**clone_and_sort_env(char **env);
 void	print_sorted_env_line(const char *entry);
-int		ft_exit(t_mini *mini, t_cmd *cmd);
 int		handle_single_export(char *arg, char ***mini_env, t_mini *mini);
 void	should_store_unassigned_var(char *arg, char **env, t_mini *mini);
 int		handle_var_with_equal(char *arg, \
@@ -232,6 +231,12 @@ int		handle_var_assignment(char **env, \
 					char *joined, char ***mini_env, int index);
 void	add_to_exp_list(char ***exp_list, const char *key);
 void	remove_from_exp_list(char ***exp_list, const char *key);
+//builtin exit
+int			ft_exit(t_mini *mini, t_cmd *cmd);
+int			args_count(char **args);
+bool		ft_isnumeric(char *str);
+long long	ft_atoll(const char *nptr);
+bool		ft_is_long_limits(const char *nptr);
 
 //exec
 void	exec_or_builtin(t_mini *mini);

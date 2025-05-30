@@ -12,6 +12,16 @@
 
 #include "../../includes/minishell.h"
 
+int	env_len(char **env)
+{
+	int	i;
+
+	i = 0;
+	while (env && env[i])
+		i++;
+	return (i);
+}
+
 int	rm_var_from_env(char **env, char ***mini_env, int be_removed)
 {
 	int		i;
@@ -20,12 +30,9 @@ int	rm_var_from_env(char **env, char ***mini_env, int be_removed)
 
 	i = 0;
 	j = 0;
-	while (env && env[i])
-		i++;
-	new_env = (char **)ft_calloc(i + 1, sizeof(char *));
+	new_env = (char **)ft_calloc(env_len(env) + 1, sizeof(char *));
 	if (!new_env)
-		return (-1); //alloc error
-	i = 0;
+		return (new_env = NULL, -2);
 	while (env[i])
 	{
 		if (i != be_removed)
@@ -50,35 +57,6 @@ int	unset_err_msg(char *arg)
 	ft_putstr_fd("': not a valid identifier\n", 2);
 	return (1);
 }
-/*
-int	ft_unset(t_cmd *cmd, char ***mini_env)
-{
-	int		i;
-	int		env_index;
-	char	**env;
-	int		status;
-
-	i = 1;
-	status = 0;
-
-	if (!cmd || !cmd->cmd_args || !cmd->cmd_args[1])
-		return (0);
-
-	while (cmd->cmd_args[i])
-	{
-		if (!is_valid_var_name(cmd->cmd_args[i]))
-			status = unset_err_msg(cmd->cmd_args[i]);
-		else
-		{
-			env = *mini_env;
-			env_index = does_var_exist(env, cmd->cmd_args[i]);
-			if (env_index >= 0)
-				rm_var_from_env(env, mini_env, env_index);
-		}
-		i++;
-	}
-	return (status);
-} */
 
 int	ft_unset(t_cmd *cmd, t_mini *mini)
 {
@@ -92,7 +70,8 @@ int	ft_unset(t_cmd *cmd, t_mini *mini)
 		return (0);
 	while (cmd->cmd_args[i])
 	{
-		if (!is_valid_var_name(cmd->cmd_args[i]) || ft_strchr(cmd->cmd_args[i], '='))
+		if (!is_valid_var_name(cmd->cmd_args[i]) \
+		|| ft_strchr(cmd->cmd_args[i], '='))
 			status = unset_err_msg(cmd->cmd_args[i]);
 		else
 		{
@@ -106,4 +85,3 @@ int	ft_unset(t_cmd *cmd, t_mini *mini)
 	}
 	return (status);
 }
-
