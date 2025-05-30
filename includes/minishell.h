@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-30 12:12:39 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-05-30 12:12:39 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/05/30 12:12:39 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/05/30 15:37:01 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -199,7 +199,7 @@ void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	handle_redir_out(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	count_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
-
+int		process_token(char **args, int i, t_token *tok, t_mini *mini);
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
