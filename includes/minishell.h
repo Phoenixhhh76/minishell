@@ -180,8 +180,9 @@ void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
 //join_tokens_arg.c//
 char	*join_tokens_for_arg(t_token **cur_tok_ptr, t_mini *mini, bool allow_split);
-
-
+bool	handle_quoted_empty_token(char **arg_slot, t_token **start_ptr);
+void	process_argument_token(char ***args, int *i, t_token **start_ptr, t_mini *mini);
+char	*collect_tokens(char *arg, t_token **tok, t_mini *mini);
 //init_ast
 void	init_ast(t_mini *mini);
 

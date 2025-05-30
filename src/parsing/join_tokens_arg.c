@@ -6,22 +6,36 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/29 19:08:42 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/30 12:03:30 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 15:01:32 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../includes/minishell.h"
 
+// static bool	should_break(char *arg, t_token *tok, t_quote prev_quote)
+// {
+// 	if (arg[0] != '\0' && !tok->glued && prev_quote != Q_NONE)
+// 		return (true);
+// 	if (arg[0] != '\0' && !tok->glued)
+// 		return (true);
+// 	return (false);
+// }
+
 static bool	should_break(char *arg, t_token *tok, t_quote prev_quote)
 {
-	if (arg[0] != '\0' && !tok->glued && prev_quote != Q_NONE)
+	if (arg[0] == '\0')
+		return (false);
+	if (tok->glued)
+		return (false);
+	if (ft_strcmp(arg, "$") == 0 && tok->quote_type == Q_NONE && \
+												ft_isalpha(tok->str[0]))
 		return (true);
-	if (arg[0] != '\0' && !tok->glued)
-		return (true);
-	return (false);
+	if (prev_quote != Q_NONE || tok->quote_type != Q_NONE)
+		return (false);
+	return (true);
 }
 
-static char	*collect_tokens(char *arg, t_token **tok, t_mini *mini)
+char	*collect_tokens(char *arg, t_token **tok, t_mini *mini)
 {
 	t_quote	prev_quote;
 	char	*expanded;

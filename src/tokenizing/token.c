@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/30 11:47:55 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 14:56:30 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -86,6 +86,8 @@ void	fill_current_token(const char *input,
 		chunk = parse_token_chunk(input, ps, &part_qt, mini);
 		if (!chunk)
 			break ;
+		if (ft_strcmp(chunk, "$") == 0)
+			ps->glued = false;
 		arg = ft_strjoin_ff(arg, chunk);
 		if (qt == Q_NONE)
 			qt = part_qt;
