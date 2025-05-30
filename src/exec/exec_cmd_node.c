@@ -35,7 +35,7 @@ static void	check_cmd_path_access(t_mini *mini, t_cmd *cmd)
 	}
 }
 
-static void	try_execve(t_mini *mini, t_cmd *cmd, char **envp)
+static void	ft_execve(t_mini *mini, t_cmd *cmd, char **envp)
 {
 	execve(cmd->cmd_path, cmd->cmd_args, envp);
 	if (access(cmd->cmd_path, X_OK) == 0)
@@ -67,7 +67,7 @@ void	exec_cmd_node(t_mini *mini, t_ast *node, char **envp)
 	{
 		handle_cmd_errors(mini, cmd);
 		check_cmd_path_access(mini, cmd);
-		try_execve(mini, cmd, envp);
+		ft_execve(mini, cmd, envp);
 	}
 	safe_exit(mini, mini->last_exit);
 }

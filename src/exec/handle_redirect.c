@@ -12,7 +12,6 @@
 
 #include "../../includes/minishell.h"
 
-
 void	handle_input_redirection(t_cmd *cmd)
 {
 	int	fd;
