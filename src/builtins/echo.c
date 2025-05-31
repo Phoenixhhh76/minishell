@@ -6,9 +6,10 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:00:20 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/28 10:48:30 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/31 12:29:10 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_valid_n_option(const char *str)
@@ -55,6 +56,9 @@ int	ft_echo(t_cmd *cmd)
 
 	i = 1;
 	option = 0;
+
+	for (int j = 0; cmd->cmd_args[j]; j++)
+		printf("[cmd_arg %d] = '%s'\n", j, cmd->cmd_args[j]);
 	while (cmd->cmd_args[i] && is_valid_n_option(cmd->cmd_args[i]))
 	{
 		option = 1;
