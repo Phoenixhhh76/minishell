@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 12:12:39 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/30 15:47:55 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/01 11:25:41 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ typedef struct s_parse_state
 {
 	int			i;
 	bool		glued;
+	bool		next_glued;
 }	t_parse_state;
 
 //init_mini
@@ -174,8 +175,6 @@ bool	handle_quoted_empty_token(char **arg_slot, t_token **start_ptr);
 void	process_argument_token(char ***args, \
 				int *i, t_token **start_ptr, t_mini *mini);
 //-----------parsing-----------//
-//init_count_token.c//
-
 //init_ast.c//
 char	**collect_args(t_token *start, t_token *end, t_mini *mini);
 //process_tokens.c//
@@ -192,7 +191,10 @@ int		count_export_args(t_token *start, t_token *end, t_mini *mini);
 void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
 char	*join_tokens_for_arg(t_token **cur_tok_ptr, \
-	t_mini *mini, bool allow_split);
+					t_mini *mini, bool allow_split);
+char	*collect_tokens(char *arg, t_token **tok, t_mini *mini);
+void	fill_current_token(const char *input, \
+					t_parse_state *ps, t_token **tokens, t_mini *mini);
 
 //init_ast
 void	init_ast(t_mini *mini);

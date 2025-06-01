@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 10:32:55 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/31 11:54:11 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/01 11:42:25 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,10 +35,8 @@ bool	ft_is_long_limits(const char *nptr)
 {
 	int			i;
 	int			sign;
-	//long long	nb;
 
 	i = 0;
-	//nb = 0;
 	sign = 1;
 	while ((nptr[i] >= 9 && nptr[i] <= 13) || nptr[i] == 32)
 		i++;

@@ -1,28 +1,26 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   collect_atgs.c                                     :+:      :+:    :+:   */
+/*   collect_args.c                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/30 15:09:13 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/30 15:11:19 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/01 11:39:56 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "../../includes/minishell.h"
 
-static char	*collect_cmd(t_token **start)
+static char	*collect_cmd(t_token **start, t_mini *mini)
 {
 	char	*cmd;
 
-	if (*start && ((*start)->type == CMD || (*start)->type == UNKNOWN))
-	{
-		cmd = ft_strdup((*start)->str);
-		*start = (*start)->next;
-		return (cmd);
-	}
-	return (NULL);
+	cmd = ft_strdup("");
+	if (!cmd)
+		return (NULL);
+	cmd = collect_tokens(cmd, start, mini);
+	return (cmd);
 }
 
 static int	collect_args_only(char **args,
@@ -60,7 +58,7 @@ char	**collect_args(t_token *start, t_token *end, t_mini *mini)
 	if (!args)
 		return (NULL);
 	i = 0;
-	cmd = collect_cmd(&start);
+	cmd = collect_cmd(&start, mini);
 	if (cmd)
 		args[i++] = cmd;
 	i += collect_args_only(&args[i], start, end, mini);

@@ -6,22 +6,11 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/31 12:48:43 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/01 11:22:52 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
-
-/* for "'$USER'" */
-// char	*expand_if_needed(t_token *token, t_mini *mini)
-// {
-// 	if (token->quote_type == Q_S)
-// 		return (ft_strdup(token->str));
-// 	if (token->quote_type == Q_D && token->is_dollar_quote)
-// 		return (ft_strdup(token->str));
-// 	return (expand_arg(token->str, mini, 
-// 						token->quote_type, token->is_dollar_quote));
-// }
 
 char	*expand_if_needed(t_token *token, t_mini *mini)
 {
@@ -31,9 +20,9 @@ char	*expand_if_needed(t_token *token, t_mini *mini)
 		return (ft_strdup(token->str));
 	if (token->quote_type == Q_D && ft_strcmp(token->str, "$") == 0)
 		return (ft_strdup("$"));
-	return (expand_arg(token->str, mini, token->quote_type, token->is_dollar_quote));
+	return (expand_arg(token->str, mini, \
+				token->quote_type, token->is_dollar_quote));
 }
-
 
 /*
 find the value of the environment variable key in env
