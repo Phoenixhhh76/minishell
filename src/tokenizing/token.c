@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/08 10:43:56 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/31 13:00:08 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/05/30 14:56:30 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -68,73 +68,34 @@ char	*parse_token_chunk(const char *input,
 	return (chunk);
 }
 
-// void	fill_current_token(const char *input,
-// 						t_parse_state *ps, t_token **tokens, t_mini *mini)
-// {
-// 	char	*arg;
-// 	t_quote	qt;
-// 	t_quote	part_qt;
-// 	char	*chunk;
-
-// 	arg = ft_strdup("");
-// 	qt = Q_NONE;
-// 	while (input[ps->i] && !ft_isspace(input[ps->i]) &&
-// 									!is_meta_char(input[ps->i]))
-// 	{
-// 		if (arg[0] != '\0' && !ps->glued)
-// 			break ;
-// 		chunk = parse_token_chunk(input, ps, &part_qt, mini);
-// 		if (!chunk)
-// 			break ;
-// 		if (ft_strcmp(chunk, "$") == 0)
-// 			ps->glued = false;
-// 		arg = ft_strjoin_ff(arg, chunk);
-// 		if (qt == Q_NONE)
-// 			qt = part_qt;
-// 	}
-// 	printf("[fill_token] FINAL TOKEN='%s'  qt=%d  glued=%d\n", arg, qt, ps->glued);
-// 	if (arg && (arg[0] || qt != Q_NONE))
-// 		append_t(tokens, create_t_with_glued(arg, qt, ps->glued));
-// 	else
-// 		free(arg);
-// }
-
 void	fill_current_token(const char *input,
-	t_parse_state *ps, t_token **tokens, t_mini *mini)
+						t_parse_state *ps, t_token **tokens, t_mini *mini)
 {
 	char	*arg;
 	t_quote	qt;
 	t_quote	part_qt;
 	char	*chunk;
 
-	int		start_i = ps->i;    // ✅ 初始化
-	bool	glued;               // ✅ 宣告
-
 	arg = ft_strdup("");
 	qt = Q_NONE;
-
-	while (input[ps->i] && !ft_isspace(input[ps->i]) && !is_meta_char(input[ps->i]))
+	while (input[ps->i] && !ft_isspace(input[ps->i]) && \
+									!is_meta_char(input[ps->i]))
 	{
-	if (arg[0] != '\0' && !ps->glued)
-	break ;
-	chunk = parse_token_chunk(input, ps, &part_qt, mini);
-	if (!chunk)
-	break ;
-	if (ft_strcmp(chunk, "$") == 0)
-	ps->glued = false;
-	arg = ft_strjoin_ff(arg, chunk);
-	if (qt == Q_NONE)
-	qt = part_qt;
+		if (arg[0] != '\0' && !ps->glued)
+			break ;
+		chunk = parse_token_chunk(input, ps, &part_qt, mini);
+		if (!chunk)
+			break ;
+		if (ft_strcmp(chunk, "$") == 0)
+			ps->glued = false;
+		arg = ft_strjoin_ff(arg, chunk);
+		if (qt == Q_NONE)
+			qt = part_qt;
 	}
-
-	glued = (start_i > 0 && input[start_i - 1] != ' ' && !is_meta_char(input[start_i - 1]));
-
-	printf("[fill_token] FINAL TOKEN='%s'  qt=%d  glued=%d\n", arg, qt, glued);
-
 	if (arg && (arg[0] || qt != Q_NONE))
-	append_t(tokens, create_t_with_glued(arg, qt, glued));  // ✅ 使用 glued
+		append_t(tokens, create_t_with_glued(arg, qt, ps->glued));
 	else
-	free(arg);
+		free(arg);
 }
 
 void	check_and_handle_meta(const char *input, int *i, t_token **tokens)
@@ -156,15 +117,6 @@ void	check_and_handle_meta(const char *input, int *i, t_token **tokens)
 	else if (input[*i])
 		(*i)++;
 }
-void	print_token_list(t_token *tokens)
-{
-	while (tokens)
-	{
-		printf("Token [%s] type=%d quote=%d glued=%d\n",
-			tokens->str, tokens->type, tokens->quote_type, tokens->glued);
-		tokens = tokens->next;
-	}
-}
 
 t_token	*tokenize_input(const char *input, t_mini *mini)
 {
@@ -185,12 +137,11 @@ t_token	*tokenize_input(const char *input, t_mini *mini)
 		fill_current_token(input, &ps, &tokens, mini);
 		if (is_meta_char(input[ps.i]))
 			check_and_handle_meta(input, &ps.i, &tokens);
-		// if (input[ps.i] && !ft_isspace(input[ps.i]) &&
-		// 							!is_meta_char(input[ps.i]))
-		// 	ps.glued = true;
-		// else
-		// 	ps.glued = false;
+		if (input[ps.i] && !ft_isspace(input[ps.i]) && \
+									!is_meta_char(input[ps.i]))
+			ps.glued = true;
+		else
+			ps.glued = false;
 	}
-	print_token_list(tokens);
 	return (tokens);
 }
