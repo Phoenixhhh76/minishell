@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2024/11/11 10:41:59 by hho-troc          #+#    #+#             */
-/*   Updated: 2024/11/19 11:52:57 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/02 13:10:34 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -20,7 +20,7 @@ void	ft_putstr_fd(char const *s, int fd)
 	if (fd < 0)
 		return ;
 	while (s[i])
-	{	
+	{
 		write(fd, &s[i], 1);
 		i++;
 	}

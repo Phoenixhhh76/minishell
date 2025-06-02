@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/06/01 11:13:08 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/06/01 11:32:48 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/02 13:12:47 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -112,37 +112,3 @@ void	fill_current_token(const char *input,
 	else
 		free(arg);
 }
-
-/* oid	fill_current_token(const char *input,
-	t_parse_state *ps, t_token **tokens, t_mini *mini)
-{
-	char	*arg;
-	t_quote	qt;
-	t_quote	part_qt;
-	char	*chunk;
-	int		start_i = ps->i;
-	bool	glued;
-
-	arg = ft_strdup("");
-	qt = Q_NONE;
-	while (input[ps->i] && !ft_isspace(input[ps->i]) && !is_meta_char(input[ps->i]))
-	{
-		if (arg[0] != '\0' && !ps->glued)
-			break ;
-		chunk = parse_token_chunk(input, ps, &part_qt, mini);
-		if (!chunk)
-			break ;
-		if (ft_strcmp(chunk, "$") == 0)
-			ps->glued = false;
-		arg = ft_strjoin_ff(arg, chunk);
-			if (qt == Q_NONE)
-		qt = part_qt;
-	}
-	glued = (start_i > 0 && input[start_i - 1] != ' ' && !is_meta_char(input[start_i - 1]));
-	printf("[fill_token] FINAL TOKEN='%s'  qt=%d  glued=%d\n", arg, qt, glued);
-	if (arg && (arg[0] || qt != Q_NONE))
-		append_t(tokens, create_t_with_glued(arg, qt, glued));  //  使用 glued
-	else
-	free(arg);
-}
- */
