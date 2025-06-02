@@ -16,6 +16,11 @@ int	ft_cd(t_cmd *cmd)
 {
 	char	*path;
 
+	if (cmd->cmd_args[1] && cmd->cmd_args[2])
+	{
+		err_msg("cd", ":", " too many arguments", 1);
+		return (1);
+	}
 	path = cmd->cmd_args[1];
 	if (!path)
 		path = getenv("HOME");

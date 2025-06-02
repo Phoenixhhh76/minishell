@@ -21,7 +21,8 @@ void	set_args_and_path(t_cmd *cmd, t_token *start, \
 		cmd->cmd_args = collect_args(start, end, mini);
 	if (cmd->cmd_args && cmd->cmd_args[0] && cmd->cmd_args[0][0] != '\0')
 	{
-		if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
+		//if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
+		if (ft_strchr(cmd->cmd_args[0], '/'))
 			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
 		else
 		{
