@@ -6,7 +6,7 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/05/16 12:23:52 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/26 17:39:13 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/03 10:39:07 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -21,7 +21,6 @@ void	set_args_and_path(t_cmd *cmd, t_token *start, \
 		cmd->cmd_args = collect_args(start, end, mini);
 	if (cmd->cmd_args && cmd->cmd_args[0] && cmd->cmd_args[0][0] != '\0')
 	{
-		//if (cmd->cmd_args[0][0] == '/' || cmd->cmd_args[0][0] == '.')
 		if (ft_strchr(cmd->cmd_args[0], '/'))
 			cmd->cmd_path = ft_strdup(cmd->cmd_args[0]);
 		else
