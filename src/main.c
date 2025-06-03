@@ -93,5 +93,6 @@ int	main(int ac, char **av, char **envp)
 		safe_cleanup(&mini, line);
 	}
 	safe_exit(&mini, 0);
+	//printf("TEST\n");
 	return (0);
 }
