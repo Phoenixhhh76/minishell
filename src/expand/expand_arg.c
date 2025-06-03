@@ -6,21 +6,22 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/22 16:05:52 by hho-troc          #+#    #+#             */
-/*   Updated: 2025/05/29 15:01:44 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/01 11:22:52 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "minishell.h"
 
-/* for "'$USER'" */
 char	*expand_if_needed(t_token *token, t_mini *mini)
 {
 	if (token->quote_type == Q_S)
 		return (ft_strdup(token->str));
 	if (token->quote_type == Q_D && token->is_dollar_quote)
 		return (ft_strdup(token->str));
+	if (token->quote_type == Q_D && ft_strcmp(token->str, "$") == 0)
+		return (ft_strdup("$"));
 	return (expand_arg(token->str, mini, \
-						token->quote_type, token->is_dollar_quote));
+				token->quote_type, token->is_dollar_quote));
 }
 
 /*
@@ -91,34 +92,4 @@ char	*handle_special_case(const char *str)
 		j++;
 	after = ft_strdup(&str[j]);
 	return (ft_strjoin_ff(ft_strdup("$"), after));
-}
-
-char	*expand_arg(const char *str, t_mini *mini,
-						t_quote quote_type, bool is_dollar_quote)
-{
-	char	*result;
-	int		i;
-	int		old_i;
-
-	result = ft_strdup("");
-	i = 0;
-	if (is_dollar_quote)
-		return (ft_strdup(str));
-	if (str[0] == '"' && str[1] == '$' && str[2] == '"' && str[3] == '"')
-		return (handle_special_case(str));
-	while (str[i])
-	{
-		old_i = i;
-		if (str[i] == '\'' && quote_type == Q_NONE)
-			result = ft_strjoin_ff(result, handle_single_quote(str, &i));
-		else if (str[i] == '"')
-			result = ft_strjoin_ff(result, handle_double_quote(str, &i, mini));
-		else if (str[i] == '$')
-			result = ft_strjoin_ff(result, expand_var(str, &i, mini));
-		else
-			result = ft_strjoin_ff(result, ft_strndup(str + i++, 1));
-		if (i == old_i)
-			i++;
-	}
-	return (result);
 }

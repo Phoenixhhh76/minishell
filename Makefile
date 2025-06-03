@@ -30,19 +30,19 @@ PARSING     := $(PARSING_DIR)/parse_pipeline.c $(PARSING_DIR)/parse_pipeline_uti
 					$(PARSING_DIR)/init_ast.c $(PARSING_DIR)/init_mini.c \
 					$(PARSING_DIR)/build_command.c $(PARSING_DIR)/redirections.c \
 					$(PARSING_DIR)/args_count.c $(PARSING_DIR)/process_token.c \
-					$(PARSING_DIR)/join_tokens_arg.c $(PARSING_DIR)/export_count.c
+					$(PARSING_DIR)/join_tokens_arg.c $(PARSING_DIR)/export_count.c $(PARSING_DIR)/collect_args.c
 
 EXEC        := $(EXEC_DIR)/exec_or_builtins.c $(EXEC_DIR)/exec_ast.c $(EXEC_DIR)/exec_builtins.c \
 					$(EXEC_DIR)/exec_path.c $(EXEC_DIR)/exec_heredoc.c $(EXEC_DIR)/heredoc_utils.c \
 					$(EXEC_DIR)/exec_utils.c $(EXEC_DIR)/exec_cmd_node.c $(EXEC_DIR)/handle_redirect.c
 
 EXPAND      := $(EXPAND_DIR)/expand_arg.c $(EXPAND_DIR)/expand_heredoc.c \
-					$(EXPAND_DIR)/expand_arg_quote.c
+					$(EXPAND_DIR)/expand_arg_quote.c $(EXPAND_DIR)/expand_arg_2.c
 UTILS       := $(UTILS_DIR)/free.c $(UTILS_DIR)/error.c \
 					$(UTILS_DIR)/str.c $(UTILS_DIR)/clean.c
 
 TOKENIZING  := $(TOKEN_DIR)/token.c $(TOKEN_DIR)/token_utils.c $(TOKEN_DIR)/syntax_error.c \
-					$(TOKEN_DIR)/helper.c $(TOKEN_DIR)/extract_quoted.c
+					$(TOKEN_DIR)/helper.c $(TOKEN_DIR)/extract_quoted.c $(TOKEN_DIR)/fill_token.c
 COMMON      := $(SRC_DIR)/main.c $(SRC_DIR)/signal.c \
 #					$(SRC_DIR)/print_utils.c  $(SRC_DIR)/print_ast.c
 

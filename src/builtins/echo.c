@@ -6,9 +6,10 @@
 /*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/23 17:00:20 by ndabbous          #+#    #+#             */
-/*   Updated: 2025/05/28 10:48:30 by hho-troc         ###   ########.fr       */
+/*   Updated: 2025/06/01 11:40:58 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
+
 #include "minishell.h"
 
 int	is_valid_n_option(const char *str)

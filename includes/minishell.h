@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   minishell.h                                        :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-30 12:12:39 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-05-30 12:12:39 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/05/30 12:12:39 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/06/01 11:25:41 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -117,6 +117,7 @@ typedef struct s_parse_state
 {
 	int			i;
 	bool		glued;
+	bool		next_glued;
 }	t_parse_state;
 
 //init_mini
@@ -152,6 +153,7 @@ t_token	*create_t_with_glued(char *str, t_quote qt, bool glued);
 void	free_token_list(t_token *token);
 t_token	*create_t(char *str, t_quote quote_type);
 void	append_t(t_token **head, t_token *new);
+char	*handle_special_case(const char *str);
 
 //--------expand--------//
 //expand_arg.c//
@@ -169,10 +171,10 @@ char	*handle_dollar(const char *str, int *i, char *result, t_mini *mini);
 char	*handle_exit_code(char *result, int *i, t_mini *mini);
 char	*handle_variable(const char *str, int *i, char *result, t_mini *mini);
 char	*expand_heredoc_line(const char *str, t_mini *mini);
-
+bool	handle_quoted_empty_token(char **arg_slot, t_token **start_ptr);
+void	process_argument_token(char ***args, \
+				int *i, t_token **start_ptr, t_mini *mini);
 //-----------parsing-----------//
-//init_count_token.c//
-
 //init_ast.c//
 char	**collect_args(t_token *start, t_token *end, t_mini *mini);
 //process_tokens.c//
@@ -189,7 +191,10 @@ int		count_export_args(t_token *start, t_token *end, t_mini *mini);
 void	fill_export_args(char **args, \
 					t_token *start, t_token *end, t_mini *mini);
 char	*join_tokens_for_arg(t_token **cur_tok_ptr, \
-	t_mini *mini, bool allow_split);
+					t_mini *mini, bool allow_split);
+char	*collect_tokens(char *arg, t_token **tok, t_mini *mini);
+void	fill_current_token(const char *input, \
+					t_parse_state *ps, t_token **tokens, t_mini *mini);
 
 //init_ast
 void	init_ast(t_mini *mini);
@@ -199,7 +204,7 @@ void	handle_redir_in(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	handle_redir_out(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	handle_redir_append(t_token *tmp, t_cmd *cmd, t_mini *mini);
 void	count_hd(t_token *tmp, t_cmd *cmd, t_mini *mini);
-
+int		process_token(char **args, int i, t_token *tok, t_mini *mini);
 char	**collect_args_for_export(t_token *start, t_token *end, t_mini *mini);
 t_cmd	*build_command(t_token *start, t_token *end, t_mini *mini);
 
