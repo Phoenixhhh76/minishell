@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   parse_pipeline_utils.c                             :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: ndabbous <ndabbous@student.42.fr>          #+#  +:+       +#+        */
+/*   By: hho-troc <hho-troc@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
-/*   Created: 2025-05-29 17:46:11 by ndabbous          #+#    #+#             */
-/*   Updated: 2025-05-29 17:46:11 by ndabbous         ###   ########.fr       */
+/*   Created: 2025/05/29 17:46:11 by ndabbous          #+#    #+#             */
+/*   Updated: 2025/06/01 11:38:04 by hho-troc         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -26,7 +26,7 @@ int	init_pipe_node(t_ast *node)
 	node->fd[0] = -1;
 	node->fd[1] = -1;
 	if (!node->ast_tok.str)
-	{	
+	{
 		node->ast_tok.str = NULL;
 		return (perror("parse_pipeline : strdup"), -2);
 	}

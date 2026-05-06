@@ -1,126 +1,148 @@
-# minishell
-yeah yeah
+# 🐚 Minishell
 
-## ✅ **Basic Git Collaboration Workflow (Two People)**
+> A minimal UNIX shell written in C - 42 School project
 
-### 🔧 1. **Start from a clean `main`**
-Everyone should sync with the latest `main` before doing anything:
+---
 
-```bash
-git checkout main
-git pull origin main
+## 📖 Overview
+
+**Minishell** is a simplified shell implementation inspired by `bash`. The goal of this project is to understand how a shell works under the hood: parsing user input, building an Abstract Syntax Tree (AST), and executing commands through system calls.
+
+---
+
+## ✨ Features
+
+- Interactive prompt with command history
+- Parsing via an **Abstract Syntax Tree (AST)**
+- Command execution with `execve`
+- Pipes (`|`) between commands
+- Input/output redirections (`<`, `>`, `>>`, `<<`)
+- Environment variable expansion (`$VAR`, `$?`)
+- Quote handling (`'single'` and `"double"`)
+- Signal handling (`Ctrl+C`, `Ctrl+D`, `Ctrl+\`)
+
+### Built-in commands
+
+| Command | Description |
+|---------|-------------|
+| `echo` | Display a line of text (`-n` supported) |
+| `cd` | Change the current directory |
+| `pwd` | Print the current working directory |
+| `export` | Set environment variables |
+| `unset` | Unset environment variables |
+| `env` | Print the current environment |
+| `exit` | Exit the shell |
+
+---
+
+## 🏗️ Architecture — AST-based parsing
+
+Rather than using a simple linear parser, this shell uses an **Abstract Syntax Tree (AST)** to represent the structure of a command line.
+
+```
+echo hello | cat -e > out.txt
+          |
+        PIPE
+       /    \
+    CMD      REDIR (>)
+   /   \        \
+ echo  hello    CMD
+               /   \
+             cat   -e
 ```
 
----
+### Parsing pipeline
 
-### 🌿 2. **Create a feature/fix branch**
-Always work in a new branch named after your task.
-
-```bash
-git checkout -b feature/ast           # for new features
-# or
-git checkout -b fix/lexer-bug         # for bug fixes
+```
+Input string
+     │
+     ▼
+  Lexer (tokenization)
+     │
+     ▼
+  Parser (builds AST)
+     │
+     ▼
+  Executor (tree traversal)
+     │
+     ▼
+  System calls (fork, execve, pipe, dup2...)
 ```
 
-✅ **Branch naming tips:**
-- Use `feature/xxx` for new features
-- Use `fix/xxx` for bug fixes
-- Use `refactor/xxx` for code clean-up
-- No spaces or special characters (`_` or `-` are okay)
+### AST node types
+
+- `CMD` — a simple command with its arguments
+- `PIPE` — connects stdout of left child to stdin of right child
+- `REDIR_IN` / `REDIR_OUT` / `REDIR_APPEND` / `HEREDOC` — I/O redirections
 
 ---
 
-### ✍️ 3. **Commit your work**
-Once you make changes:
+## 🚀 Getting started
 
+### Prerequisites
+
+- GCC
+- GNU Make
+- `readline` library
+
+On Linux (Ubuntu/Debian):
 ```bash
-git add .
-git commit -m "feat: add basic AST structure"
+sudo apt-get install libreadline-dev
 ```
 
-✅ Good commit message format:
-- `feat:` for features
-- `fix:` for bug fixes
-- `refactor:` for code cleanup
-- `docs:` for documentation
-
----
-
-### 🚀 4. **Push your branch to GitHub**
-
+On macOS:
 ```bash
-git push -u origin feature/ast
+brew install readline
 ```
 
-Then go to GitHub and **create a Pull Request (PR)**.
-
----
-
-### 🔍 5. **Code review + Merge**
-Your teammate reviews the PR and merges it into `main`.
-
----
-
-### 🔄 6. **Update your local main before next task**
+### Build
 
 ```bash
-git checkout main
-git pull origin main
+git clone https://github.com/Phoenixhhh76/minishell.git minishell
+cd minishell
+make
 ```
 
----
-
-## 📁 Suggested Directory Structure for minishell
+### Run
 
 ```bash
-includes/
-    minishell.h
-    ast.h
-    lexer.h
-    parser.h
-
-src/
-    ast/
-    lexer/
-    parser/
-    builtin/
-    exec/
-
-Makefile
-README.md
+./minishell
 ```
+---
+
+## 🛠️ Implementation details
+
+### Lexer
+
+The lexer reads the raw input string and produces a list of tokens, handling:
+- Word splitting
+- Quote state machine (`'` and `"`)
+- Operator detection (`|`, `<`, `>`, `>>`, `<<`)
+
+### Parser
+
+The parser consumes the token list and recursively builds an AST following a simple grammar:
+
+```
+pipeline    := command (PIPE command)*
+command     := token+ redirection*
+redirection := ('<' | '>' | '>>' | '<<') token
+```
+
+### Executor
+
+The executor performs a recursive tree traversal:
+- `PIPE` nodes → `fork()` + `pipe()` + recursive calls on each branch
+- `REDIR` nodes → `open()` + `dup2()` before executing the child
+- `CMD` nodes → `fork()` + `execve()` (or built-in dispatch)
 
 ---
 
-## 🧠 Team Tip
+## 📚 Resources
 
-When you're not sure who's doing what, write it down in a shared `CONTRIBUTORS.md` or a GitHub Project/Issue:
+- [Bash manual](https://www.gnu.org/software/bash/manual/)
+---
 
-```markdown
-### Phoenix:
-- Implement `ast.h` and `parser.c`
+## 📜 License
 
-### Nina:
-- Work on `lexer.c` and `tokenizer`
-
-
-
-int main()
-{
-    blablabla
-    init_mini();
-}
-
-void    ini_mini()
-{
-    env = babla;
-    av;
-    ac;
-    heredoc;
-    ast = init_ast();
-}
-
-void    init_ast()
-(
-    type = found_token()
-)
+This project is part of the 42 School curriculum and is for educational purposes only.
