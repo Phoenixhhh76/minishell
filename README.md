@@ -1,6 +1,6 @@
 # 🐚 Minishell
 
-> A minimal UNIX shell written in C — 42 School project
+> A minimal UNIX shell written in C - 42 School project
 
 ---
 
